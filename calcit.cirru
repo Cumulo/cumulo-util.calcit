@@ -406,17 +406,14 @@
                         :data $ {}
                           |T $ {} (:type :leaf) (:by |B1y7Rc-Zz) (:at 1544726255682) (:text |if)
                           |j $ {} (:type :leaf) (:by |B1y7Rc-Zz) (:at 1544726255682) (:text |found?)
-                          |r $ {} (:type :expr) (:by |B1y7Rc-Zz) (:at 1544726255682)
+                          |r $ {} (:type :expr) (:by |B1y7Rc-Zz) (:at 1614237273771)
                             :data $ {}
-                              |T $ {} (:type :leaf) (:by |B1y7Rc-Zz) (:at 1614237271730) (:text |extract-cirru-edn)
-                              |j $ {} (:type :expr) (:by |B1y7Rc-Zz) (:at 1614237273771)
+                              |T $ {} (:type :expr) (:by |B1y7Rc-Zz) (:at 1544726255682)
                                 :data $ {}
-                                  |T $ {} (:type :expr) (:by |B1y7Rc-Zz) (:at 1544726255682)
-                                    :data $ {}
-                                      |T $ {} (:type :leaf) (:by |B1y7Rc-Zz) (:at 1544726255682) (:text |fs/readFileSync)
-                                      |j $ {} (:type :leaf) (:by |B1y7Rc-Zz) (:at 1544726255682) (:text |filepath)
-                                      |r $ {} (:type :leaf) (:by |B1y7Rc-Zz) (:at 1544726255682) (:text ||utf8)
-                                  |D $ {} (:type :leaf) (:by |B1y7Rc-Zz) (:at 1614237276432) (:text |parse-cirru)
+                                  |T $ {} (:type :leaf) (:by |B1y7Rc-Zz) (:at 1544726255682) (:text |fs/readFileSync)
+                                  |j $ {} (:type :leaf) (:by |B1y7Rc-Zz) (:at 1544726255682) (:text |filepath)
+                                  |r $ {} (:type :leaf) (:by |B1y7Rc-Zz) (:at 1544726255682) (:text ||utf8)
+                              |D $ {} (:type :leaf) (:by |B1y7Rc-Zz) (:at 1614440226810) (:text |parse-cirru-edn)
                           |v $ {} (:type :leaf) (:by |B1y7Rc-Zz) (:at 1544726255682) (:text |nil)
           |sh! $ {} (:type :expr) (:by |root) (:at 1545669620238)
             :data $ {}
@@ -584,5 +581,12 @@
                               |T $ {} (:type :leaf) (:by |B1y7Rc-Zz) (:at 1543165491406) (:text |do-write!)
         :proc $ {} (:type :expr) (:by |B1y7Rc-Zz) (:at 1544376144865)
           :data $ {}
-  :configs $ {} (:storage-key |calcit.cirru) (:extension |.cljs) (:output |src) (:port 6001) (:compact-output? true) (:init-fn |cumulo-util.app/main!) (:reload-fn |cumulo-util.app/reload!)
+  :configs $ {} (:reload-fn |cumulo-util.app/reload!)
     :modules $ []
+    :output |src
+    :port 6001
+    :extension |.cljs
+    :init-fn |cumulo-util.app/main!
+    :compact-output? true
+    :storage-key |calcit.cirru
+    :version |0.0.1
