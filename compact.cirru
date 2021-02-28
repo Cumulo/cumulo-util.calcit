@@ -2,7 +2,7 @@
 {} (:package |cumulo-util)
   :configs $ {} (:init-fn |cumulo-util.app/main!) (:reload-fn |cumulo-util.app/reload!)
     :modules $ []
-    :version nil
+    :version |0.0.1
   :files $ {}
     |cumulo-util.app $ {}
       :ns $ quote
@@ -71,7 +71,7 @@
                 found? $ fs/existsSync filepath
               if (fn? handler) (handler found?)
               if found?
-                extract-cirru-edn $ parse-cirru (fs/readFileSync filepath |utf8)
+                parse-cirru-edn $ fs/readFileSync filepath |utf8
                 , nil
         |sh! $ quote
           defn sh! (command) (println command)
