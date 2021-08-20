@@ -2,21 +2,8 @@
 {} (:package |cumulo-util)
   :configs $ {} (:init-fn |cumulo-util.app/main!) (:reload-fn |cumulo-util.app/reload!)
     :modules $ []
-    :version |0.0.1
+    :version |0.0.2
   :files $ {}
-    |cumulo-util.app $ {}
-      :ns $ quote
-        ns cumulo-util.app $ :require
-          [] cumulo-util.core :refer $ [] delay!
-          [] cumulo-util.file :refer $ [] chan-pick-port write-mildly!
-      :defs $ {}
-        |main! $ quote
-          defn main! () (println "\"Started") (task!) (write-mildly! "\"a/a/a" "\"a")
-        |reload! $ quote
-          defn reload! () (println "\"Reload") (task!)
-        |task! $ quote
-          defn task! () $ echo "\"Task..."
-      :proc $ quote ()
     |cumulo-util.client $ {}
       :ns $ quote
         ns cumulo-util.client $ :require
@@ -27,14 +14,24 @@
             fn () $ println "\"called"
         |reload! $ quote
           defn reload! $
-      :proc $ quote ()
+    |cumulo-util.app $ {}
+      :ns $ quote
+        ns cumulo-util.app $ :require
+          [] cumulo-util.core :refer $ [] delay!
+          [] cumulo-util.file :refer $ [] chan-pick-port write-mildly!
+      :defs $ {}
+        |main! $ quote
+          defn main! () (println "\"Started") (task!) (write-mildly! "\"a/a/a" "\"a")
+        |task! $ quote
+          defn task! () $ echo "\"Task..."
+        |reload! $ quote
+          defn reload! () (println "\"Reload") (task!)
     |cumulo-util.core $ {}
       :ns $ quote
         ns cumulo-util.core $ :require ([] "\"shortid" :as shortid)
       :defs $ {}
-        |delay! $ quote
-          defn delay! (duration task)
-            js/setTimeout task $ * 1000 duration
+        |unix-time! $ quote
+          defn unix-time! () $ .valueOf (new js/Date)
         |id! $ quote
           defn id! () $ shortid/generate
         |on-page-touch $ quote
@@ -48,17 +45,20 @@
                 when
                   = "\"visible" $ .-visibilityState js/document
                   call-listener
+        |*cooling $ quote (defatom *cooling false)
+        |delay! $ quote
+          defn delay! (duration task)
+            js/setTimeout task $ * 1000 duration
         |repeat! $ quote
           defn repeat! (duration task)
             js/setInterval task $ * 1000 duration
-        |unix-time! $ quote
-          defn unix-time! () $ .valueOf (new js/Date)
-        |*cooling $ quote (defatom *cooling false)
-      :proc $ quote ()
     |cumulo-util.file $ {}
       :ns $ quote
         ns cumulo-util.file $ :require ([] "\"path" :as path) ([] "\"fs" :as fs) ([] "\"child_process" :as cp) ([] "\"net" :as net)
       :defs $ {}
+        |sh! $ quote
+          defn sh! (command) (println command)
+            println $ .toString (cp/execSync command)
         |get-backup-path! $ quote
           defn get-backup-path! () $ let
               now $ new js/Date
@@ -73,15 +73,12 @@
               if found?
                 parse-cirru-edn $ fs/readFileSync filepath |utf8
                 , nil
-        |sh! $ quote
-          defn sh! (command) (println command)
-            println $ .toString (cp/execSync command)
         |write-mildly! $ quote
           defn write-mildly! (file-path content)
             let
                 dir $ path/dirname file-path
                 filename $ path/basename file-path
-                temp-name $ str "\"/tmp/" (.now js/Date) "\"-" (.random js/Math) "\"-" filename
+                temp-name $ str "\"/tmp/" (js/Date.now) "\"-" (js/Math.random) "\"-" filename
                 do-write! $ fn () (fs/writeFileSync temp-name content) (fs/renameSync temp-name file-path) (println "\"Write to file:" file-path)
               if (fs/existsSync file-path)
                 let
@@ -94,4 +91,3 @@
                     fs/mkdirSync dir $ to-js-data
                       {} $ :recursive true
                   do-write!
-      :proc $ quote ()
