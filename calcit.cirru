@@ -1055,8 +1055,11 @@
           :type :expr
           :at 1544376144865
           :by |B1y7Rc-Zz
-  :configs $ {} (:reload-fn |cumulo-util.app/reload!) (:port 6001) (:output |src) (:compact-output? true) (:storage-key |calcit.cirru) (:version |0.0.3)
+  :configs $ {} (:reload-fn |cumulo-util.client/reload!) (:port 6001) (:storage-key |calcit.cirru) (:version |0.0.3)
     :modules $ []
-    :init-fn |cumulo-util.app/main!
-    :extension |.cljs
+    :init-fn |cumulo-util.client/main!
+
   :entries $ {}
+    :server $ {} (:reload-fn |cumulo-util.app/reload!)
+      :modules $ []
+      :init-fn |cumulo-util.app/main!

@@ -1,9 +1,12 @@
 
 {} (:package |cumulo-util)
-  :configs $ {} (:init-fn |cumulo-util.app/main!) (:reload-fn |cumulo-util.app/reload!)
+  :configs $ {} (:init-fn |cumulo-util.client/main!) (:reload-fn |cumulo-util.client/reload!)
     :modules $ []
     :version |0.0.3
   :entries $ {}
+    :server $ {} (:reload-fn |cumulo-util.app/reload!)
+      :modules $ []
+      :init-fn |cumulo-util.app/main!
   :files $ {}
     |cumulo-util.client $ {}
       :ns $ quote
