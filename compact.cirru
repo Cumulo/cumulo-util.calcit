@@ -2,7 +2,8 @@
 {} (:package |cumulo-util)
   :configs $ {} (:init-fn |cumulo-util.app/main!) (:reload-fn |cumulo-util.app/reload!)
     :modules $ []
-    :version |0.0.2
+    :version |0.0.3
+  :entries $ {}
   :files $ {}
     |cumulo-util.client $ {}
       :ns $ quote
@@ -17,23 +18,27 @@
     |cumulo-util.app $ {}
       :ns $ quote
         ns cumulo-util.app $ :require
-          [] cumulo-util.core :refer $ [] delay!
+          [] cumulo-util.core :refer $ id! delay!
           [] cumulo-util.file :refer $ [] chan-pick-port write-mildly!
       :defs $ {}
         |main! $ quote
-          defn main! () (println "\"Started") (task!) (write-mildly! "\"a/a/a" "\"a")
+          defn main! () (println "\"Started")
+            println "\"gen id" $ id!
+            task!
+            write-mildly! "\"a/a/a" "\"a"
         |task! $ quote
           defn task! () $ echo "\"Task..."
         |reload! $ quote
           defn reload! () (println "\"Reload") (task!)
     |cumulo-util.core $ {}
       :ns $ quote
-        ns cumulo-util.core $ :require ([] "\"shortid" :as shortid)
+        ns cumulo-util.core $ :require
+          "\"nanoid" :refer $ nanoid
       :defs $ {}
         |unix-time! $ quote
           defn unix-time! () $ .valueOf (new js/Date)
         |id! $ quote
-          defn id! () $ shortid/generate
+          defn id! () $ nanoid
         |on-page-touch $ quote
           defn on-page-touch (listener) (reset! *cooling false)
             let

@@ -1,6 +1,8 @@
 {
+  "version": "0.0.3",
   "dependencies": {
-    "@calcit/procs": "^0.5.16"
+    "@calcit/procs": "^0.5.16",
+    "nanoid": "^3.2.0"
   },
   "scripts": {
     "bundle-server": "esbuild ./server.js --bundle --outfile=js-out/bundle.js --platform=node",
@@ -8,9 +10,7 @@
     "watch-page": "cr --emit-js --emit-path out-page/ --init-fn cumulo-util.client/main! --reload-fn cumulo-util.client/reload!"
   },
   "devDependencies": {
-    "shortid": "^2.2.16",
     "vite": "^2.7.13",
     "ws": "^8.4.2"
-  },
-  "version": "0.0.2"
+  }
 }
