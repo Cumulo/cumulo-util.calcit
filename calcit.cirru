@@ -1,9 +1,8 @@
 
 {}
-  :configs $ {} (:reload-fn |cumulo-util.app/reload!) (:port 6001) (:output |src) (:compact-output? true) (:storage-key |calcit.cirru) (:version |0.0.2)
-    :modules $ []
-    :init-fn |cumulo-util.app/main!
-    :extension |.cljs
+  :users $ {}
+    |B1y7Rc-Zz $ {} (:avatar nil) (:name |chen) (:nickname |chen) (:id |B1y7Rc-Zz) (:theme :star-trail) (:password |d41d8cd98f00b204e9800998ecf8427e)
+    |root $ {} (:avatar nil) (:name |root) (:nickname |root) (:id |root) (:theme :star-trail) (:password |d41d8cd98f00b204e9800998ecf8427e)
   :ir $ {} (:package |cumulo-util)
     :root $ {} (:def |main!) (:ns |main)
     :files $ {}
@@ -122,6 +121,13 @@
                 :type :expr
                 :at 1554570668197
                 :by |B1y7Rc-Zz
+              |w $ {} (:type :expr) (:by |B1y7Rc-Zz) (:at 1643533303775)
+                :data $ {}
+                  |T $ {} (:type :leaf) (:by |B1y7Rc-Zz) (:at 1643533304669) (:text |println)
+                  |j $ {} (:type :leaf) (:by |B1y7Rc-Zz) (:at 1643533307264) (:text "|\"gen id")
+                  |r $ {} (:type :expr) (:by |B1y7Rc-Zz) (:at 1643533307634)
+                    :data $ {}
+                      |T $ {} (:type :leaf) (:by |B1y7Rc-Zz) (:at 1643533309970) (:text |id!)
             :type :expr
             :at 1544376077887
             :by |B1y7Rc-Zz
@@ -188,7 +194,7 @@
                     |r $ {} (:text |:refer) (:type :leaf) (:at 1554570733161) (:by |B1y7Rc-Zz)
                     |v $ {}
                       :data $ {}
-                        |T $ {} (:text |[]) (:type :leaf) (:at 1554570733161) (:by |B1y7Rc-Zz)
+                        |T $ {} (:text |id!) (:type :leaf) (:at 1643533300037) (:by |B1y7Rc-Zz)
                         |j $ {} (:text |delay!) (:type :leaf) (:at 1554570733161) (:by |B1y7Rc-Zz)
                       :type :expr
                       :at 1554570733161
@@ -256,7 +262,7 @@
                 :by |B1y7Rc-Zz
               |v $ {}
                 :data $ {}
-                  |j $ {} (:text |shortid/generate) (:type :leaf) (:at 1614234970691) (:by |B1y7Rc-Zz)
+                  |j $ {} (:text |nanoid) (:type :leaf) (:at 1643533282182) (:by |B1y7Rc-Zz)
                 :type :expr
                 :at 1544810024783
                 :by |B1y7Rc-Zz
@@ -517,10 +523,11 @@
                 |T $ {} (:text |:require) (:type :leaf) (:at 1544810012136) (:by |B1y7Rc-Zz)
                 |j $ {}
                   :data $ {}
-                    |T $ {} (:text |[]) (:type :leaf) (:at 1544810012558) (:by |B1y7Rc-Zz)
-                    |j $ {} (:text "|\"shortid") (:type :leaf) (:at 1544810015674) (:by |B1y7Rc-Zz)
-                    |r $ {} (:text |:as) (:type :leaf) (:at 1544810016582) (:by |B1y7Rc-Zz)
-                    |v $ {} (:text |shortid) (:type :leaf) (:at 1544810019741) (:by |B1y7Rc-Zz)
+                    |j $ {} (:text "|\"nanoid") (:type :leaf) (:at 1643533271296) (:by |B1y7Rc-Zz)
+                    |r $ {} (:text |:refer) (:type :leaf) (:at 1643533276692) (:by |B1y7Rc-Zz)
+                    |v $ {} (:type :expr) (:by |B1y7Rc-Zz) (:at 1643533277102)
+                      :data $ {}
+                        |T $ {} (:type :leaf) (:by |B1y7Rc-Zz) (:at 1643533277549) (:text |nanoid)
                   :type :expr
                   :at 1544810012337
                   :by |B1y7Rc-Zz
@@ -1048,6 +1055,11 @@
           :type :expr
           :at 1544376144865
           :by |B1y7Rc-Zz
-  :users $ {}
-    |B1y7Rc-Zz $ {} (:avatar nil) (:name |chen) (:nickname |chen) (:id |B1y7Rc-Zz) (:theme :star-trail) (:password |d41d8cd98f00b204e9800998ecf8427e)
-    |root $ {} (:avatar nil) (:name |root) (:nickname |root) (:id |root) (:theme :star-trail) (:password |d41d8cd98f00b204e9800998ecf8427e)
+  :configs $ {} (:reload-fn |cumulo-util.client/reload!) (:port 6001) (:storage-key |calcit.cirru) (:version |0.0.3)
+    :modules $ []
+    :init-fn |cumulo-util.client/main!
+
+  :entries $ {}
+    :server $ {} (:reload-fn |cumulo-util.app/reload!)
+      :modules $ []
+      :init-fn |cumulo-util.app/main!

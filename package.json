@@ -1,18 +1,15 @@
 {
+  "version": "0.0.3",
   "dependencies": {
-    "@calcit/procs": "^0.4.18"
+    "@calcit/procs": "^0.5.16",
+    "nanoid": "^3.2.0"
   },
   "scripts": {
-    "watch-server": "cr --emit-js",
-    "build-server": "target=node entry=./server.js yarn webpack && node js-out/bundle.js",
-    "watch-page": "cr --emit-js --emit-path out-page/ --init-fn cumulo-util.client/main! --reload-fn cumulo-util.client/reload!"
+    "bundle-server": "esbuild ./server.js --bundle --outfile=js-out/bundle.js --platform=node",
+    "watch-server": "cr --emit-js --entry server",
+    "watch-page": "cr --emit-js --emit-path out-page/"
   },
   "devDependencies": {
-    "shortid": "^2.2.16",
-    "vite": "^2.5.0",
-    "webpack": "^5.51.1",
-    "webpack-cli": "^4.8.0",
-    "ws": "^8.2.0"
-  },
-  "version": "0.0.2"
+    "vite": "^2.7.13"
+  }
 }
