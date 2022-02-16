@@ -2,7 +2,7 @@
 {} (:package |cumulo-util)
   :configs $ {} (:init-fn |cumulo-util.client/main!) (:reload-fn |cumulo-util.client/reload!)
     :modules $ []
-    :version |0.0.3
+    :version |0.0.4
   :entries $ {}
     :server $ {} (:reload-fn |cumulo-util.app/reload!)
       :modules $ []
@@ -11,7 +11,7 @@
     |cumulo-util.client $ {}
       :ns $ quote
         ns cumulo-util.client $ :require
-          [] cumulo-util.core :refer $ [] on-page-touch
+          cumulo-util.core :refer $ on-page-touch
       :defs $ {}
         |main! $ quote
           defn main! () $ on-page-touch
@@ -21,8 +21,8 @@
     |cumulo-util.app $ {}
       :ns $ quote
         ns cumulo-util.app $ :require
-          [] cumulo-util.core :refer $ id! delay!
-          [] cumulo-util.file :refer $ [] chan-pick-port write-mildly!
+          cumulo-util.core :refer $ id! delay!
+          cumulo-util.file :refer $ chan-pick-port write-mildly!
       :defs $ {}
         |main! $ quote
           defn main! () (println "\"Started")
@@ -62,7 +62,7 @@
             js/setInterval task $ * 1000 duration
     |cumulo-util.file $ {}
       :ns $ quote
-        ns cumulo-util.file $ :require ([] "\"path" :as path) ([] "\"fs" :as fs) ([] "\"child_process" :as cp) ([] "\"net" :as net)
+        ns cumulo-util.file $ :require ("\"path" :as path) ("\"fs" :as fs) ("\"child_process" :as cp) ("\"net" :as net)
       :defs $ {}
         |sh! $ quote
           defn sh! (command) (println command)
