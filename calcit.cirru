@@ -70,12 +70,10 @@
                 |T $ {} (:text |:require) (:type :leaf) (:at 1545238920985) (:by |B1y7Rc-Zz)
                 |j $ {}
                   :data $ {}
-                    |T $ {} (:text |[]) (:type :leaf) (:at 1545238921549) (:by |B1y7Rc-Zz)
                     |j $ {} (:text |cumulo-util.core) (:type :leaf) (:at 1545238926811) (:by |B1y7Rc-Zz)
                     |r $ {} (:text |:refer) (:type :leaf) (:at 1545238927503) (:by |B1y7Rc-Zz)
                     |v $ {}
                       :data $ {}
-                        |T $ {} (:text |[]) (:type :leaf) (:at 1545238927840) (:by |B1y7Rc-Zz)
                         |j $ {} (:text |on-page-touch) (:type :leaf) (:at 1545239551233) (:by |B1y7Rc-Zz)
                       :type :expr
                       :at 1545238927682
@@ -189,7 +187,6 @@
                 |T $ {} (:text |:require) (:type :leaf) (:at 1590254948027) (:by |B1y7Rc-Zz)
                 |j $ {}
                   :data $ {}
-                    |T $ {} (:text |[]) (:type :leaf) (:at 1554570733161) (:by |B1y7Rc-Zz)
                     |j $ {} (:text |cumulo-util.core) (:type :leaf) (:at 1554570733161) (:by |B1y7Rc-Zz)
                     |r $ {} (:text |:refer) (:type :leaf) (:at 1554570733161) (:by |B1y7Rc-Zz)
                     |v $ {}
@@ -204,12 +201,10 @@
                   :by |B1y7Rc-Zz
                 |x $ {}
                   :data $ {}
-                    |T $ {} (:text |[]) (:type :leaf) (:at 1555827829007) (:by |B1y7Rc-Zz)
                     |j $ {} (:text |cumulo-util.file) (:type :leaf) (:at 1555827829007) (:by |B1y7Rc-Zz)
                     |r $ {} (:text |:refer) (:type :leaf) (:at 1555827829007) (:by |B1y7Rc-Zz)
                     |v $ {}
                       :data $ {}
-                        |T $ {} (:text |[]) (:type :leaf) (:at 1555827829007) (:by |B1y7Rc-Zz)
                         |j $ {} (:text |chan-pick-port) (:type :leaf) (:at 1555827829007) (:by |B1y7Rc-Zz)
                         |r $ {} (:text |write-mildly!) (:type :leaf) (:at 1557825853297) (:by |B1y7Rc-Zz)
                       :type :expr
@@ -1015,7 +1010,6 @@
                 |T $ {} (:text |:require) (:type :leaf) (:at 1544376175494) (:by |B1y7Rc-Zz)
                 |j $ {}
                   :data $ {}
-                    |T $ {} (:text |[]) (:type :leaf) (:at 1544376175494) (:by |B1y7Rc-Zz)
                     |j $ {} (:text "|\"path") (:type :leaf) (:at 1544376175494) (:by |B1y7Rc-Zz)
                     |r $ {} (:text |:as) (:type :leaf) (:at 1544376175494) (:by |B1y7Rc-Zz)
                     |v $ {} (:text |path) (:type :leaf) (:at 1544376175494) (:by |B1y7Rc-Zz)
@@ -1024,7 +1018,6 @@
                   :by |B1y7Rc-Zz
                 |r $ {}
                   :data $ {}
-                    |T $ {} (:text |[]) (:type :leaf) (:at 1544376175494) (:by |B1y7Rc-Zz)
                     |j $ {} (:text "|\"fs") (:type :leaf) (:at 1544376175494) (:by |B1y7Rc-Zz)
                     |r $ {} (:text |:as) (:type :leaf) (:at 1544376175494) (:by |B1y7Rc-Zz)
                     |v $ {} (:text |fs) (:type :leaf) (:at 1544376175494) (:by |B1y7Rc-Zz)
@@ -1033,7 +1026,6 @@
                   :by |B1y7Rc-Zz
                 |t $ {}
                   :data $ {}
-                    |T $ {} (:text |[]) (:type :leaf) (:at 1557827184762) (:by |B1y7Rc-Zz)
                     |j $ {} (:text "|\"child_process") (:type :leaf) (:at 1557827195242) (:by |B1y7Rc-Zz)
                     |r $ {} (:text |:as) (:type :leaf) (:at 1557827186528) (:by |B1y7Rc-Zz)
                     |v $ {} (:text |cp) (:type :leaf) (:at 1557827193288) (:by |B1y7Rc-Zz)
@@ -1042,7 +1034,6 @@
                   :by |B1y7Rc-Zz
                 |w $ {}
                   :data $ {}
-                    |T $ {} (:text |[]) (:type :leaf) (:at 1555827188394) (:by |B1y7Rc-Zz)
                     |j $ {} (:text "|\"net") (:type :leaf) (:at 1555827189501) (:by |B1y7Rc-Zz)
                     |r $ {} (:text |:as) (:type :leaf) (:at 1555827190270) (:by |B1y7Rc-Zz)
                     |v $ {} (:text |net) (:type :leaf) (:at 1555827191053) (:by |B1y7Rc-Zz)
@@ -1055,10 +1046,9 @@
           :type :expr
           :at 1544376144865
           :by |B1y7Rc-Zz
-  :configs $ {} (:reload-fn |cumulo-util.client/reload!) (:port 6001) (:storage-key |calcit.cirru) (:version |0.0.3)
+  :configs $ {} (:reload-fn |cumulo-util.client/reload!) (:port 6001) (:storage-key |calcit.cirru) (:version |0.0.4)
     :modules $ []
     :init-fn |cumulo-util.client/main!
-
   :entries $ {}
     :server $ {} (:reload-fn |cumulo-util.app/reload!)
       :modules $ []
