@@ -41,5 +41,5 @@ jobs:
 
     - name: "compiles to js"
       run: >
-        cr --emit-js --once
-        && cr --emit-js --once --emit-path out-page/ --init-fn cumulo-util.client/main! --reload-fn cumulo-util.client/reload!
+        cr --emit-js --once --entry server
+        && cr --emit-js --once

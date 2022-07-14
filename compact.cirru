@@ -1,45 +1,42 @@
 
 {} (:package |cumulo-util)
-  :configs $ {} (:init-fn |cumulo-util.client/main!) (:reload-fn |cumulo-util.client/reload!)
+  :configs $ {} (:init-fn |cumulo-util.client/main!) (:reload-fn |cumulo-util.client/reload!) (:version |0.0.4)
     :modules $ []
-    :version |0.0.4
   :entries $ {}
-    :server $ {} (:reload-fn |cumulo-util.app/reload!)
+    :server $ {} (:init-fn |cumulo-util.app/main!) (:reload-fn |cumulo-util.app/reload!)
       :modules $ []
-      :init-fn |cumulo-util.app/main!
   :files $ {}
-    |cumulo-util.client $ {}
-      :ns $ quote
-        ns cumulo-util.client $ :require
-          cumulo-util.core :refer $ on-page-touch
-      :defs $ {}
-        |main! $ quote
-          defn main! () $ on-page-touch
-            fn () $ println "\"called"
-        |reload! $ quote
-          defn reload! $
     |cumulo-util.app $ {}
-      :ns $ quote
-        ns cumulo-util.app $ :require
-          cumulo-util.core :refer $ id! delay!
-          cumulo-util.file :refer $ chan-pick-port write-mildly!
       :defs $ {}
         |main! $ quote
           defn main! () (println "\"Started")
             println "\"gen id" $ id!
             task!
             write-mildly! "\"a/a/a" "\"a"
-        |task! $ quote
-          defn task! () $ echo "\"Task..."
         |reload! $ quote
           defn reload! () (println "\"Reload") (task!)
-    |cumulo-util.core $ {}
+        |task! $ quote
+          defn task! () $ echo "\"Task..."
       :ns $ quote
-        ns cumulo-util.core $ :require
-          "\"nanoid" :refer $ nanoid
+        ns cumulo-util.app $ :require
+          cumulo-util.core :refer $ id! delay!
+          cumulo-util.file :refer $ chan-pick-port write-mildly!
+    |cumulo-util.client $ {}
       :defs $ {}
-        |unix-time! $ quote
-          defn unix-time! () $ .valueOf (new js/Date)
+        |main! $ quote
+          defn main! () $ on-page-touch
+            fn () $ println "\"called"
+        |reload! $ quote
+          defn reload! $
+      :ns $ quote
+        ns cumulo-util.client $ :require
+          cumulo-util.core :refer $ on-page-touch
+    |cumulo-util.core $ {}
+      :defs $ {}
+        |*cooling $ quote (defatom *cooling false)
+        |delay! $ quote
+          defn delay! (duration task)
+            js/setTimeout task $ * 1000 duration
         |id! $ quote
           defn id! () $ nanoid
         |on-page-touch $ quote
@@ -48,25 +45,21 @@
                 call-listener $ fn ()
                   when (not @*cooling) (listener) (reset! *cooling true)
                     delay! 0.8 $ fn () (reset! *cooling false)
-              .addEventListener js/window "\"focus" $ fn (event) (call-listener)
-              .addEventListener js/window "\"visibilitychange" $ fn (event)
+              .!addEventListener js/window "\"focus" $ fn (event) (call-listener)
+              .!addEventListener js/window "\"visibilitychange" $ fn (event)
                 when
                   = "\"visible" $ .-visibilityState js/document
                   call-listener
-        |*cooling $ quote (defatom *cooling false)
-        |delay! $ quote
-          defn delay! (duration task)
-            js/setTimeout task $ * 1000 duration
         |repeat! $ quote
           defn repeat! (duration task)
             js/setInterval task $ * 1000 duration
-    |cumulo-util.file $ {}
+        |unix-time! $ quote
+          defn unix-time! () $ .valueOf (new js/Date)
       :ns $ quote
-        ns cumulo-util.file $ :require ("\"path" :as path) ("\"fs" :as fs) ("\"child_process" :as cp) ("\"net" :as net)
+        ns cumulo-util.core $ :require
+          "\"nanoid" :refer $ nanoid
+    |cumulo-util.file $ {}
       :defs $ {}
-        |sh! $ quote
-          defn sh! (command) (println command)
-            println $ .toString (cp/execSync command)
         |get-backup-path! $ quote
           defn get-backup-path! () $ let
               now $ new js/Date
@@ -81,6 +74,9 @@
               if found?
                 parse-cirru-edn $ fs/readFileSync filepath |utf8
                 , nil
+        |sh! $ quote
+          defn sh! (command) (println command)
+            println $ .toString (cp/execSync command)
         |write-mildly! $ quote
           defn write-mildly! (file-path content)
             let
@@ -99,3 +95,5 @@
                     fs/mkdirSync dir $ to-js-data
                       {} $ :recursive true
                   do-write!
+      :ns $ quote
+        ns cumulo-util.file $ :require ("\"path" :as path) ("\"fs" :as fs) ("\"child_process" :as cp) ("\"net" :as net)
