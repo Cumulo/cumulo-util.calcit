@@ -1,8 +1,8 @@
 {
   "version": "0.0.4",
   "dependencies": {
-    "@calcit/procs": "^0.5.17",
-    "nanoid": "^3.3.0"
+    "@calcit/procs": "^0.5.47",
+    "nanoid": "^4.0.0"
   },
   "scripts": {
     "bundle-server": "esbuild ./server.js --bundle --outfile=js-out/bundle.js --platform=node",
@@ -10,6 +10,6 @@
     "watch-page": "cr --emit-js --emit-path out-page/"
   },
   "devDependencies": {
-    "vite": "^2.8.3"
+    "vite": "^3.0.0"
   }
 }
