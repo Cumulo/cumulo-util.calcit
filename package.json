@@ -1,15 +1,14 @@
 {
   "version": "0.0.4",
   "dependencies": {
-    "@calcit/procs": "^0.5.47",
+    "@calcit/procs": "^0.6.1",
     "nanoid": "^4.0.0"
   },
   "scripts": {
-    "bundle-server": "esbuild ./server.js --bundle --outfile=js-out/bundle.js --platform=node",
     "watch-server": "cr --emit-js --entry server",
     "watch-page": "cr --emit-js --emit-path out-page/"
   },
   "devDependencies": {
-    "vite": "^3.0.0"
+    "vite": "^3.0.2"
   }
 }
