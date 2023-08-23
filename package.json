@@ -1,14 +1,14 @@
 {
-  "version": "0.0.4",
+  "version": "0.0.5",
   "dependencies": {
-    "@calcit/procs": "^0.6.1",
-    "nanoid": "^4.0.0"
+    "@calcit/procs": "^0.8.0-a1",
+    "nanoid": "^4.0.2"
   },
   "scripts": {
     "watch-server": "cr --emit-js --entry server",
     "watch-page": "cr --emit-js --emit-path out-page/"
   },
   "devDependencies": {
-    "vite": "^3.0.2"
+    "vite": "^4.4.9"
   }
 }
