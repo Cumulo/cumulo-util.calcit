@@ -1,65 +1,55 @@
 
 {} (:package |cumulo-util)
-  :configs $ {} (:init-fn |cumulo-util.client/main!) (:reload-fn |cumulo-util.client/reload!) (:version |0.0.5)
+  :configs $ {} (:init-fn |cumulo-util.client/main!) (:reload-fn |cumulo-util.client/reload!) (:version |0.0.6)
     :modules $ []
   :entries $ {}
     :server $ {} (:init-fn |cumulo-util.app/main!) (:reload-fn |cumulo-util.app/reload!)
       :modules $ []
   :files $ {}
-    |cumulo-util.app $ {}
+    |cumulo-util.app $ %{} :FileEntry
       :defs $ {}
-        |main! $ %{} :CodeEntry
+        |main! $ %{} :CodeEntry (:doc |)
           :code $ quote
             defn main! () (println "\"Started")
               println "\"gen id" $ id!
               task!
               write-mildly! "\"a/a/a" "\"a"
-          :doc |
-        |reload! $ %{} :CodeEntry
+        |reload! $ %{} :CodeEntry (:doc |)
           :code $ quote
             defn reload! () (println "\"Reload") (task!)
-          :doc |
-        |task! $ %{} :CodeEntry
+        |task! $ %{} :CodeEntry (:doc |)
           :code $ quote
             defn task! () $ echo "\"Task..."
-          :doc |
-      :ns $ %{} :CodeEntry
+      :ns $ %{} :CodeEntry (:doc |)
         :code $ quote
           ns cumulo-util.app $ :require
             cumulo-util.core :refer $ id! delay!
             cumulo-util.file :refer $ chan-pick-port write-mildly!
-        :doc |
-    |cumulo-util.client $ {}
+    |cumulo-util.client $ %{} :FileEntry
       :defs $ {}
-        |main! $ %{} :CodeEntry
+        |main! $ %{} :CodeEntry (:doc |)
           :code $ quote
             defn main! () $ on-page-touch
               fn () $ println "\"called"
-          :doc |
-        |reload! $ %{} :CodeEntry
+        |reload! $ %{} :CodeEntry (:doc |)
           :code $ quote
             defn reload! $
-          :doc |
-      :ns $ %{} :CodeEntry
+      :ns $ %{} :CodeEntry (:doc |)
         :code $ quote
           ns cumulo-util.client $ :require
             cumulo-util.core :refer $ on-page-touch
-        :doc |
-    |cumulo-util.core $ {}
+    |cumulo-util.core $ %{} :FileEntry
       :defs $ {}
-        |*cooling $ %{} :CodeEntry
+        |*cooling $ %{} :CodeEntry (:doc |)
           :code $ quote (defatom *cooling false)
-          :doc |
-        |delay! $ %{} :CodeEntry
+        |delay! $ %{} :CodeEntry (:doc |)
           :code $ quote
             defn delay! (duration task)
               js/setTimeout task $ * 1000 duration
-          :doc |
-        |id! $ %{} :CodeEntry
+        |id! $ %{} :CodeEntry (:doc |)
           :code $ quote
             defn id! () $ nanoid
-          :doc |
-        |on-page-touch $ %{} :CodeEntry
+        |on-page-touch $ %{} :CodeEntry (:doc |)
           :code $ quote
             defn on-page-touch (listener) (reset! *cooling false)
               let
@@ -71,32 +61,27 @@
                   when
                     = "\"visible" $ .-visibilityState js/document
                     call-listener
-          :doc |
-        |repeat! $ %{} :CodeEntry
+        |repeat! $ %{} :CodeEntry (:doc |)
           :code $ quote
             defn repeat! (duration task)
               js/setInterval task $ * 1000 duration
-          :doc |
-        |unix-time! $ %{} :CodeEntry
+        |unix-time! $ %{} :CodeEntry (:doc |)
           :code $ quote
             defn unix-time! () $ .valueOf (new js/Date)
-          :doc |
-      :ns $ %{} :CodeEntry
+      :ns $ %{} :CodeEntry (:doc |)
         :code $ quote
           ns cumulo-util.core $ :require
             "\"nanoid" :refer $ nanoid
-        :doc |
-    |cumulo-util.file $ {}
+    |cumulo-util.file $ %{} :FileEntry
       :defs $ {}
-        |get-backup-path! $ %{} :CodeEntry
+        |get-backup-path! $ %{} :CodeEntry (:doc |)
           :code $ quote
             defn get-backup-path! () $ let
                 now $ new js/Date
               path/join js/__dirname "\"backups"
                 str $ inc (.getMonth now)
                 str (.getDate now) "\"-snapshot.edn"
-          :doc |
-        |merge-local-edn! $ %{} :CodeEntry
+        |merge-local-edn! $ %{} :CodeEntry (:doc |)
           :code $ quote
             defn merge-local-edn! (x0 filepath handler)
               merge x0 $ let
@@ -105,13 +90,11 @@
                 if found?
                   parse-cirru-edn $ fs/readFileSync filepath |utf8
                   , nil
-          :doc |
-        |sh! $ %{} :CodeEntry
+        |sh! $ %{} :CodeEntry (:doc |)
           :code $ quote
             defn sh! (command) (println command)
               println $ .toString (cp/execSync command)
-          :doc |
-        |write-mildly! $ %{} :CodeEntry
+        |write-mildly! $ %{} :CodeEntry (:doc |)
           :code $ quote
             defn write-mildly! (file-path content)
               let
@@ -130,8 +113,6 @@
                       fs/mkdirSync dir $ to-js-data
                         {} $ :recursive true
                     do-write!
-          :doc |
-      :ns $ %{} :CodeEntry
+      :ns $ %{} :CodeEntry (:doc |)
         :code $ quote
           ns cumulo-util.file $ :require ("\"path" :as path) ("\"fs" :as fs) ("\"child_process" :as cp) ("\"net" :as net)
-        :doc |

@@ -1,14 +1,14 @@
 
 {} (:package |cumulo-util)
-  :configs $ {} (:init-fn |cumulo-util.client/main!) (:port 6001) (:reload-fn |cumulo-util.client/reload!) (:storage-key |calcit.cirru) (:version |0.0.5)
+  :configs $ {} (:init-fn |cumulo-util.client/main!) (:port 6001) (:reload-fn |cumulo-util.client/reload!) (:storage-key |calcit.cirru) (:version |0.0.6)
     :modules $ []
   :entries $ {}
     :server $ {} (:init-fn |cumulo-util.app/main!) (:reload-fn |cumulo-util.app/reload!)
       :modules $ []
   :files $ {}
-    |cumulo-util.app $ {}
+    |cumulo-util.app $ %{} :FileEntry
       :defs $ {}
-        |main! $ %{} :CodeEntry
+        |main! $ %{} :CodeEntry (:doc |)
           :code $ %{} :Expr (:at 1544376077887) (:by |B1y7Rc-Zz)
             :data $ {}
               |T $ %{} :Leaf (:at 1544376077887) (:by |B1y7Rc-Zz) (:text |defn)
@@ -34,8 +34,7 @@
                   |T $ %{} :Leaf (:at 1557825858715) (:by |B1y7Rc-Zz) (:text |write-mildly!)
                   |j $ %{} :Leaf (:at 1557854541314) (:by |B1y7Rc-Zz) (:text "|\"a/a/a")
                   |r $ %{} :Leaf (:at 1557854517454) (:by |B1y7Rc-Zz) (:text "|\"a")
-          :doc |
-        |reload! $ %{} :CodeEntry
+        |reload! $ %{} :CodeEntry (:doc |)
           :code $ %{} :Expr (:at 1544376090697) (:by |B1y7Rc-Zz)
             :data $ {}
               |T $ %{} :Leaf (:at 1544376090697) (:by |B1y7Rc-Zz) (:text |defn)
@@ -49,8 +48,7 @@
               |x $ %{} :Expr (:at 1554570674496) (:by |B1y7Rc-Zz)
                 :data $ {}
                   |T $ %{} :Leaf (:at 1554570676010) (:by |B1y7Rc-Zz) (:text |task!)
-          :doc |
-        |task! $ %{} :CodeEntry
+        |task! $ %{} :CodeEntry (:doc |)
           :code $ %{} :Expr (:at 1554570669607) (:by |B1y7Rc-Zz)
             :data $ {}
               |T $ %{} :Leaf (:at 1554570669607) (:by |B1y7Rc-Zz) (:text |defn)
@@ -61,8 +59,7 @@
                 :data $ {}
                   |T $ %{} :Leaf (:at 1614237177487) (:by |B1y7Rc-Zz) (:text |echo)
                   |j $ %{} :Leaf (:at 1614237180367) (:by |B1y7Rc-Zz) (:text "|\"Task...")
-          :doc |
-      :ns $ %{} :CodeEntry
+      :ns $ %{} :CodeEntry (:doc |)
         :code $ %{} :Expr (:at 1544376075473) (:by |B1y7Rc-Zz)
           :data $ {}
             |T $ %{} :Leaf (:at 1544376075473) (:by |B1y7Rc-Zz) (:text |ns)
@@ -86,10 +83,9 @@
                       :data $ {}
                         |j $ %{} :Leaf (:at 1555827829007) (:by |B1y7Rc-Zz) (:text |chan-pick-port)
                         |r $ %{} :Leaf (:at 1557825853297) (:by |B1y7Rc-Zz) (:text |write-mildly!)
-        :doc |
-    |cumulo-util.client $ {}
+    |cumulo-util.client $ %{} :FileEntry
       :defs $ {}
-        |main! $ %{} :CodeEntry
+        |main! $ %{} :CodeEntry (:doc |)
           :code $ %{} :Expr (:at 1545238886003) (:by |B1y7Rc-Zz)
             :data $ {}
               |T $ %{} :Leaf (:at 1545238886003) (:by |B1y7Rc-Zz) (:text |defn)
@@ -108,16 +104,14 @@
                         :data $ {}
                           |T $ %{} :Leaf (:at 1545238916831) (:by |B1y7Rc-Zz) (:text |println)
                           |j $ %{} :Leaf (:at 1545238918535) (:by |B1y7Rc-Zz) (:text "|\"called")
-          :doc |
-        |reload! $ %{} :CodeEntry
+        |reload! $ %{} :CodeEntry (:doc |)
           :code $ %{} :Expr (:at 1545238887716) (:by |B1y7Rc-Zz)
             :data $ {}
               |T $ %{} :Leaf (:at 1545238887716) (:by |B1y7Rc-Zz) (:text |defn)
               |j $ %{} :Leaf (:at 1545238887716) (:by |B1y7Rc-Zz) (:text |reload!)
               |r $ %{} :Expr (:at 1545238887716) (:by |B1y7Rc-Zz)
                 :data $ {}
-          :doc |
-      :ns $ %{} :CodeEntry
+      :ns $ %{} :CodeEntry (:doc |)
         :code $ %{} :Expr (:at 1545238882929) (:by |B1y7Rc-Zz)
           :data $ {}
             |T $ %{} :Leaf (:at 1545238882929) (:by |B1y7Rc-Zz) (:text |ns)
@@ -132,17 +126,15 @@
                     |v $ %{} :Expr (:at 1545238927682) (:by |B1y7Rc-Zz)
                       :data $ {}
                         |j $ %{} :Leaf (:at 1545239551233) (:by |B1y7Rc-Zz) (:text |on-page-touch)
-        :doc |
-    |cumulo-util.core $ {}
+    |cumulo-util.core $ %{} :FileEntry
       :defs $ {}
-        |*cooling $ %{} :CodeEntry
+        |*cooling $ %{} :CodeEntry (:doc |)
           :code $ %{} :Expr (:at 1614236562549) (:by |B1y7Rc-Zz)
             :data $ {}
               |T $ %{} :Leaf (:at 1614236567528) (:by |B1y7Rc-Zz) (:text |defatom)
               |j $ %{} :Leaf (:at 1614236562549) (:by |B1y7Rc-Zz) (:text |*cooling)
               |r $ %{} :Leaf (:at 1614236565640) (:by |B1y7Rc-Zz) (:text |false)
-          :doc |
-        |delay! $ %{} :CodeEntry
+        |delay! $ %{} :CodeEntry (:doc |)
           :code $ %{} :Expr (:at 1544809351812) (:by |B1y7Rc-Zz)
             :data $ {}
               |T $ %{} :Leaf (:at 1544809351812) (:by |B1y7Rc-Zz) (:text |defn)
@@ -160,8 +152,7 @@
                       |D $ %{} :Leaf (:at 1544810371268) (:by |B1y7Rc-Zz) (:text |*)
                       |L $ %{} :Leaf (:at 1544810372387) (:by |B1y7Rc-Zz) (:text |1000)
                       |T $ %{} :Leaf (:at 1544809385199) (:by |B1y7Rc-Zz) (:text |duration)
-          :doc |
-        |id! $ %{} :CodeEntry
+        |id! $ %{} :CodeEntry (:doc |)
           :code $ %{} :Expr (:at 1544810007428) (:by |B1y7Rc-Zz)
             :data $ {}
               |T $ %{} :Leaf (:at 1544810007428) (:by |B1y7Rc-Zz) (:text |defn)
@@ -171,8 +162,7 @@
               |v $ %{} :Expr (:at 1544810024783) (:by |B1y7Rc-Zz)
                 :data $ {}
                   |j $ %{} :Leaf (:at 1643533282182) (:by |B1y7Rc-Zz) (:text |nanoid)
-          :doc |
-        |on-page-touch $ %{} :CodeEntry
+        |on-page-touch $ %{} :CodeEntry (:doc |)
           :code $ %{} :Expr (:at 1545238141975) (:by |B1y7Rc-Zz)
             :data $ {}
               |T $ %{} :Leaf (:at 1545238141975) (:by |B1y7Rc-Zz) (:text |defn)
@@ -266,8 +256,7 @@
                               |r $ %{} :Expr (:at 1545238310686) (:by |B1y7Rc-Zz)
                                 :data $ {}
                                   |T $ %{} :Leaf (:at 1545238317804) (:by |B1y7Rc-Zz) (:text |call-listener)
-          :doc |
-        |repeat! $ %{} :CodeEntry
+        |repeat! $ %{} :CodeEntry (:doc |)
           :code $ %{} :Expr (:at 1544809391704) (:by |B1y7Rc-Zz)
             :data $ {}
               |T $ %{} :Leaf (:at 1544809391704) (:by |B1y7Rc-Zz) (:text |defn)
@@ -285,8 +274,7 @@
                       |D $ %{} :Leaf (:at 1544810356885) (:by |B1y7Rc-Zz) (:text |*)
                       |L $ %{} :Leaf (:at 1544810357950) (:by |B1y7Rc-Zz) (:text |1000)
                       |T $ %{} :Leaf (:at 1544809523099) (:by |B1y7Rc-Zz) (:text |duration)
-          :doc |
-        |unix-time! $ %{} :CodeEntry
+        |unix-time! $ %{} :CodeEntry (:doc |)
           :code $ %{} :Expr (:at 1544809584916) (:by |B1y7Rc-Zz)
             :data $ {}
               |T $ %{} :Leaf (:at 1544809584916) (:by |B1y7Rc-Zz) (:text |defn)
@@ -300,8 +288,7 @@
                     :data $ {}
                       |D $ %{} :Leaf (:at 1614234983316) (:by |B1y7Rc-Zz) (:text |new)
                       |T $ %{} :Leaf (:at 1614234982312) (:by |B1y7Rc-Zz) (:text |js/Date)
-          :doc |
-      :ns $ %{} :CodeEntry
+      :ns $ %{} :CodeEntry (:doc |)
         :code $ %{} :Expr (:at 1544325947193) (:by |B1y7Rc-Zz)
           :data $ {}
             |T $ %{} :Leaf (:at 1544325947193) (:by |B1y7Rc-Zz) (:text |ns)
@@ -316,10 +303,9 @@
                     |v $ %{} :Expr (:at 1643533277102) (:by |B1y7Rc-Zz)
                       :data $ {}
                         |T $ %{} :Leaf (:at 1643533277549) (:by |B1y7Rc-Zz) (:text |nanoid)
-        :doc |
-    |cumulo-util.file $ {}
+    |cumulo-util.file $ %{} :FileEntry
       :defs $ {}
-        |get-backup-path! $ %{} :CodeEntry
+        |get-backup-path! $ %{} :CodeEntry (:doc |)
           :code $ %{} :Expr (:at 1544726235898) (:by |B1y7Rc-Zz)
             :data $ {}
               |T $ %{} :Leaf (:at 1544726235898) (:by |B1y7Rc-Zz) (:text |defn)
@@ -361,8 +347,7 @@
                               |T $ %{} :Leaf (:at 1544726235898) (:by |B1y7Rc-Zz) (:text |.getDate)
                               |j $ %{} :Leaf (:at 1544726235898) (:by |B1y7Rc-Zz) (:text |now)
                           |r $ %{} :Leaf (:at 1544726235898) (:by |B1y7Rc-Zz) (:text "|\"-snapshot.edn")
-          :doc |
-        |merge-local-edn! $ %{} :CodeEntry
+        |merge-local-edn! $ %{} :CodeEntry (:doc |)
           :code $ %{} :Expr (:at 1544726255682) (:by |B1y7Rc-Zz)
             :data $ {}
               |T $ %{} :Leaf (:at 1544726255682) (:by |B1y7Rc-Zz) (:text |defn)
@@ -412,8 +397,7 @@
                                   |j $ %{} :Leaf (:at 1544726255682) (:by |B1y7Rc-Zz) (:text |filepath)
                                   |r $ %{} :Leaf (:at 1544726255682) (:by |B1y7Rc-Zz) (:text ||utf8)
                           |v $ %{} :Leaf (:at 1544726255682) (:by |B1y7Rc-Zz) (:text |nil)
-          :doc |
-        |sh! $ %{} :CodeEntry
+        |sh! $ %{} :CodeEntry (:doc |)
           :code $ %{} :Expr (:at 1545669620238) (:by |root)
             :data $ {}
               |T $ %{} :Leaf (:at 1545669620238) (:by |root) (:text |defn)
@@ -435,8 +419,7 @@
                         :data $ {}
                           |T $ %{} :Leaf (:at 1545669620238) (:by |root) (:text |cp/execSync)
                           |j $ %{} :Leaf (:at 1545669620238) (:by |root) (:text |command)
-          :doc |
-        |write-mildly! $ %{} :CodeEntry
+        |write-mildly! $ %{} :CodeEntry (:doc |)
           :code $ %{} :Expr (:at 1543163834194) (:by |B1y7Rc-Zz)
             :data $ {}
               |T $ %{} :Leaf (:at 1543163834194) (:by |B1y7Rc-Zz) (:text |defn)
@@ -578,8 +561,7 @@
                           |r $ %{} :Expr (:at 1557827118434) (:by |B1y7Rc-Zz)
                             :data $ {}
                               |T $ %{} :Leaf (:at 1543165491406) (:by |B1y7Rc-Zz) (:text |do-write!)
-          :doc |
-      :ns $ %{} :CodeEntry
+      :ns $ %{} :CodeEntry (:doc |)
         :code $ %{} :Expr (:at 1544376144865) (:by |B1y7Rc-Zz)
           :data $ {}
             |T $ %{} :Leaf (:at 1544376144865) (:by |B1y7Rc-Zz) (:text |ns)
@@ -607,12 +589,11 @@
                     |j $ %{} :Leaf (:at 1555827189501) (:by |B1y7Rc-Zz) (:text "|\"net")
                     |r $ %{} :Leaf (:at 1555827190270) (:by |B1y7Rc-Zz) (:text |:as)
                     |v $ %{} :Leaf (:at 1555827191053) (:by |B1y7Rc-Zz) (:text |net)
-        :doc |
   :ir $ {} (:package |cumulo-util)
     :files $ {}
       |cumulo-util.app $ {}
         :defs $ {}
-          |main! $ %{} :CodeEntry
+          |main! $ %{} :CodeEntry (:doc |)
             :code $ %{} :Expr (:at 1544376077887) (:by |B1y7Rc-Zz)
               :data $ {}
                 |T $ %{} :Leaf (:at 1544376077887) (:by |B1y7Rc-Zz) (:text |defn)
@@ -638,8 +619,7 @@
                     |T $ %{} :Leaf (:at 1557825858715) (:by |B1y7Rc-Zz) (:text |write-mildly!)
                     |j $ %{} :Leaf (:at 1557854541314) (:by |B1y7Rc-Zz) (:text "|\"a/a/a")
                     |r $ %{} :Leaf (:at 1557854517454) (:by |B1y7Rc-Zz) (:text "|\"a")
-            :doc |
-          |reload! $ %{} :CodeEntry
+          |reload! $ %{} :CodeEntry (:doc |)
             :code $ %{} :Expr (:at 1544376090697) (:by |B1y7Rc-Zz)
               :data $ {}
                 |T $ %{} :Leaf (:at 1544376090697) (:by |B1y7Rc-Zz) (:text |defn)
@@ -653,8 +633,7 @@
                 |x $ %{} :Expr (:at 1554570674496) (:by |B1y7Rc-Zz)
                   :data $ {}
                     |T $ %{} :Leaf (:at 1554570676010) (:by |B1y7Rc-Zz) (:text |task!)
-            :doc |
-          |task! $ %{} :CodeEntry
+          |task! $ %{} :CodeEntry (:doc |)
             :code $ %{} :Expr (:at 1554570669607) (:by |B1y7Rc-Zz)
               :data $ {}
                 |T $ %{} :Leaf (:at 1554570669607) (:by |B1y7Rc-Zz) (:text |defn)
@@ -665,8 +644,7 @@
                   :data $ {}
                     |T $ %{} :Leaf (:at 1614237177487) (:by |B1y7Rc-Zz) (:text |echo)
                     |j $ %{} :Leaf (:at 1614237180367) (:by |B1y7Rc-Zz) (:text "|\"Task...")
-            :doc |
-        :ns $ %{} :CodeEntry
+        :ns $ %{} :CodeEntry (:doc |)
           :code $ %{} :Expr (:at 1544376075473) (:by |B1y7Rc-Zz)
             :data $ {}
               |T $ %{} :Leaf (:at 1544376075473) (:by |B1y7Rc-Zz) (:text |ns)
@@ -690,10 +668,9 @@
                         :data $ {}
                           |j $ %{} :Leaf (:at 1555827829007) (:by |B1y7Rc-Zz) (:text |chan-pick-port)
                           |r $ %{} :Leaf (:at 1557825853297) (:by |B1y7Rc-Zz) (:text |write-mildly!)
-          :doc |
       |cumulo-util.client $ {}
         :defs $ {}
-          |main! $ %{} :CodeEntry
+          |main! $ %{} :CodeEntry (:doc |)
             :code $ %{} :Expr (:at 1545238886003) (:by |B1y7Rc-Zz)
               :data $ {}
                 |T $ %{} :Leaf (:at 1545238886003) (:by |B1y7Rc-Zz) (:text |defn)
@@ -712,16 +689,14 @@
                           :data $ {}
                             |T $ %{} :Leaf (:at 1545238916831) (:by |B1y7Rc-Zz) (:text |println)
                             |j $ %{} :Leaf (:at 1545238918535) (:by |B1y7Rc-Zz) (:text "|\"called")
-            :doc |
-          |reload! $ %{} :CodeEntry
+          |reload! $ %{} :CodeEntry (:doc |)
             :code $ %{} :Expr (:at 1545238887716) (:by |B1y7Rc-Zz)
               :data $ {}
                 |T $ %{} :Leaf (:at 1545238887716) (:by |B1y7Rc-Zz) (:text |defn)
                 |j $ %{} :Leaf (:at 1545238887716) (:by |B1y7Rc-Zz) (:text |reload!)
                 |r $ %{} :Expr (:at 1545238887716) (:by |B1y7Rc-Zz)
                   :data $ {}
-            :doc |
-        :ns $ %{} :CodeEntry
+        :ns $ %{} :CodeEntry (:doc |)
           :code $ %{} :Expr (:at 1545238882929) (:by |B1y7Rc-Zz)
             :data $ {}
               |T $ %{} :Leaf (:at 1545238882929) (:by |B1y7Rc-Zz) (:text |ns)
@@ -736,17 +711,15 @@
                       |v $ %{} :Expr (:at 1545238927682) (:by |B1y7Rc-Zz)
                         :data $ {}
                           |j $ %{} :Leaf (:at 1545239551233) (:by |B1y7Rc-Zz) (:text |on-page-touch)
-          :doc |
       |cumulo-util.core $ {}
         :defs $ {}
-          |*cooling $ %{} :CodeEntry
+          |*cooling $ %{} :CodeEntry (:doc |)
             :code $ %{} :Expr (:at 1614236562549) (:by |B1y7Rc-Zz)
               :data $ {}
                 |T $ %{} :Leaf (:at 1614236567528) (:by |B1y7Rc-Zz) (:text |defatom)
                 |j $ %{} :Leaf (:at 1614236562549) (:by |B1y7Rc-Zz) (:text |*cooling)
                 |r $ %{} :Leaf (:at 1614236565640) (:by |B1y7Rc-Zz) (:text |false)
-            :doc |
-          |delay! $ %{} :CodeEntry
+          |delay! $ %{} :CodeEntry (:doc |)
             :code $ %{} :Expr (:at 1544809351812) (:by |B1y7Rc-Zz)
               :data $ {}
                 |T $ %{} :Leaf (:at 1544809351812) (:by |B1y7Rc-Zz) (:text |defn)
@@ -764,8 +737,7 @@
                         |D $ %{} :Leaf (:at 1544810371268) (:by |B1y7Rc-Zz) (:text |*)
                         |L $ %{} :Leaf (:at 1544810372387) (:by |B1y7Rc-Zz) (:text |1000)
                         |T $ %{} :Leaf (:at 1544809385199) (:by |B1y7Rc-Zz) (:text |duration)
-            :doc |
-          |id! $ %{} :CodeEntry
+          |id! $ %{} :CodeEntry (:doc |)
             :code $ %{} :Expr (:at 1544810007428) (:by |B1y7Rc-Zz)
               :data $ {}
                 |T $ %{} :Leaf (:at 1544810007428) (:by |B1y7Rc-Zz) (:text |defn)
@@ -775,8 +747,7 @@
                 |v $ %{} :Expr (:at 1544810024783) (:by |B1y7Rc-Zz)
                   :data $ {}
                     |j $ %{} :Leaf (:at 1643533282182) (:by |B1y7Rc-Zz) (:text |nanoid)
-            :doc |
-          |on-page-touch $ %{} :CodeEntry
+          |on-page-touch $ %{} :CodeEntry (:doc |)
             :code $ %{} :Expr (:at 1545238141975) (:by |B1y7Rc-Zz)
               :data $ {}
                 |T $ %{} :Leaf (:at 1545238141975) (:by |B1y7Rc-Zz) (:text |defn)
@@ -870,8 +841,7 @@
                                 |r $ %{} :Expr (:at 1545238310686) (:by |B1y7Rc-Zz)
                                   :data $ {}
                                     |T $ %{} :Leaf (:at 1545238317804) (:by |B1y7Rc-Zz) (:text |call-listener)
-            :doc |
-          |repeat! $ %{} :CodeEntry
+          |repeat! $ %{} :CodeEntry (:doc |)
             :code $ %{} :Expr (:at 1544809391704) (:by |B1y7Rc-Zz)
               :data $ {}
                 |T $ %{} :Leaf (:at 1544809391704) (:by |B1y7Rc-Zz) (:text |defn)
@@ -889,8 +859,7 @@
                         |D $ %{} :Leaf (:at 1544810356885) (:by |B1y7Rc-Zz) (:text |*)
                         |L $ %{} :Leaf (:at 1544810357950) (:by |B1y7Rc-Zz) (:text |1000)
                         |T $ %{} :Leaf (:at 1544809523099) (:by |B1y7Rc-Zz) (:text |duration)
-            :doc |
-          |unix-time! $ %{} :CodeEntry
+          |unix-time! $ %{} :CodeEntry (:doc |)
             :code $ %{} :Expr (:at 1544809584916) (:by |B1y7Rc-Zz)
               :data $ {}
                 |T $ %{} :Leaf (:at 1544809584916) (:by |B1y7Rc-Zz) (:text |defn)
@@ -904,8 +873,7 @@
                       :data $ {}
                         |D $ %{} :Leaf (:at 1614234983316) (:by |B1y7Rc-Zz) (:text |new)
                         |T $ %{} :Leaf (:at 1614234982312) (:by |B1y7Rc-Zz) (:text |js/Date)
-            :doc |
-        :ns $ %{} :CodeEntry
+        :ns $ %{} :CodeEntry (:doc |)
           :code $ %{} :Expr (:at 1544325947193) (:by |B1y7Rc-Zz)
             :data $ {}
               |T $ %{} :Leaf (:at 1544325947193) (:by |B1y7Rc-Zz) (:text |ns)
@@ -920,10 +888,9 @@
                       |v $ %{} :Expr (:at 1643533277102) (:by |B1y7Rc-Zz)
                         :data $ {}
                           |T $ %{} :Leaf (:at 1643533277549) (:by |B1y7Rc-Zz) (:text |nanoid)
-          :doc |
       |cumulo-util.file $ {}
         :defs $ {}
-          |get-backup-path! $ %{} :CodeEntry
+          |get-backup-path! $ %{} :CodeEntry (:doc |)
             :code $ %{} :Expr (:at 1544726235898) (:by |B1y7Rc-Zz)
               :data $ {}
                 |T $ %{} :Leaf (:at 1544726235898) (:by |B1y7Rc-Zz) (:text |defn)
@@ -965,8 +932,7 @@
                                 |T $ %{} :Leaf (:at 1544726235898) (:by |B1y7Rc-Zz) (:text |.getDate)
                                 |j $ %{} :Leaf (:at 1544726235898) (:by |B1y7Rc-Zz) (:text |now)
                             |r $ %{} :Leaf (:at 1544726235898) (:by |B1y7Rc-Zz) (:text "|\"-snapshot.edn")
-            :doc |
-          |merge-local-edn! $ %{} :CodeEntry
+          |merge-local-edn! $ %{} :CodeEntry (:doc |)
             :code $ %{} :Expr (:at 1544726255682) (:by |B1y7Rc-Zz)
               :data $ {}
                 |T $ %{} :Leaf (:at 1544726255682) (:by |B1y7Rc-Zz) (:text |defn)
@@ -1016,8 +982,7 @@
                                     |j $ %{} :Leaf (:at 1544726255682) (:by |B1y7Rc-Zz) (:text |filepath)
                                     |r $ %{} :Leaf (:at 1544726255682) (:by |B1y7Rc-Zz) (:text ||utf8)
                             |v $ %{} :Leaf (:at 1544726255682) (:by |B1y7Rc-Zz) (:text |nil)
-            :doc |
-          |sh! $ %{} :CodeEntry
+          |sh! $ %{} :CodeEntry (:doc |)
             :code $ %{} :Expr (:at 1545669620238) (:by |root)
               :data $ {}
                 |T $ %{} :Leaf (:at 1545669620238) (:by |root) (:text |defn)
@@ -1039,8 +1004,7 @@
                           :data $ {}
                             |T $ %{} :Leaf (:at 1545669620238) (:by |root) (:text |cp/execSync)
                             |j $ %{} :Leaf (:at 1545669620238) (:by |root) (:text |command)
-            :doc |
-          |write-mildly! $ %{} :CodeEntry
+          |write-mildly! $ %{} :CodeEntry (:doc |)
             :code $ %{} :Expr (:at 1543163834194) (:by |B1y7Rc-Zz)
               :data $ {}
                 |T $ %{} :Leaf (:at 1543163834194) (:by |B1y7Rc-Zz) (:text |defn)
@@ -1182,8 +1146,7 @@
                             |r $ %{} :Expr (:at 1557827118434) (:by |B1y7Rc-Zz)
                               :data $ {}
                                 |T $ %{} :Leaf (:at 1543165491406) (:by |B1y7Rc-Zz) (:text |do-write!)
-            :doc |
-        :ns $ %{} :CodeEntry
+        :ns $ %{} :CodeEntry (:doc |)
           :code $ %{} :Expr (:at 1544376144865) (:by |B1y7Rc-Zz)
             :data $ {}
               |T $ %{} :Leaf (:at 1544376144865) (:by |B1y7Rc-Zz) (:text |ns)
@@ -1211,7 +1174,6 @@
                       |j $ %{} :Leaf (:at 1555827189501) (:by |B1y7Rc-Zz) (:text "|\"net")
                       |r $ %{} :Leaf (:at 1555827190270) (:by |B1y7Rc-Zz) (:text |:as)
                       |v $ %{} :Leaf (:at 1555827191053) (:by |B1y7Rc-Zz) (:text |net)
-          :doc |
     :root $ {} (:def |main!) (:ns |main)
   :users $ {}
     |B1y7Rc-Zz $ {} (:avatar nil) (:id |B1y7Rc-Zz) (:name |chen) (:nickname |chen) (:password |d41d8cd98f00b204e9800998ecf8427e) (:theme :star-trail)
