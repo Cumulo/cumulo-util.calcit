@@ -1,6 +1,6 @@
 
 {} (:package |cumulo-util)
-  :configs $ {} (:init-fn |cumulo-util.client/main!) (:reload-fn |cumulo-util.client/reload!) (:version |0.0.6)
+  :configs $ {} (:init-fn |cumulo-util.client/main!) (:reload-fn |cumulo-util.client/reload!) (:version |0.0.7)
     :modules $ []
   :entries $ {}
     :server $ {} (:init-fn |cumulo-util.app/main!) (:reload-fn |cumulo-util.app/reload!)
@@ -10,10 +10,7 @@
       :defs $ {}
         |main! $ %{} :CodeEntry (:doc |)
           :code $ quote
-            defn main! () (println "\"Started")
-              println "\"gen id" $ id!
-              task!
-              write-mildly! "\"a/a/a" "\"a"
+            defn main! () (println "\"Started") (task!) (write-mildly! "\"a/a/a" "\"a")
         |reload! $ %{} :CodeEntry (:doc |)
           :code $ quote
             defn reload! () (println "\"Reload") (task!)
@@ -23,8 +20,7 @@
       :ns $ %{} :CodeEntry (:doc |)
         :code $ quote
           ns cumulo-util.app $ :require
-            cumulo-util.core :refer $ id! delay!
-            cumulo-util.file :refer $ chan-pick-port write-mildly!
+            cumulo-util.file :refer $ write-mildly!
     |cumulo-util.client $ %{} :FileEntry
       :defs $ {}
         |main! $ %{} :CodeEntry (:doc |)
@@ -42,36 +38,27 @@
       :defs $ {}
         |*cooling $ %{} :CodeEntry (:doc |)
           :code $ quote (defatom *cooling false)
-        |delay! $ %{} :CodeEntry (:doc |)
-          :code $ quote
-            defn delay! (duration task)
-              js/setTimeout task $ * 1000 duration
-        |id! $ %{} :CodeEntry (:doc |)
-          :code $ quote
-            defn id! () $ nanoid
         |on-page-touch $ %{} :CodeEntry (:doc |)
           :code $ quote
             defn on-page-touch (listener) (reset! *cooling false)
               let
                   call-listener $ fn ()
                     when (not @*cooling) (listener) (reset! *cooling true)
-                      delay! 0.8 $ fn () (reset! *cooling false)
-                .!addEventListener js/window "\"focus" $ fn (event) (call-listener)
-                .!addEventListener js/window "\"visibilitychange" $ fn (event)
+                      flipped js/setTimeout 800 $ fn () (reset! *cooling false)
+                js/window.addEventListener "\"focus" $ fn (event) (call-listener)
+                js/window.addEventListener "\"visibilitychange" $ fn (event)
                   when
                     = "\"visible" $ .-visibilityState js/document
                     call-listener
-        |repeat! $ %{} :CodeEntry (:doc |)
+        |visibility-heartbeat $ %{} :CodeEntry (:doc "|chrome 15s, firefox 7s, maybe, so pick a smaller time for checking")
           :code $ quote
-            defn repeat! (duration task)
-              js/setInterval task $ * 1000 duration
-        |unix-time! $ %{} :CodeEntry (:doc |)
-          :code $ quote
-            defn unix-time! () $ .valueOf (new js/Date)
+            defn visibility-heartbeat (cb ? duration)
+              flipped js/setInterval 3000 $ fn ()
+                if
+                  = "\"visible" $ .-visibilityState js/document
+                  cb
       :ns $ %{} :CodeEntry (:doc |)
-        :code $ quote
-          ns cumulo-util.core $ :require
-            "\"nanoid" :refer $ nanoid
+        :code $ quote (ns cumulo-util.core)
     |cumulo-util.file $ %{} :FileEntry
       :defs $ {}
         |get-backup-path! $ %{} :CodeEntry (:doc |)
@@ -79,8 +66,8 @@
             defn get-backup-path! () $ let
                 now $ new js/Date
               path/join js/__dirname "\"backups"
-                str $ inc (.getMonth now)
-                str (.getDate now) "\"-snapshot.edn"
+                str $ inc (.!getMonth now)
+                str (.!getDate now) "\"-snapshot.edn"
         |merge-local-edn! $ %{} :CodeEntry (:doc |)
           :code $ quote
             defn merge-local-edn! (x0 filepath handler)

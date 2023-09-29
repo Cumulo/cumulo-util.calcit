@@ -1,8 +1,7 @@
 {
-  "version": "0.0.6",
+  "version": "0.0.7",
   "dependencies": {
-    "@calcit/procs": "^0.8.0-a3",
-    "nanoid": "^4.0.2"
+    "@calcit/procs": "^0.8.3"
   },
   "scripts": {
     "watch-server": "cr --emit-js --entry server",
