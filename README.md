@@ -14,9 +14,7 @@ APIs:
 
 ```cirru
 cumulo-util.core/on-page-touch $ fn ()
-cumulo-util.core/id!
-cumulo-util.core/delay! 0.1 $ fn ()
-cumulo-util.core/repeat! 0.1 $ fn ()
+cumulo-util.core/visibility-heartbeat $ fn ()
 
 cumulo-util.file/sh! "|echo demo"
 cumulo-util.file/write-mildly! path content
