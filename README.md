@@ -4,12 +4,6 @@ cumulo-util in calcit-js
 
 ### Usages
 
-notice the dependency:
-
-```bash
-yarn add nanoid
-```
-
 APIs:
 
 ```cirru
