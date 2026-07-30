@@ -6,3 +6,7 @@ js-out/
 node_modules/
 dist/
 out-page/
+
+.calcit
+
+.yarn/*.gz
