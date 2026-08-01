@@ -1,13 +1,19 @@
 {
-  "version": "0.0.7",
+  "version": "0.0.8",
   "dependencies": {
-    "@calcit/procs": "^0.8.3"
+    "@calcit/procs": "^0.12.56"
   },
+  "packageManager": "yarn@4.12.0",
   "scripts": {
-    "watch-server": "cr --emit-js --entry server",
-    "watch-page": "cr --emit-js --emit-path out-page/"
+    "build": "yarn compile-page && vite build",
+    "compile-page": "cr js",
+    "compile-server": "cr --entry server js",
+    "dev": "vite",
+    "test": "yarn compile-page && node tests/browser-lifecycle.mjs",
+    "watch-page": "cr -w js",
+    "watch-server": "cr -w --entry server js"
   },
   "devDependencies": {
-    "vite": "^4.4.9"
+    "vite": "^8.0.5"
   }
 }
