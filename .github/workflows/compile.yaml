@@ -23,6 +23,8 @@ jobs:
           yarn --version
 
       - uses: calcit-lang/setup-cr@0.0.9
+        with:
+          version: "0.12.56"
 
       - name: Install dependencies
         run: caps --ci && yarn install --immutable
