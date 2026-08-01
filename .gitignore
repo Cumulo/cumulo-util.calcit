@@ -10,3 +10,5 @@ out-page/
 .calcit
 
 .yarn/*.gz
+
+.DS_Store

@@ -1,10 +1,10 @@
 
-{} (:about "|Machine-generated snapshot. Do not edit directly — changes will be overwritten. Use `cr query` to inspect and `cr edit`/`cr tree` to modify. Run `cr docs agents --full` first. Manual edits must follow format and schema conventions, then run `cr edit format`.") (:package |cumulo-util)
-  :configs $ {} (:init-fn |cumulo-util.client/main!) (:reload-fn |cumulo-util.client/reload!) (:version |0.0.8)
-    :modules $ []
-    :type-slots $ {}
+{} (:about "|Machine-generated snapshot. Do not edit directly — changes will be overwritten. Use `cr query` to inspect and `cr edit`/`cr tree` to modify. Run `cr docs agents --full` first. Manual edits must follow format and schema conventions, then run `cr edit format`.") (:package |cumulo-util) (:version |0.0.8)
   :entries $ {}
-    :server $ {} (:init-fn |cumulo-util.app/main!) (:reload-fn |cumulo-util.app/reload!) (:version |0.0.8)
+    :default $ {} (:description |) (:init-fn 'cumulo-util.client/main!) (:mode :native) (:reload-fn 'cumulo-util.client/reload!)
+      :modules $ []
+      :type-slots $ {}
+    :server $ {} (:description |) (:init-fn 'cumulo-util.app/main!) (:mode :native) (:reload-fn 'cumulo-util.app/reload!)
       :modules $ []
       :type-slots $ {}
   :files $ {}
@@ -187,6 +187,6 @@
             {} (:return :dynamic)
               :args $ [] :string :string
               :features $ #{} :js-ffi
-      :ns $ %{} :NsEntry (:doc "|Small Node.js filesystem and process helpers. Browser lifecycle helpers belong in cumulo-util.core.")
+      :ns $ %{} :NsEntry (:doc "|Small Node.js filesystem and process helpers. Browser lifecycle helpers belong in cumulo-util.activity.")
         :code $ quote
           ns cumulo-util.file $ :require (|path :as path) (|fs :as fs) (|child_process :as cp) (|net :as net)
