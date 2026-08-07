@@ -101,9 +101,11 @@
                       flipped js/setTimeout 800 $ fn () (reset! *cooling false)
                   on-focus $ fn (event) (call-listener)
                   on-visibility $ fn (event)
-                    when
-                      = |visible $ .-visibilityState js/document
-                      call-listener
+                    let
+                        document-node $ unsafe-coerce js/document 'JsObject
+                      when
+                        = |visible $ .-visibilityState document-node
+                        call-listener
                 js/window.addEventListener |focus on-focus
                 js/window.addEventListener |visibilitychange on-visibility
                 fn () (js/window.removeEventListener |focus on-focus) (js/window.removeEventListener |visibilitychange on-visibility)
@@ -115,10 +117,14 @@
         |visibility-heartbeat $ %{} :CodeEntry (:doc "|Calls cb at the requested interval while the document is visible. Defaults to 3000 ms and returns the JavaScript interval handle.")
           :code $ quote
             defn visibility-heartbeat (cb ? duration)
-              flipped js/setInterval (either duration 3000)
-                fn () $ when
-                  = |visible $ .-visibilityState js/document
-                  cb
+              unsafe-coerce
+                flipped js/setInterval (either duration 3000)
+                  fn () $ let
+                      document-node $ unsafe-coerce js/document 'JsObject
+                    when
+                      = |visible $ .-visibilityState document-node
+                      cb
+                , 'Number
           :examples $ []
           :schema $ :: 'Fn
             {} (:return 'Number)
