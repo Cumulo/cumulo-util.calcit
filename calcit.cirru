@@ -14,8 +14,8 @@
           :code $ quote
             defn page-visible? () $ = |visible js/document.visibilityState
           :examples $ []
-          :schema $ :: :fn
-            {} (:return :bool)
+          :schema $ :: 'Fn
+            {} (:return 'Bool)
               :args $ []
               :features $ #{} :js-ffi
         |watch-page-activity! $ %{} :CodeEntry (:doc "|Reports :visible and :hidden transitions plus :heartbeat while visible. Emits the current visibility immediately and returns a cleanup function.")
@@ -31,9 +31,9 @@
                 emit-visibility! nil
                 fn () (js/window.removeEventListener |visibilitychange emit-visibility!) (js/clearInterval timer)
           :examples $ []
-          :schema $ :: :fn
-            {} (:return :fn)
-              :args $ [] :fn (:: :optional :number)
+          :schema $ :: 'Fn
+            {} (:return 'Fn)
+              :args $ [] 'Fn (:: 'Option 'Number)
               :features $ #{} :js-ffi
       :ns $ %{} :NsEntry (:doc "|Typed browser visibility and activity lifecycle signals. Transport protocols and reconnect policy belong to applications.")
         :code $ quote (ns cumulo-util.activity)
@@ -43,24 +43,24 @@
           :code $ quote
             defn main! () (println |Started) (task!) (write-mildly! |a/a/a |a) nil
           :examples $ []
-          :schema $ :: :fn
-            {} (:return :unit)
+          :schema $ :: 'Fn
+            {} (:return 'Unit)
               :args $ []
               :features $ #{} :js-ffi
         |reload! $ %{} :CodeEntry (:doc |)
           :code $ quote
             defn reload! () (println |Reload) (task!)
           :examples $ []
-          :schema $ :: :fn
-            {} (:return :unit)
+          :schema $ :: 'Fn
+            {} (:return 'Unit)
               :args $ []
               :features $ #{} :js-ffi
         |task! $ %{} :CodeEntry (:doc |)
           :code $ quote
             defn task! () $ echo |Task...
           :examples $ []
-          :schema $ :: :fn
-            {} (:return :unit)
+          :schema $ :: 'Fn
+            {} (:return 'Unit)
               :args $ []
               :features $ #{} :js-ffi
       :ns $ %{} :NsEntry (:doc |)
@@ -74,16 +74,16 @@
             defn main! () $ watch-page-activity!
               fn (activity) (println |activity activity)
           :examples $ []
-          :schema $ :: :fn
-            {} (:return :fn)
+          :schema $ :: 'Fn
+            {} (:return 'Fn)
               :args $ []
               :features $ #{} :js-ffi
         |reload! $ %{} :CodeEntry (:doc |)
           :code $ quote
             defn reload! $
           :examples $ []
-          :schema $ :: :fn
-            {} (:return :unit)
+          :schema $ :: 'Fn
+            {} (:return 'Unit)
               :args $ []
       :ns $ %{} :NsEntry (:doc |)
         :code $ quote
@@ -108,9 +108,9 @@
                 js/window.addEventListener |visibilitychange on-visibility
                 fn () (js/window.removeEventListener |focus on-focus) (js/window.removeEventListener |visibilitychange on-visibility)
           :examples $ []
-          :schema $ :: :fn
-            {} (:return :fn)
-              :args $ [] :fn
+          :schema $ :: 'Fn
+            {} (:return 'Fn)
+              :args $ [] 'Fn
               :features $ #{} :js-ffi
         |visibility-heartbeat $ %{} :CodeEntry (:doc "|Calls cb at the requested interval while the document is visible. Defaults to 3000 ms and returns the JavaScript interval handle.")
           :code $ quote
@@ -120,9 +120,9 @@
                   = |visible $ .-visibilityState js/document
                   cb
           :examples $ []
-          :schema $ :: :fn
-            {} (:return :number)
-              :args $ [] :fn (:: :optional :number)
+          :schema $ :: 'Fn
+            {} (:return 'Number)
+              :args $ [] 'Fn (:: 'Option 'Number)
               :features $ #{} :js-ffi
       :ns $ %{} :NsEntry (:doc "|Legacy zero-argument browser callbacks kept isolated for compatibility. New applications should use cumulo-util.activity.")
         :code $ quote (ns cumulo-util.core)
@@ -136,8 +136,8 @@
                 str $ inc (.!getMonth now)
                 str (.!getDate now) |-snapshot.edn
           :examples $ []
-          :schema $ :: :fn
-            {} (:return :string)
+          :schema $ :: 'Fn
+            {} (:return 'String)
               :args $ []
               :features $ #{} :js-ffi
         |merge-local-edn! $ %{} :CodeEntry (:doc "|Merges a base map with Cirru EDN loaded from filepath when present; handler receives whether the file exists.")
@@ -150,18 +150,18 @@
                   parse-cirru-edn $ fs/readFileSync filepath |utf8
                   , nil
           :examples $ []
-          :schema $ :: :fn
-            {} (:return :map)
-              :args $ [] :map :string (:: :optional :fn)
+          :schema $ :: 'Fn
+            {} (:return 'Map)
+              :args $ [] 'Map 'String (:: 'Optional 'Fn)
               :features $ #{} :js-ffi
         |sh! $ %{} :CodeEntry (:doc "|Runs a shell command synchronously and prints the command and output.")
           :code $ quote
             defn sh! (command) (println command)
               println $ .toString (cp/execSync command)
           :examples $ []
-          :schema $ :: :fn
-            {} (:return :unit)
-              :args $ [] :string
+          :schema $ :: 'Fn
+            {} (:return 'Unit)
+              :args $ [] 'String
               :features $ #{} :js-ffi
         |write-mildly! $ %{} :CodeEntry (:doc "|Atomically replaces a UTF-8 text file only when its content changed, creating parent directories as needed.")
           :code $ quote
@@ -183,9 +183,9 @@
                         {} $ :recursive true
                     do-write!
           :examples $ []
-          :schema $ :: :fn
-            {} (:return :dynamic)
-              :args $ [] :string :string
+          :schema $ :: 'Fn
+            {} (:return 'Dynamic)
+              :args $ [] 'String 'String
               :features $ #{} :js-ffi
       :ns $ %{} :NsEntry (:doc "|Small Node.js filesystem and process helpers. Browser lifecycle helpers belong in cumulo-util.activity.")
         :code $ quote
