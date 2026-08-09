@@ -8,9 +8,9 @@
       :modules $ []
       :type-slots $ {}
   :files $ {}
-    |cumulo-util.activity $ %{} :FileEntry
+    |cumulo-util.activity $ %{} 'FileEntry
       :defs $ {}
-        |page-visible? $ %{} :CodeEntry (:doc "|Returns whether the browser document is currently visible.")
+        |page-visible? $ %{} 'CodeEntry (:doc "|Returns whether the browser document is currently visible.")
           :code $ quote
             defn page-visible? () $ = |visible js/document.visibilityState
           :examples $ []
@@ -18,7 +18,7 @@
             {} (:return 'Bool)
               :args $ []
               :features $ #{} :js-ffi
-        |watch-page-activity! $ %{} :CodeEntry (:doc "|Reports :visible and :hidden transitions plus :heartbeat while visible. Emits the current visibility immediately and returns a cleanup function.")
+        |watch-page-activity! $ %{} 'CodeEntry (:doc "|Reports :visible and :hidden transitions plus :heartbeat while visible. Emits the current visibility immediately and returns a cleanup function.")
           :code $ quote
             defn watch-page-activity! (cb ? duration)
               let
@@ -35,11 +35,11 @@
             {} (:return 'Fn)
               :args $ [] 'Fn (:: 'Option 'Number)
               :features $ #{} :js-ffi
-      :ns $ %{} :NsEntry (:doc "|Typed browser visibility and activity lifecycle signals. Transport protocols and reconnect policy belong to applications.")
+      :ns $ %{} 'NsEntry (:doc "|Typed browser visibility and activity lifecycle signals. Transport protocols and reconnect policy belong to applications.")
         :code $ quote (ns cumulo-util.activity)
-    |cumulo-util.app $ %{} :FileEntry
+    |cumulo-util.app $ %{} 'FileEntry
       :defs $ {}
-        |main! $ %{} :CodeEntry (:doc |)
+        |main! $ %{} 'CodeEntry (:doc |)
           :code $ quote
             defn main! () (println |Started) (task!) (write-mildly! |a/a/a |a) nil
           :examples $ []
@@ -47,7 +47,7 @@
             {} (:return 'Unit)
               :args $ []
               :features $ #{} :js-ffi
-        |reload! $ %{} :CodeEntry (:doc |)
+        |reload! $ %{} 'CodeEntry (:doc |)
           :code $ quote
             defn reload! () (println |Reload) (task!)
           :examples $ []
@@ -55,7 +55,7 @@
             {} (:return 'Unit)
               :args $ []
               :features $ #{} :js-ffi
-        |task! $ %{} :CodeEntry (:doc |)
+        |task! $ %{} 'CodeEntry (:doc |)
           :code $ quote
             defn task! () $ echo |Task...
           :examples $ []
@@ -63,13 +63,13 @@
             {} (:return 'Unit)
               :args $ []
               :features $ #{} :js-ffi
-      :ns $ %{} :NsEntry (:doc |)
+      :ns $ %{} 'NsEntry (:doc |)
         :code $ quote
           ns cumulo-util.app $ :require
             cumulo-util.file :refer $ write-mildly!
-    |cumulo-util.client $ %{} :FileEntry
+    |cumulo-util.client $ %{} 'FileEntry
       :defs $ {}
-        |main! $ %{} :CodeEntry (:doc |)
+        |main! $ %{} 'CodeEntry (:doc |)
           :code $ quote
             defn main! () $ watch-page-activity!
               fn (activity) (println |activity activity)
@@ -78,20 +78,20 @@
             {} (:return 'Fn)
               :args $ []
               :features $ #{} :js-ffi
-        |reload! $ %{} :CodeEntry (:doc |)
+        |reload! $ %{} 'CodeEntry (:doc |)
           :code $ quote
             defn reload! $
           :examples $ []
           :schema $ :: 'Fn
             {} (:return 'Unit)
               :args $ []
-      :ns $ %{} :NsEntry (:doc |)
+      :ns $ %{} 'NsEntry (:doc |)
         :code $ quote
           ns cumulo-util.client $ :require
             cumulo-util.activity :refer $ watch-page-activity!
-    |cumulo-util.core $ %{} :FileEntry
+    |cumulo-util.core $ %{} 'FileEntry
       :defs $ {}
-        |on-page-touch $ %{} :CodeEntry (:doc "|Registers throttled focus and visible-page listeners. Returns a cleanup function that removes both listeners.")
+        |on-page-touch $ %{} 'CodeEntry (:doc "|Registers throttled focus and visible-page listeners. Returns a cleanup function that removes both listeners.")
           :code $ quote
             defn on-page-touch (listener)
               let
@@ -114,7 +114,7 @@
             {} (:return 'Fn)
               :args $ [] 'Fn
               :features $ #{} :js-ffi
-        |visibility-heartbeat $ %{} :CodeEntry (:doc "|Calls cb at the requested interval while the document is visible. Defaults to 3000 ms and returns the JavaScript interval handle.")
+        |visibility-heartbeat $ %{} 'CodeEntry (:doc "|Calls cb at the requested interval while the document is visible. Defaults to 3000 ms and returns the JavaScript interval handle.")
           :code $ quote
             defn visibility-heartbeat (cb ? duration)
               unsafe-coerce
@@ -130,11 +130,11 @@
             {} (:return 'Number)
               :args $ [] 'Fn (:: 'Option 'Number)
               :features $ #{} :js-ffi
-      :ns $ %{} :NsEntry (:doc "|Legacy zero-argument browser callbacks kept isolated for compatibility. New applications should use cumulo-util.activity.")
+      :ns $ %{} 'NsEntry (:doc "|Legacy zero-argument browser callbacks kept isolated for compatibility. New applications should use cumulo-util.activity.")
         :code $ quote (ns cumulo-util.core)
-    |cumulo-util.file $ %{} :FileEntry
+    |cumulo-util.file $ %{} 'FileEntry
       :defs $ {}
-        |get-backup-path! $ %{} :CodeEntry (:doc "|Builds the legacy month/day snapshot path under the module backups directory.")
+        |get-backup-path! $ %{} 'CodeEntry (:doc "|Builds the legacy month/day snapshot path under the module backups directory.")
           :code $ quote
             defn get-backup-path! () $ let
                 now $ new js/Date
@@ -146,7 +146,7 @@
             {} (:return 'String)
               :args $ []
               :features $ #{} :js-ffi
-        |merge-local-edn! $ %{} :CodeEntry (:doc "|Merges a base map with Cirru EDN loaded from filepath when present; handler receives whether the file exists.")
+        |merge-local-edn! $ %{} 'CodeEntry (:doc "|Merges a base map with Cirru EDN loaded from filepath when present; handler receives whether the file exists.")
           :code $ quote
             defn merge-local-edn! (x0 filepath handler)
               merge x0 $ let
@@ -160,7 +160,7 @@
             {} (:return 'Map)
               :args $ [] 'Map 'String (:: 'Optional 'Fn)
               :features $ #{} :js-ffi
-        |sh! $ %{} :CodeEntry (:doc "|Runs a shell command synchronously and prints the command and output.")
+        |sh! $ %{} 'CodeEntry (:doc "|Runs a shell command synchronously and prints the command and output.")
           :code $ quote
             defn sh! (command) (println command)
               println $ .toString (cp/execSync command)
@@ -169,7 +169,7 @@
             {} (:return 'Unit)
               :args $ [] 'String
               :features $ #{} :js-ffi
-        |write-mildly! $ %{} :CodeEntry (:doc "|Atomically replaces a UTF-8 text file only when its content changed, creating parent directories as needed.")
+        |write-mildly! $ %{} 'CodeEntry (:doc "|Atomically replaces a UTF-8 text file only when its content changed, creating parent directories as needed.")
           :code $ quote
             defn write-mildly! (file-path content)
               let
@@ -193,6 +193,6 @@
             {} (:return 'Dynamic)
               :args $ [] 'String 'String
               :features $ #{} :js-ffi
-      :ns $ %{} :NsEntry (:doc "|Small Node.js filesystem and process helpers. Browser lifecycle helpers belong in cumulo-util.activity.")
+      :ns $ %{} 'NsEntry (:doc "|Small Node.js filesystem and process helpers. Browser lifecycle helpers belong in cumulo-util.activity.")
         :code $ quote
           ns cumulo-util.file $ :require (|path :as path) (|fs :as fs) (|child_process :as cp) (|net :as net)
