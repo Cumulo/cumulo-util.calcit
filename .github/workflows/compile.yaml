@@ -24,10 +24,22 @@ jobs:
 
       - uses: calcit-lang/setup-cr@0.0.9
         with:
-          version: "0.13.2"
+          version: "0.13.15"
 
       - name: Install dependencies
         run: caps --ci && yarn install --immutable
 
       - name: Check native and JavaScript builds
-        run: cr --entry server ir && yarn test && yarn build
+        run: |
+          cr calcit.cirru edit format
+          git diff --exit-code -- calcit.cirru
+          cr calcit.cirru --check-only
+          cr calcit.cirru --entry server --check-only
+          mkdir -p .calcit
+          cr calcit.cirru analyze check-types --summary-only --format json > .calcit/check-types.json
+          cr calcit.cirru analyze weak-types --only schema-dynamic,code-dynamic,code-nil --intent unresolved,declared-optional --summary-only --format json > .calcit/weak-types.json
+          cr calcit.cirru analyze deprecated --summary-only --format json > .calcit/deprecated.json
+          node scripts/check-calcit-upgrade-baseline.mjs
+          cr --entry server ir
+          yarn test
+          yarn build
