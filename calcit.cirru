@@ -22,7 +22,7 @@
           :code $ quote
             defn watch-page-activity! (cb ? duration)
               let
-                  interval-ms $ either duration 3000
+                  interval-ms $ either (unsafe-coerce duration 'Dynamic) 3000
                   emit-visibility! $ fn (event)
                     cb $ if (page-visible?) :visible :hidden
                   timer $ flipped js/setInterval interval-ms
@@ -118,7 +118,8 @@
           :code $ quote
             defn visibility-heartbeat (cb ? duration)
               unsafe-coerce
-                flipped js/setInterval (either duration 3000)
+                flipped js/setInterval
+                  either (unsafe-coerce duration 'Dynamic) 3000
                   fn () $ let
                       document-node $ unsafe-coerce js/document 'JsObject
                     when
