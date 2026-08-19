@@ -1,10 +1,12 @@
 
-{} (:about "|Machine-generated snapshot. Do not edit directly — changes will be overwritten. Use `cr query` to inspect and `cr edit`/`cr tree` to modify. Run `cr docs agents --full` first. Manual edits must follow format and schema conventions, then run `cr edit format`.") (:package |cumulo-util) (:version |0.0.11)
+{} (:about "|Machine-generated snapshot. Do not edit directly — changes will be overwritten. Use `cr query` to inspect and `cr edit`/`cr tree` to modify. Run `cr docs agents --full` first. Manual edits must follow format and schema conventions, then run `cr edit format`.") (:package |cumulo-util)
   :entries $ {}
     :default $ {} (:description |) (:init-fn 'cumulo-util.client/main!) (:mode :native) (:reload-fn 'cumulo-util.client/reload!)
+      :feature-policy $ {}
       :modules $ []
       :type-slots $ {}
     :server $ {} (:description |) (:init-fn 'cumulo-util.app/main!) (:mode :native) (:reload-fn 'cumulo-util.app/reload!)
+      :feature-policy $ {}
       :modules $ []
       :type-slots $ {}
   :files $ {}
