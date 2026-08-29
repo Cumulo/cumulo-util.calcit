@@ -1,17 +1,17 @@
 {
   "version": "0.0.13",
   "dependencies": {
-    "@calcit/procs": "^0.13.27"
+    "@calcit/procs": "0.13.64"
   },
   "packageManager": "yarn@4.12.0",
   "scripts": {
     "build": "yarn compile-page && vite build",
-    "compile-page": "cr js",
-    "compile-server": "cr --entry server js",
+    "compile-page": "calcit calcit.cirru js",
+    "compile-server": "calcit calcit.cirru --entry server js",
     "dev": "vite",
     "test": "yarn compile-page && node tests/browser-lifecycle.mjs",
-    "watch-page": "cr -w js",
-    "watch-server": "cr -w --entry server js"
+    "watch-page": "calcit calcit.cirru js -w",
+    "watch-server": "calcit calcit.cirru --entry server js -w"
   },
   "devDependencies": {
     "vite": "^8.0.5"

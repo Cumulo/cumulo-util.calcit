@@ -55,8 +55,8 @@ yarn dev          # terminal 2
 Validation:
 
 ```bash
-cr analyze check-types
-cr --entry server ir
+calcit calcit.cirru --check-only
+calcit calcit.cirru --entry server --check-only
 yarn build
 ```
 
