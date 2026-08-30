@@ -34,6 +34,9 @@ cumulo-util.core/visibility-heartbeat (fn () $ println |heartbeat) 3000
 See [Browser lifecycle design](docs/browser-lifecycle.md) for integration and
 server-side policy guidance.
 
+See [Real-time scheduling primitives](docs/realtime-primitives.md) for
+deterministic retry backoff, heartbeat leases, and one-timer coalescing state.
+
 See [Durable file storage helpers](docs/file-storage.md) for atomic persistence,
 Cirru EDN round-trip checks, and storage-boundary rules.
 
@@ -61,6 +64,7 @@ Validation:
 calcit calcit.cirru --check-only
 calcit calcit.cirru --entry server --check-only
 yarn build
+yarn test
 ```
 
 This module has no Calcit package dependencies; Lilac is not required.

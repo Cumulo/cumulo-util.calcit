@@ -199,3 +199,235 @@
       :ns $ %{} 'NsEntry (:doc "|Small Node.js filesystem and process helpers. Browser lifecycle helpers belong in cumulo-util.activity.")
         :code $ quote
           ns cumulo-util.file $ :require (|path :as path) (|fs :as fs) (|child_process :as cp) (|net :as net)
+    'cumulo-util.realtime $ %{} 'FileEntry
+      :defs $ {}
+        'CoalescedPlan $ %{} 'CodeEntry (:doc "|The next coalesced state and delay for one externally-owned timer.")
+          :code $ quote
+            defstruct CoalescedPlan (:state 'cumulo-util.realtime/Coalescer) (:delay-ms 'Number)
+          :examples $ []
+          :schema $ :: 'StructDef
+        'Coalescer $ %{} 'CodeEntry (:doc "||Immutable coalescing configuration with explicit pending-window state.")
+          :code $ quote
+            def Coalescer $ impl-traits
+              defstruct Coalescer (:delay-ms 'Number) (:max-wait-ms 'Number) (:pending? 'Bool) (:first-request-ms 'Number)
+              , CoalescerOpsImpl
+          :examples $ []
+          :schema $ :: 'StructDef
+        'CoalescerOps $ %{} 'CodeEntry (:doc "|Method contract for deterministic single-flight dispatch coalescing state.")
+          :code $ quote
+            deftrait CoalescerOps
+              .request $ :: 'Fn
+                {}
+                  :args $ [] 'cumulo-util.realtime/Coalescer 'Number
+                  :return 'cumulo-util.realtime/CoalescedPlan
+              .flush $ :: 'Fn
+                {}
+                  :args $ [] 'cumulo-util.realtime/Coalescer
+                  :return 'cumulo-util.realtime/Coalescer
+              .cancel $ :: 'Fn
+                {}
+                  :args $ [] 'cumulo-util.realtime/Coalescer
+                  :return 'cumulo-util.realtime/Coalescer
+          :examples $ []
+          :schema $ :: 'Trait
+        'CoalescerOpsImpl $ %{} 'CodeEntry (:doc "|Coalescer method implementation.")
+          :code $ quote
+            defimpl CoalescerOpsImpl CoalescerOps (.request coalescer:request) (.flush coalescer:flush) (.cancel coalescer:cancel)
+          :examples $ []
+          :schema $ :: 'Impl
+        'HeartbeatLease $ %{} 'CodeEntry (:doc "|Last-seen timestamp and absolute expiry deadline for a heartbeat lease.")
+          :code $ quote
+            def HeartbeatLease $ impl-traits
+              defstruct HeartbeatLease (:last-seen-ms 'Number) (:deadline-ms 'Number)
+              , HeartbeatLeaseOpsImpl
+          :examples $ []
+          :schema $ :: 'StructDef
+        'HeartbeatLeaseOps $ %{} 'CodeEntry (:doc "|Method contract for renewing and inspecting a transport-independent heartbeat lease.")
+          :code $ quote
+            deftrait HeartbeatLeaseOps
+              .renew $ :: 'Fn
+                {}
+                  :args $ [] 'cumulo-util.realtime/HeartbeatLease 'Number 'Number
+                  :return 'cumulo-util.realtime/HeartbeatLease
+              .expired? $ :: 'Fn
+                {}
+                  :args $ [] 'cumulo-util.realtime/HeartbeatLease 'Number
+                  :return 'Bool
+          :examples $ []
+          :schema $ :: 'Trait
+        'HeartbeatLeaseOpsImpl $ %{} 'CodeEntry (:doc "|HeartbeatLease method implementation.")
+          :code $ quote
+            defimpl HeartbeatLeaseOpsImpl HeartbeatLeaseOps (.renew heartbeat-lease:renew) (.expired? heartbeat-lease:expired?)
+          :examples $ []
+          :schema $ :: 'Impl
+        'RetryBackoff $ %{} 'CodeEntry (:doc "|Immutable exponential-backoff configuration and current attempt count.")
+          :code $ quote
+            def RetryBackoff $ impl-traits
+              defstruct RetryBackoff (:base-delay-ms 'Number) (:max-delay-ms 'Number) (:jitter-ratio 'Number) (:attempt 'Number)
+              , RetryBackoffOpsImpl
+          :examples $ []
+          :schema $ :: 'StructDef
+        'RetryBackoffOps $ %{} 'CodeEntry (:doc "|Method contract for advancing or resetting immutable retry backoff state.")
+          :code $ quote
+            deftrait RetryBackoffOps
+              .next $ :: 'Fn
+                {}
+                  :args $ [] 'cumulo-util.realtime/RetryBackoff 'Number
+                  :return 'cumulo-util.realtime/RetryStep
+              .reset $ :: 'Fn
+                {}
+                  :args $ [] 'cumulo-util.realtime/RetryBackoff
+                  :return 'cumulo-util.realtime/RetryBackoff
+          :examples $ []
+          :schema $ :: 'Trait
+        'RetryBackoffOpsImpl $ %{} 'CodeEntry (:doc "|RetryBackoff method implementation.")
+          :code $ quote
+            defimpl RetryBackoffOpsImpl RetryBackoffOps (.next retry-backoff:next) (.reset retry-backoff:reset)
+          :examples $ []
+          :schema $ :: 'Impl
+        'RetryStep $ %{} 'CodeEntry (:doc "|One retry delay and the immutable state to use for the next retry.")
+          :code $ quote
+            defstruct RetryStep (:delay-ms 'Number) (:next 'cumulo-util.realtime/RetryBackoff)
+          :examples $ []
+          :schema $ :: 'StructDef
+        'coalescer $ %{} 'CodeEntry (:doc "|Create an idle coalescer. The caller owns actual timers and invokes request with its clock.")
+          :code $ quote
+            defn coalescer (delay-ms max-wait-ms)
+              let
+                  safe-delay $ if (> delay-ms 0) delay-ms 0
+                  safe-max-wait $ if (> max-wait-ms safe-delay) max-wait-ms safe-delay
+                %{} Coalescer (:delay-ms safe-delay) (:max-wait-ms safe-max-wait) (:pending? false) (:first-request-ms 0)
+          :examples $ []
+          :schema $ :: 'Fn
+            {} (:return 'cumulo-util.realtime/Coalescer)
+              :args $ [] 'Number 'Number
+          :tags $ #{} :scaffold
+        'coalescer:cancel $ %{} 'CodeEntry (:doc "||Clear explicit pending state after cancelling the externally-owned timer.")
+          :code $ quote
+            defn coalescer:cancel (self) (coalescer:flush self)
+          :examples $ []
+          :schema $ :: 'Fn
+            {} (:return 'cumulo-util.realtime/Coalescer)
+              :args $ [] 'cumulo-util.realtime/Coalescer
+          :tags $ #{} :scaffold
+        'coalescer:flush $ %{} 'CodeEntry (:doc "||Clear explicit pending state after an immediate flush.")
+          :code $ quote
+            defn coalescer:flush (self)
+              let
+                  cleared $ assoc self :pending? false
+                assoc cleared :first-request-ms 0
+          :examples $ []
+          :schema $ :: 'Fn
+            {} (:return 'cumulo-util.realtime/Coalescer)
+              :args $ [] 'cumulo-util.realtime/Coalescer
+          :tags $ #{} :scaffold
+        'coalescer:request $ %{} 'CodeEntry (:doc "||Merge a dispatch request and return the bounded delay for the caller-owned one timer.")
+          :code $ quote
+            defn coalescer:request (self now-ms)
+              if (:pending? self)
+                let
+                    elapsed-ms $ if
+                      > now-ms $ :first-request-ms self
+                      - now-ms $ :first-request-ms self
+                      , 0
+                    remaining-ms $ if
+                      > elapsed-ms $ :max-wait-ms self
+                      , 0
+                        - (:max-wait-ms self) elapsed-ms
+                    delay-ms $ if
+                      > (:delay-ms self) remaining-ms
+                      , remaining-ms (:delay-ms self)
+                  %{} CoalescedPlan (:state self) (:delay-ms delay-ms)
+                let
+                    pending-state $ assoc self :pending? true
+                    next-state $ assoc pending-state :first-request-ms now-ms
+                    delay-ms $ if
+                      > (:delay-ms self) (:max-wait-ms self)
+                      :max-wait-ms self
+                      :delay-ms self
+                  %{} CoalescedPlan (:state next-state) (:delay-ms delay-ms)
+          :examples $ []
+          :schema $ :: 'Fn
+            {} (:return 'cumulo-util.realtime/CoalescedPlan)
+              :args $ [] 'cumulo-util.realtime/Coalescer 'Number
+          :tags $ #{} :scaffold
+        'heartbeat-lease $ %{} 'CodeEntry (:doc "|Create or renew a heartbeat lease at now-ms for timeout-ms.")
+          :code $ quote
+            defn heartbeat-lease (now-ms timeout-ms)
+              let
+                  safe-timeout $ if (> timeout-ms 0) timeout-ms 0
+                %{} HeartbeatLease (:last-seen-ms now-ms)
+                  :deadline-ms $ + now-ms safe-timeout
+          :examples $ []
+          :schema $ :: 'Fn
+            {} (:return 'cumulo-util.realtime/HeartbeatLease)
+              :args $ [] 'Number 'Number
+          :tags $ #{} :scaffold
+        'heartbeat-lease:expired? $ %{} 'CodeEntry (:doc "|Whether now-ms is at or beyond the heartbeat deadline.")
+          :code $ quote
+            defn heartbeat-lease:expired? (self now-ms)
+              >= now-ms $ :deadline-ms self
+          :examples $ []
+          :schema $ :: 'Fn
+            {} (:return 'Bool)
+              :args $ [] 'cumulo-util.realtime/HeartbeatLease 'Number
+          :tags $ #{} :scaffold
+        'heartbeat-lease:renew $ %{} 'CodeEntry (:doc "|Renew a heartbeat lease at now-ms for timeout-ms.")
+          :code $ quote
+            defn heartbeat-lease:renew (self now-ms timeout-ms)
+              let
+                  safe-timeout $ if (> timeout-ms 0) timeout-ms 0
+                  touched $ assoc self :last-seen-ms now-ms
+                assoc touched :deadline-ms $ + now-ms safe-timeout
+          :examples $ []
+          :schema $ :: 'Fn
+            {} (:return 'cumulo-util.realtime/HeartbeatLease)
+              :args $ [] 'cumulo-util.realtime/HeartbeatLease 'Number 'Number
+          :tags $ #{} :scaffold
+        'retry-backoff $ %{} 'CodeEntry (:doc "|Create retry state with attempt zero. random-unit is supplied later to next, keeping tests deterministic.")
+          :code $ quote
+            defn retry-backoff (base-delay-ms max-delay-ms jitter-ratio)
+              let
+                  safe-base $ if (> base-delay-ms 0) base-delay-ms 0
+                  safe-maximum $ if (> max-delay-ms safe-base) max-delay-ms safe-base
+                  safe-jitter $ if (< jitter-ratio 0) 0
+                    if (> jitter-ratio 1) 1 jitter-ratio
+                %{} RetryBackoff (:base-delay-ms safe-base) (:max-delay-ms safe-maximum) (:jitter-ratio safe-jitter) (:attempt 0)
+          :examples $ []
+          :schema $ :: 'Fn
+            {} (:return 'cumulo-util.realtime/RetryBackoff)
+              :args $ [] 'Number 'Number 'Number
+          :tags $ #{} :scaffold
+        'retry-backoff:next $ %{} 'CodeEntry (:doc "|Calculate one clamped exponential retry delay from a caller-supplied random unit and advance state.")
+          :code $ quote
+            defn retry-backoff:next (self random-unit)
+              let
+                  capped-random $ if (< random-unit 0) 0
+                    if (> random-unit 1) 1 random-unit
+                  exponential-delay $ * (:base-delay-ms self)
+                    pow 2 $ :attempt self
+                  capped-delay $ if
+                    > exponential-delay $ :max-delay-ms self
+                    :max-delay-ms self
+                    , exponential-delay
+                  jitter $ * (- capped-random 0.5) (:jitter-ratio self)
+                  delay-ms $ floor
+                    * capped-delay $ + 1 jitter
+                  next-state $ assoc self :attempt
+                    + 1 $ :attempt self
+                %{} RetryStep (:delay-ms delay-ms) (:next next-state)
+          :examples $ []
+          :schema $ :: 'Fn
+            {} (:return 'cumulo-util.realtime/RetryStep)
+              :args $ [] 'cumulo-util.realtime/RetryBackoff 'Number
+          :tags $ #{} :scaffold
+        'retry-backoff:reset $ %{} 'CodeEntry (:doc "|Return the same retry configuration at attempt zero.")
+          :code $ quote
+            defn retry-backoff:reset (self) (assoc self :attempt 0)
+          :examples $ []
+          :schema $ :: 'Fn
+            {} (:return 'cumulo-util.realtime/RetryBackoff)
+              :args $ [] 'cumulo-util.realtime/RetryBackoff
+          :tags $ #{} :scaffold
+      :ns $ %{} 'NsEntry (:doc |)
+        :code $ quote (ns cumulo-util.realtime)
