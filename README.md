@@ -34,6 +34,9 @@ cumulo-util.core/visibility-heartbeat (fn () $ println |heartbeat) 3000
 See [Browser lifecycle design](docs/browser-lifecycle.md) for integration and
 server-side policy guidance.
 
+See [Durable file storage helpers](docs/file-storage.md) for atomic persistence,
+Cirru EDN round-trip checks, and storage-boundary rules.
+
 ## Node.js file helpers
 
 ```cirru
@@ -55,8 +58,8 @@ yarn dev          # terminal 2
 Validation:
 
 ```bash
-cr analyze check-types
-cr --entry server ir
+calcit calcit.cirru --check-only
+calcit calcit.cirru --entry server --check-only
 yarn build
 ```
 
