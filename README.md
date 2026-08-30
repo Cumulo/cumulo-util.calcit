@@ -6,29 +6,36 @@ Small, protocol-independent helpers shared by Cumulo applications.
 
 ```cirru
 ns app.client $ :require
-  cumulo-util.activity :refer $ watch-page-activity!
+  cumulo-util.activity :refer $ watch-browser-lifecycle!
 
-defn start-activity-sync! ()
-  watch-page-activity!
-    fn (activity)
-      case-default activity (println "|Unknown activity:" activity)
+defn start-browser-sync! ()
+  watch-browser-lifecycle!
+    fn (signal)
+      case-default signal (println "|Unknown browser signal:" signal)
         :visible $ println "|Send an active/snapshot request"
         :hidden $ println "|Mark this client idle"
+        :online $ println "|Retry only if local retry state permits it"
+        :offline $ println "|Pause outbound attempts"
+        :touch $ println "|Refresh active client intent"
         :heartbeat $ println "|Refresh the active lease"
     , 3000
 ```
 
-`watch-page-activity!` immediately reports the current visibility, reports later
-visibility transitions, and emits heartbeats only while the document is visible.
-It returns a cleanup function. Transport messages, reconnect policy, revision
-tracking, and snapshot/diff decisions intentionally stay in the application.
+`watch-browser-lifecycle!` immediately reports visibility and the browser online
+hint, reports later transitions and throttled focus/resume touches, and emits
+heartbeats only while the document is visible. It returns one cleanup function for
+all listeners and timers. The online hint is not socket health. Transport messages,
+reconnect policy, revision tracking, and snapshot/diff decisions intentionally stay
+in the application.
 
 Compatibility APIs remain available:
 
-```cirru
+```cirru.no-check
 cumulo-util.activity/page-visible?
+cumulo-util.activity/page-online?
+cumulo-util.activity/watch-page-activity! $ fn (signal)
 cumulo-util.core/on-page-touch $ fn ()
-cumulo-util.core/visibility-heartbeat (fn () $ println |heartbeat) 3000
+cumulo-util.core/visibility-heartbeat (fn () $ println |heartbeat) $ %some 3000
 ```
 
 See [Browser lifecycle design](docs/browser-lifecycle.md) for integration and

@@ -12,6 +12,14 @@
   :files $ {}
     'cumulo-util.activity $ %{} 'FileEntry
       :defs $ {}
+        'page-online? $ %{} 'CodeEntry (:doc "|Returns the browser online hint. It does not prove WebSocket or server health.")
+          :code $ quote
+            defn page-online? () $ not= false js/navigator.onLine
+          :examples $ []
+          :schema $ :: 'Fn
+            {} (:return 'Bool)
+              :args $ []
+              :features $ #{} :js-ffi
         'page-visible? $ %{} 'CodeEntry (:doc "|Returns whether the browser document is currently visible.")
           :code $ quote
             defn page-visible? () $ = |visible js/document.visibilityState
@@ -20,18 +28,46 @@
             {} (:return 'Bool)
               :args $ []
               :features $ #{} :js-ffi
+        'watch-browser-lifecycle! $ %{} 'CodeEntry (:doc "|Reports visibility, online/offline, throttled page touch, and visible-page heartbeat signals. Returns cleanup for every listener and timer.")
+          :code $ quote
+            defn watch-browser-lifecycle! (callback heartbeat-ms)
+              let
+                  interval-ms $ heartbeat-ms.unwrap-or 3000
+                  *cooling $ atom false
+                  *touch-timer $ atom 0
+                  emit-touch! $ fn ()
+                    when (not @*cooling) (callback :touch) (reset! *cooling true)
+                      reset! *touch-timer $ flipped js/setTimeout 800
+                        fn () $ reset! *cooling false
+                  on-visibility $ fn (event)
+                    if (page-visible?)
+                      do (callback :visible) (emit-touch!)
+                      callback :hidden
+                  on-online $ fn (event) (callback :online)
+                  on-offline $ fn (event) (callback :offline)
+                  on-focus $ fn (event) (emit-touch!)
+                  timer $ flipped js/setInterval interval-ms
+                    fn () $ when (page-visible?) (callback :heartbeat)
+                js/window.addEventListener |visibilitychange on-visibility
+                js/window.addEventListener |online on-online
+                js/window.addEventListener |offline on-offline
+                js/window.addEventListener |focus on-focus
+                callback $ if (page-visible?) :visible :hidden
+                callback $ if (page-online?) :online :offline
+                fn () (js/window.removeEventListener |visibilitychange on-visibility) (js/window.removeEventListener |online on-online) (js/window.removeEventListener |offline on-offline) (js/window.removeEventListener |focus on-focus) (js/clearInterval timer) (js/clearTimeout @*touch-timer)
+          :examples $ []
+          :schema $ :: 'Fn
+            {} (:return 'Fn)
+              :args $ [] 'Fn (:: 'Option 'Number)
         'watch-page-activity! $ %{} 'CodeEntry (:doc "|Reports :visible and :hidden transitions plus :heartbeat while visible. Emits the current visibility immediately and returns a cleanup function.")
           :code $ quote
             defn watch-page-activity! (cb ? duration)
-              let
-                  interval-ms $ either (unsafe-coerce duration 'Dynamic) 3000
-                  emit-visibility! $ fn (event)
-                    cb $ if (page-visible?) :visible :hidden
-                  timer $ flipped js/setInterval interval-ms
-                    fn () $ when (page-visible?) (cb :heartbeat)
-                js/window.addEventListener |visibilitychange emit-visibility!
-                emit-visibility! nil
-                fn () (js/window.removeEventListener |visibilitychange emit-visibility!) (js/clearInterval timer)
+              watch-browser-lifecycle!
+                fn (signal)
+                  when
+                    or (= signal :visible) (= signal :hidden) (= signal :heartbeat)
+                    cb signal
+                optionally duration
           :examples $ []
           :schema $ :: 'Fn
             {} (:return 'Fn)
@@ -93,24 +129,13 @@
             cumulo-util.activity :refer $ watch-page-activity!
     'cumulo-util.core $ %{} 'FileEntry
       :defs $ {}
-        'on-page-touch $ %{} 'CodeEntry (:doc "|Registers throttled focus and visible-page listeners. Returns a cleanup function that removes both listeners.")
+        'on-page-touch $ %{} 'CodeEntry (:doc "|Registers a throttled focus and visible-page callback through the unified lifecycle watcher. Returns cleanup for every listener and timer.")
           :code $ quote
             defn on-page-touch (listener)
-              let
-                  *cooling $ atom false
-                  call-listener $ fn ()
-                    when (not @*cooling) (listener) (reset! *cooling true)
-                      flipped js/setTimeout 800 $ fn () (reset! *cooling false)
-                  on-focus $ fn (event) (call-listener)
-                  on-visibility $ fn (event)
-                    let
-                        document-node $ unsafe-coerce js/document 'JsObject
-                      when
-                        = |visible $ .-visibilityState document-node
-                        call-listener
-                js/window.addEventListener |focus on-focus
-                js/window.addEventListener |visibilitychange on-visibility
-                fn () (js/window.removeEventListener |focus on-focus) (js/window.removeEventListener |visibilitychange on-visibility)
+              watch-browser-lifecycle!
+                fn (signal)
+                  when (= signal :touch) (listener)
+                %none
           :examples $ []
           :schema $ :: 'Fn
             {} (:return 'Fn)
@@ -134,7 +159,9 @@
               :args $ [] 'Fn (:: 'Option 'Number)
               :features $ #{} :js-ffi
       :ns $ %{} 'NsEntry (:doc "|Legacy zero-argument browser callbacks kept isolated for compatibility. New applications should use cumulo-util.activity.")
-        :code $ quote (ns cumulo-util.core)
+        :code $ quote
+          ns cumulo-util.core $ :require
+            cumulo-util.activity :refer $ watch-browser-lifecycle!
     'cumulo-util.file $ %{} 'FileEntry
       :defs $ {}
         'get-backup-path! $ %{} 'CodeEntry (:doc "|Builds the legacy month/day snapshot path under the module backups directory.")

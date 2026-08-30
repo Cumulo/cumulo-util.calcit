@@ -1,9 +1,13 @@
 const listeners = new Map()
 const intervals = new Map()
-const timeouts = []
+const timeouts = new Map()
 let nextTimer = 1
 
 globalThis.document = { visibilityState: "visible" }
+Object.defineProperty(globalThis, "navigator", {
+  configurable: true,
+  value: { onLine: true },
+})
 globalThis.window = {
   addEventListener: (name, listener) => listeners.set(name, listener),
   removeEventListener: (name, listener) => {
@@ -17,21 +21,58 @@ globalThis.setInterval = (callback, interval) => {
 }
 globalThis.clearInterval = (id) => intervals.delete(id)
 globalThis.setTimeout = (callback, delay) => {
-  timeouts.push({ callback, delay })
-  return nextTimer++
+  const id = nextTimer++
+  timeouts.set(id, { callback, delay })
+  return id
 }
+globalThis.clearTimeout = (id) => timeouts.delete(id)
 
 const flushTimeouts = (delay) => {
   while (true) {
-    const index = timeouts.findIndex((item) => item.delay === delay)
-    if (index < 0) return
-    const [{ callback }] = timeouts.splice(index, 1)
+    const entry = [...timeouts.entries()].find(([, item]) => item.delay === delay)
+    if (entry === undefined) return
+    const [id, { callback }] = entry
+    timeouts.delete(id)
     callback()
   }
 }
 
 const activity = await import("../js-out/cumulo-util.activity.mjs")
 const legacy = await import("../js-out/cumulo-util.core.mjs")
+const calcitCore = await import("../js-out/calcit.core.mjs")
+
+const browserEvents = []
+const stopBrowser = activity.watch_browser_lifecycle_$x_(
+  (signal) => browserEvents.push(String(signal)),
+  calcitCore._PCT_some(2345),
+)
+const browserTimer = [...intervals.values()][0]
+
+document.visibilityState = "hidden"
+listeners.get("visibilitychange")({})
+navigator.onLine = false
+listeners.get("offline")({})
+listeners.get("focus")({})
+listeners.get("focus")({})
+flushTimeouts(800)
+document.visibilityState = "visible"
+listeners.get("visibilitychange")({})
+navigator.onLine = true
+listeners.get("online")({})
+browserTimer.callback()
+
+const expectedBrowser = ":visible,:online,:hidden,:offline,:touch,:visible,:touch,:online,:heartbeat"
+if (browserEvents.join(",") !== expectedBrowser) {
+  throw new Error(`Unexpected browser lifecycle sequence: ${browserEvents.join(",")}`)
+}
+if (browserTimer.interval !== 2345) {
+  throw new Error(`Unexpected browser lifecycle interval: ${browserTimer.interval}`)
+}
+
+stopBrowser()
+if (listeners.size !== 0 || intervals.size !== 0 || timeouts.size !== 0) {
+  throw new Error("Browser lifecycle cleanup failed")
+}
 
 const activities = []
 const stopActivity = activity.watch_page_activity_$x_(
@@ -66,7 +107,7 @@ const stopTouch = legacy.on_page_touch(() => {
 })
 listeners.get("focus")({})
 listeners.get("focus")({})
-if (touches !== 1 || !timeouts.some((item) => item.delay === 800)) {
+if (touches !== 1 || ![...timeouts.values()].some((item) => item.delay === 800)) {
   throw new Error(`Touch throttling failed: ${touches}`)
 }
 flushTimeouts(800)
