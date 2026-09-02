@@ -14,7 +14,7 @@
       :defs $ {}
         'page-online? $ %{} 'CodeEntry (:doc "|Returns the browser online hint. It does not prove WebSocket or server health.")
           :code $ quote
-            defn page-online? () $ not= false js/navigator.onLine
+            defn page-online? () $ not= false (unsafe-coerce js/navigator.onLine 'Bool)
           :examples $ []
           :schema $ :: 'Fn
             {} (:return 'Bool)
@@ -22,7 +22,7 @@
               :features $ #{} :js-ffi
         'page-visible? $ %{} 'CodeEntry (:doc "|Returns whether the browser document is currently visible.")
           :code $ quote
-            defn page-visible? () $ = |visible js/document.visibilityState
+            defn page-visible? () $ = |visible (unsafe-coerce js/document.visibilityState 'String)
           :examples $ []
           :schema $ :: 'Fn
             {} (:return 'Bool)
@@ -67,11 +67,11 @@
                   when
                     or (= signal :visible) (= signal :hidden) (= signal :heartbeat)
                     cb signal
-                optionally duration
+                js-nullish->option duration
           :examples $ []
           :schema $ :: 'Fn
             {} (:return 'Fn)
-              :args $ [] 'Fn (:: 'Option 'Number)
+              :args $ [] 'Fn (:: 'JsNullish 'Number)
               :features $ #{} :js-ffi
       :ns $ %{} 'NsEntry (:doc "|Typed browser visibility and activity lifecycle signals. Transport protocols and reconnect policy belong to applications.")
         :code $ quote (ns cumulo-util.activity)

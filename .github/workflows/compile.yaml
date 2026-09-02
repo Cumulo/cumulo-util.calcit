@@ -35,11 +35,8 @@ jobs:
           git diff --exit-code -- calcit.cirru
           calcit calcit.cirru --check-only
           calcit calcit.cirru --entry server --check-only
-          mkdir -p .calcit
-          calcit calcit.cirru analyze check-types --summary-only --format json > .calcit/check-types.json
-          calcit calcit.cirru analyze weak-types --only schema-dynamic,code-dynamic,code-nil --intent unresolved,declared-optional --summary-only --format json > .calcit/weak-types.json
-          calcit calcit.cirru analyze deprecated --summary-only --format json > .calcit/deprecated.json
-          node scripts/check-calcit-upgrade-baseline.mjs
+          calcit calcit.cirru analyze dynamic-methods --max 0
+          calcit calcit.cirru analyze quality --baseline config/calcit-quality.cirru
           calcit calcit.cirru js
           calcit calcit.cirru --entry server js
           yarn test
