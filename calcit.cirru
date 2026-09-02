@@ -147,11 +147,7 @@
               unsafe-coerce
                 flipped js/setInterval
                   either (unsafe-coerce duration 'Dynamic) 3000
-                  fn () $ let
-                      document-node $ unsafe-coerce js/document 'JsObject
-                    when
-                      = |visible $ .-visibilityState document-node
-                      cb
+                  fn () $ when (page-visible?) (cb)
                 , 'Number
           :examples $ []
           :schema $ :: 'Fn
@@ -161,7 +157,7 @@
       :ns $ %{} 'NsEntry (:doc "|Legacy zero-argument browser callbacks kept isolated for compatibility. New applications should use cumulo-util.activity.")
         :code $ quote
           ns cumulo-util.core $ :require
-            cumulo-util.activity :refer $ watch-browser-lifecycle!
+            cumulo-util.activity :refer $ watch-browser-lifecycle! page-visible?
     'cumulo-util.file $ %{} 'FileEntry
       :defs $ {}
         'get-backup-path! $ %{} 'CodeEntry (:doc "|Builds the legacy month/day snapshot path under the module backups directory.")
