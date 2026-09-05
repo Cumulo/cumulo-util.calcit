@@ -49,7 +49,7 @@ Cirru EDN round-trip checks, and storage-boundary rules.
 
 ## Node.js file helpers
 
-```cirru
+```cirru.no-check
 cumulo-util.file/sh! |pwd
 cumulo-util.file/write-mildly! path content
 cumulo-util.file/get-backup-path!
@@ -58,9 +58,20 @@ cumulo-util.file/merge-local-edn! base filepath $ fn (found?)
 
 ## Development
 
+The maintained toolchain is exact Calcit 0.13.77 with
+`@calcit/procs` 0.13.77, Caps 0.1.0 (verify via `caps --version`), Node.js 24,
+and Yarn 4.12.0. The module version remains 0.0.16 because this migration does not publish a release.
+
+本仓库使用精确的 Calcit 0.13.77、`@calcit/procs` 0.13.77、Caps 0.1.0、
+Node.js 24 与 Yarn 4.12.0。本次仅迁移工具链，不发布模块，版本保持 0.0.16。
+
 ```bash
-caps --ci
-yarn install
+corepack enable
+corepack prepare yarn@4.12.0 --activate
+caps --version # must report caps 0.1.0
+caps --strict --ci
+yarn install --immutable
+caps verify --toolchain
 yarn watch-page   # terminal 1
 yarn dev          # terminal 2
 ```
@@ -68,8 +79,14 @@ yarn dev          # terminal 2
 Validation:
 
 ```bash
+calcit calcit.cirru edit format
+git diff --exit-code -- calcit.cirru
 calcit calcit.cirru --check-only
 calcit calcit.cirru --entry server --check-only
+calcit calcit.cirru analyze dynamic-methods --max 0
+calcit calcit.cirru analyze quality --baseline config/calcit-quality.cirru
+calcit calcit.cirru js
+calcit calcit.cirru --entry server js
 yarn build
 yarn test
 ```

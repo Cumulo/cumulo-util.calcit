@@ -26,7 +26,7 @@
       :typeNone 0
       :typeNotFull 0
       :unresolved 0
-      :unsafeCoerce 3
+      :unsafeCoerce 2
     |cumulo-util.file/merge-local-edn! $ {} (:codeDynamic 0)
       :codeNil 1
       :declaredOptional 0
@@ -53,7 +53,7 @@
     :typeNone 0
     :typeNotFull 2
     :unresolved 1
-    :unsafeCoerce 5
+    :unsafeCoerce 4
   :scope $ {} (:includeDependencies false)
     :namespace nil
     :namespacePrefix nil
