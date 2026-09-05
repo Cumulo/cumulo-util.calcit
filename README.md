@@ -68,9 +68,10 @@ Node.js 24 与 Yarn 4.12.0。本次仅迁移工具链，不发布模块，版本
 ```bash
 corepack enable
 corepack prepare yarn@4.12.0 --activate
+caps --version # must report caps 0.1.0
 caps --strict --ci
-caps verify --toolchain
 yarn install --immutable
+caps verify --toolchain
 yarn watch-page   # terminal 1
 yarn dev          # terminal 2
 ```

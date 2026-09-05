@@ -39,8 +39,8 @@ jobs:
       - name: Install dependencies
         run: |
           caps --strict --ci
-          caps verify --toolchain
           yarn install --immutable
+          caps verify --toolchain
 
       - name: Check native and JavaScript builds
         run: |
