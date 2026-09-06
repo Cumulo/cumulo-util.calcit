@@ -33,7 +33,10 @@ const flushTimeouts = (delay) => {
     if (entry === undefined) return
     const [id, { callback }] = entry
     timeouts.delete(id)
-    callback()
+    const result = callback()
+    if (result !== undefined) {
+      throw new Error(`Timer callback must return Calcit Unit, got ${String(result)}`)
+    }
   }
 }
 

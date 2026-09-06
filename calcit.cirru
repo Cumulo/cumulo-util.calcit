@@ -3,7 +3,7 @@
   :entries $ {}
     :default $ {} (:description |) (:init-fn 'cumulo-util.client/main!) (:mode :native) (:reload-fn 'cumulo-util.client/reload!)
       :feature-policy $ {}
-      :modules $ []
+      :modules $ [] |js-ffi/
       :type-slots $ {}
     :server $ {} (:description |) (:init-fn 'cumulo-util.app/main!) (:mode :native) (:reload-fn 'cumulo-util.app/reload!)
       :feature-policy $ {}
@@ -37,8 +37,8 @@
                   *touch-timer $ atom 0
                   emit-touch! $ fn ()
                     when (not @*cooling) (callback :touch) (reset! *cooling true)
-                      reset! *touch-timer $ flipped js/setTimeout 800
-                        fn () $ reset! *cooling false
+                      reset! *touch-timer $ flipped set-timeout! 800
+                        fn () (reset! *cooling false) &unit
                   on-visibility $ fn (event)
                     if (page-visible?)
                       do (callback :visible) (emit-touch!)
@@ -74,7 +74,9 @@
               :args $ [] 'Fn (:: 'JsNullish 'Number)
               :features $ #{} :js-ffi
       :ns $ %{} 'NsEntry (:doc "|Typed browser visibility and activity lifecycle signals. Transport protocols and reconnect policy belong to applications.")
-        :code $ quote (ns cumulo-util.activity)
+        :code $ quote
+          ns cumulo-util.activity $ :require
+            js-ffi.browser :refer $ set-timeout!
     'cumulo-util.app $ %{} 'FileEntry
       :defs $ {}
         'main! $ %{} 'CodeEntry (:doc |)

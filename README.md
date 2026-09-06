@@ -91,7 +91,9 @@ yarn build
 yarn test
 ```
 
-This module has no Calcit package dependencies; Lilac is not required.
+Browser lifecycle helpers use the published `calcit-lang/js-ffi` `0.1.12`
+numeric timer contract. Lilac is not required. The Node server entry does not
+load this browser module.
 
 ## License
 
