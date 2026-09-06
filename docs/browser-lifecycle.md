@@ -21,6 +21,11 @@ function removes every listener and clears both the interval and a pending touch
 cooldown. Call it during hot reload or component teardown when the watcher may be
 installed more than once.
 
+The touch cooldown uses `js-ffi.browser/set-timeout!` from the exact published
+`calcit-lang/js-ffi` 0.1.12 dependency. Its browser handle is numeric and its
+callback explicitly returns Unit. The 800 ms throttle and cleanup behavior are
+unchanged; Node timer objects are not substituted for browser handles.
+
 `page-online?`, `:online`, and `:offline` only expose the browser's local
 `navigator.onLine` hint. They do not establish that a WebSocket, server, or route is
 reachable. Keep transport health and retry outcomes in the application's own state.
