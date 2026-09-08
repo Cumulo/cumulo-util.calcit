@@ -26,8 +26,11 @@
       :doc "|Reports visibility, online/offline, throttled page touch, and visible-page heartbeat signals. Returns cleanup for every listener and timer."
       :params $ [] 'callback 'heartbeat-ms
       :schema $ :: 'Fn $ {}
-        :args $ [] 'Fn (:: 'Option 'Number)
-        :return 'Fn
+        :args $ []
+          :: 'Fn $ {} (:args $ [] 'Tag) (:return 'Unit)
+          :: 'Option 'Number
+        :return $ :: 'Fn $ {} (:args $ []) (:return 'Unit)
+        :features $ #{} :js-ffi
   :edges $ #{}
     :: :call 'cumulo-util.activity/watch-browser-lifecycle! 'cumulo-util.activity/page-online?
     :: :call 'cumulo-util.activity/watch-browser-lifecycle! 'cumulo-util.activity/page-visible?

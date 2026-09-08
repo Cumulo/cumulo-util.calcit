@@ -32,7 +32,7 @@
           :code $ quote
             defn watch-browser-lifecycle! (callback heartbeat-ms)
               let
-                  interval-ms $ heartbeat-ms.unwrap-or 3000
+                  interval-ms $ option:unwrap-or heartbeat-ms 3000
                   *cooling $ atom false
                   *touch-timer $ atom 0
                   emit-touch! $ fn ()
@@ -54,25 +54,39 @@
                 js/window.addEventListener |focus on-focus
                 callback $ if (page-visible?) :visible :hidden
                 callback $ if (page-online?) :online :offline
-                fn () (js/window.removeEventListener |visibilitychange on-visibility) (js/window.removeEventListener |online on-online) (js/window.removeEventListener |offline on-offline) (js/window.removeEventListener |focus on-focus) (js/clearInterval timer) (js/clearTimeout @*touch-timer)
+                fn () (js/window.removeEventListener |visibilitychange on-visibility) (js/window.removeEventListener |online on-online) (js/window.removeEventListener |offline on-offline) (js/window.removeEventListener |focus on-focus) (js/clearInterval timer) (js/clearTimeout @*touch-timer) &unit
           :examples $ []
           :schema $ :: 'Fn
-            {} (:return 'Fn)
-              :args $ [] 'Fn (:: 'Option 'Number)
+            {}
+              :args $ []
+                :: 'Fn $ {} (:return 'Unit)
+                  :args $ [] 'Tag
+                :: 'Option 'Number
+              :features $ #{} :js-ffi
+              :return $ :: 'Fn
+                {} (:return 'Unit)
+                  :args $ []
         'watch-page-activity! $ %{} 'CodeEntry (:doc "|Reports :visible and :hidden transitions plus :heartbeat while visible. Emits the current visibility immediately and returns a cleanup function.")
           :code $ quote
-            defn watch-page-activity! (cb ? duration)
+            defn watch-page-activity! (cb duration)
               watch-browser-lifecycle!
                 fn (signal)
                   when
                     or (= signal :visible) (= signal :hidden) (= signal :heartbeat)
                     cb signal
+                  , &unit
                 js-nullish->option duration
           :examples $ []
           :schema $ :: 'Fn
-            {} (:return 'Fn)
-              :args $ [] 'Fn (:: 'JsNullish 'Number)
+            {}
+              :args $ []
+                :: 'Fn $ {} (:return 'Unit)
+                  :args $ [] 'Tag
+                :: 'JsNullish 'Number
               :features $ #{} :js-ffi
+              :return $ :: 'Fn
+                {} (:return 'Unit)
+                  :args $ []
       :ns $ %{} 'NsEntry (:doc "|Typed browser visibility and activity lifecycle signals. Transport protocols and reconnect policy belong to applications.")
         :code $ quote
           ns cumulo-util.activity $ :require
@@ -111,8 +125,9 @@
       :defs $ {}
         'main! $ %{} 'CodeEntry (:doc |)
           :code $ quote
-            defn main! () $ watch-page-activity!
+            defn main! () $ watch-browser-lifecycle!
               fn (activity) (println |activity activity)
+              %none
           :examples $ []
           :schema $ :: 'Fn
             {} (:return 'Fn)
@@ -128,7 +143,7 @@
       :ns $ %{} 'NsEntry (:doc |)
         :code $ quote
           ns cumulo-util.client $ :require
-            cumulo-util.activity :refer $ watch-page-activity!
+            cumulo-util.activity :refer $ watch-page-activity! watch-browser-lifecycle!
     'cumulo-util.core $ %{} 'FileEntry
       :defs $ {}
         'on-page-touch $ %{} 'CodeEntry (:doc "|Registers a throttled focus and visible-page callback through the unified lifecycle watcher. Returns cleanup for every listener and timer.")
@@ -137,24 +152,35 @@
               watch-browser-lifecycle!
                 fn (signal)
                   when (= signal :touch) (listener)
+                  , &unit
                 %none
           :examples $ []
           :schema $ :: 'Fn
-            {} (:return 'Fn)
-              :args $ [] 'Fn
+            {}
+              :args $ []
+                :: 'Fn $ {} (:return 'Unit)
+                  :args $ []
               :features $ #{} :js-ffi
+              :return $ :: 'Fn
+                {} (:return 'Unit)
+                  :args $ []
         'visibility-heartbeat $ %{} 'CodeEntry (:doc "|Calls cb at the requested interval while the document is visible. Defaults to 3000 ms and returns the JavaScript interval handle.")
           :code $ quote
-            defn visibility-heartbeat (cb ? duration)
-              unsafe-coerce
-                flipped js/setInterval
-                  either (unsafe-coerce duration 'Dynamic) 3000
-                  fn () $ when (page-visible?) (cb)
-                , 'Number
+            defn visibility-heartbeat (cb duration)
+              let
+                  interval-ms $ option:unwrap-or (js-nullish->option duration) 3000
+                unsafe-coerce
+                  flipped js/setInterval interval-ms $ fn ()
+                    when (page-visible?) (cb)
+                    , &unit
+                  , 'Number
           :examples $ []
           :schema $ :: 'Fn
             {} (:return 'Number)
-              :args $ [] 'Fn (:: 'Option 'Number)
+              :args $ []
+                :: 'Fn $ {} (:return 'Unit)
+                  :args $ []
+                :: 'JsNullish 'Number
               :features $ #{} :js-ffi
       :ns $ %{} 'NsEntry (:doc "|Legacy zero-argument browser callbacks kept isolated for compatibility. New applications should use cumulo-util.activity.")
         :code $ quote
@@ -201,13 +227,13 @@
           :code $ quote
             defn write-mildly! (file-path content)
               let
-                  dir $ path/dirname file-path
-                  filename $ path/basename file-path
+                  dir $ assert-type (path/dirname file-path) 'String
+                  filename $ assert-type (path/basename file-path) 'String
                   temp-name $ str |/tmp/ (js/Date.now) |- (js/Math.random) |- filename
                   do-write! $ fn () (fs/writeFileSync temp-name content) (fs/renameSync temp-name file-path) (println "|Write to file:" file-path)
                 if (fs/existsSync file-path)
                   let
-                      old-content $ fs/readFileSync file-path |utf8
+                      old-content $ assert-type (fs/readFileSync file-path |utf8) 'String
                     if (not= content old-content) (do-write!) (; println "|same file, skipping:" file-path)
                   do
                     when
