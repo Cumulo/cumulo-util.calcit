@@ -58,12 +58,12 @@ cumulo-util.file/merge-local-edn! base filepath $ fn (found?)
 
 ## Development
 
-The maintained toolchain is exact Calcit 0.13.77 with
-`@calcit/procs` 0.13.77, Caps 0.1.0 (verify via `caps --version`), Node.js 24,
-and Yarn 4.12.0. Module release 0.0.17 is the first immutable version that contains this toolchain migration.
+The maintained toolchain is exact Calcit 0.14.4 with
+`@calcit/procs` 0.14.4, Caps 0.1.0 (verify via `caps --version`), Node.js 24,
+and Yarn 4.12.0. Module release 0.0.19 is the first immutable version that contains the 0.14.4 strict-mode migration.
 
-本仓库使用精确的 Calcit 0.13.77、`@calcit/procs` 0.13.77、Caps 0.1.0、
-Node.js 24 与 Yarn 4.12.0。模块 0.0.17 是首个包含本次工具链迁移的不可变发布版本。
+本仓库使用精确的 Calcit 0.14.4、`@calcit/procs` 0.14.4、Caps 0.1.0、
+Node.js 24 与 Yarn 4.12.0。模块 0.0.19 是首个包含 0.14.4 严格模式迁移的不可变发布版本。
 
 ```bash
 corepack enable
@@ -91,7 +91,7 @@ yarn build
 yarn test
 ```
 
-Browser lifecycle helpers use the published `calcit-lang/js-ffi` `0.1.12`
+Browser lifecycle helpers use the published `calcit-lang/js-ffi` `0.1.16`
 numeric timer contract. Lilac is not required. The Node server entry does not
 load this browser module.
 
