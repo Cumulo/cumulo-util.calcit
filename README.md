@@ -58,12 +58,14 @@ cumulo-util.file/merge-local-edn! base filepath $ fn (found?)
 
 ## Development
 
-The maintained toolchain is exact Calcit 0.14.4 with
-`@calcit/procs` 0.14.4, Caps 0.1.0 (verify via `caps --version`), Node.js 24,
-and Yarn 4.12.0. Module release 0.0.19 is the first immutable version that contains the 0.14.4 strict-mode migration.
+The maintained toolchain is exact Calcit 0.14.7 with
+`@calcit/procs` 0.14.7, Caps 0.1.0 (verify via `caps --version`), Node.js 24,
+and Yarn 4.12.0. Module release 0.0.19 is the current immutable baseline;
+the next release will contain this 0.14.7 strict-mode refresh.
 
-本仓库使用精确的 Calcit 0.14.4、`@calcit/procs` 0.14.4、Caps 0.1.0、
-Node.js 24 与 Yarn 4.12.0。模块 0.0.19 是首个包含 0.14.4 严格模式迁移的不可变发布版本。
+本仓库使用精确的 Calcit 0.14.7、`@calcit/procs` 0.14.7、Caps 0.1.0、
+Node.js 24 与 Yarn 4.12.0。模块 0.0.19 是当前不可变基线；下一次发布将包含
+本次 0.14.7 严格模式更新。
 
 ```bash
 corepack enable
