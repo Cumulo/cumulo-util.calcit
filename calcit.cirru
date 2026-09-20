@@ -3,17 +3,11 @@
   :about "|Machine-generated snapshot. Do not edit directly — changes will be overwritten. Use `calcit query` to inspect and `calcit edit`/`calcit tree` to modify. Run `calcit docs agents --contract` before mutations; use `--full` for first orientation or changed contract digest. Manual edits must follow format and schema conventions, then run `calcit edit format`."
   :package |cumulo-util
   :entries $ {}
-    :default $ {} (:description |)
-      :init-fn 'cumulo-util.client/main!
-      :mode :native
-      :reload-fn 'cumulo-util.client/reload!
+    :default $ {} (:description |) (:init-fn 'cumulo-util.client/main!) (:mode :native) (:reload-fn 'cumulo-util.client/reload!)
       :feature-policy $ {}
       :modules $ [] |js-ffi/
       :type-slots $ {}
-    :server $ {} (:description |)
-      :init-fn 'cumulo-util.app/main!
-      :mode :native
-      :reload-fn 'cumulo-util.app/reload!
+    :server $ {} (:description |) (:init-fn 'cumulo-util.app/main!) (:mode :native) (:reload-fn 'cumulo-util.app/reload!)
       :feature-policy $ {}
       :modules $ []
       :type-slots $ {}
@@ -31,7 +25,9 @@
         'page-visible? $ %{} 'CodeEntry
           :doc "|Returns whether the browser document is currently visible."
           :code $ quote $ defn page-visible? ()
-            = |visible $ unsafe-coerce js/document.visibilityState 'String
+            match (browser/visibility-state)
+              (:visible) true
+              _ false
           :examples $ []
           :schema $ :: 'Fn $ {} (:return 'Bool)
             :args $ []
@@ -44,7 +40,9 @@
                 *cooling $ atom false
                 *touch-timer $ atom 0
                 emit-touch! $ fn () $ when (not @*cooling) (callback :touch) (reset! *cooling true)
-                  reset! *touch-timer $ flipped set-timeout! 800 $ fn () (reset! *cooling false) &unit
+                  reset! *touch-timer $ browser/set-timeout!
+                    fn () (reset! *cooling false) &unit
+                    , 800
                 on-visibility $ fn (event)
                   if (page-visible?)
                     do (callback :visible) (emit-touch!)
@@ -52,22 +50,18 @@
                 on-online $ fn (event) (callback :online)
                 on-offline $ fn (event) (callback :offline)
                 on-focus $ fn (event) (emit-touch!)
-                timer $ flipped js/setInterval interval-ms $ fn ()
-                  when (page-visible?) (callback :heartbeat)
-              js/window.addEventListener |visibilitychange on-visibility
-              js/window.addEventListener |online on-online
-              js/window.addEventListener |offline on-offline
-              js/window.addEventListener |focus on-focus
+                timer $ browser/set-interval!
+                  fn ()
+                    when (page-visible?) (callback :heartbeat)
+                    , &unit
+                  , interval-ms
+              browser/add-event-listener! |visibilitychange on-visibility
+              browser/add-event-listener! |online on-online
+              browser/add-event-listener! |offline on-offline
+              browser/add-event-listener! |focus on-focus
               callback $ if (page-visible?) :visible :hidden
               callback $ if (page-online?) :online :offline
-              fn ()
-                js/window.removeEventListener |visibilitychange on-visibility
-                js/window.removeEventListener |online on-online
-                js/window.removeEventListener |offline on-offline
-                js/window.removeEventListener |focus on-focus
-                js/clearInterval timer
-                js/clearTimeout @*touch-timer
-                , &unit
+              fn () (browser/remove-event-listener! |visibilitychange on-visibility) (browser/remove-event-listener! |online on-online) (browser/remove-event-listener! |offline on-offline) (browser/remove-event-listener! |focus on-focus) (browser/clear-interval! timer) (browser/clear-timeout! @*touch-timer) &unit
           :examples $ []
           :schema $ :: 'Fn $ {}
             :args $ []
@@ -99,7 +93,7 @@
       :ns $ %{} 'NsEntry
         :doc "|Typed browser visibility and activity lifecycle signals. Transport protocols and reconnect policy belong to applications."
         :code $ quote $ ns cumulo-util.activity
-          :require $ js-ffi.browser :refer $ set-timeout!
+          :require $ js-ffi.browser :as browser
     'cumulo-util.app $ %{} 'FileEntry
       :defs $ {}
         'main! $ %{} 'CodeEntry (:doc |)
@@ -164,14 +158,12 @@
           :doc "|Calls cb at the requested interval while the document is visible. Defaults to 3000 ms and returns the JavaScript interval handle."
           :code $ quote $ defn visibility-heartbeat (cb duration)
             let
-                interval-ms $ option:unwrap-or
-                  js-nullish->option duration
-                  , 3000
-              unsafe-coerce
-                flipped js/setInterval interval-ms $ fn ()
+                interval-ms $ option:unwrap-or (js-nullish->option duration) 3000
+              browser/set-interval!
+                fn ()
                   when (page-visible?) (cb)
                   , &unit
-                , 'Number
+                , interval-ms
           :examples $ []
           :schema $ :: 'Fn $ {} (:return 'Number)
             :args $ []
@@ -182,7 +174,9 @@
       :ns $ %{} 'NsEntry
         :doc "|Legacy zero-argument browser callbacks kept isolated for compatibility. New applications should use cumulo-util.activity."
         :code $ quote $ ns cumulo-util.core
-          :require $ cumulo-util.activity :refer $ watch-browser-lifecycle! page-visible?
+          :require
+            cumulo-util.activity :refer $ watch-browser-lifecycle! page-visible?
+            js-ffi.browser :as browser
     'cumulo-util.file $ %{} 'FileEntry
       :defs $ {}
         'get-backup-path! $ %{} 'CodeEntry
@@ -229,8 +223,7 @@
               if (fs/existsSync file-path)
                 let
                     old-content $ assert-type (fs/readFileSync file-path |utf8) 'String
-                  if (not= content old-content) (do-write!)
-                    ; println "|same file, skipping:" file-path
+                  if (not= content old-content) (do-write!) (; println "|same file, skipping:" file-path)
                 do
                   when
                     and (not= |. dir)
@@ -249,17 +242,14 @@
       :defs $ {}
         'CoalescedPlan $ %{} 'CodeEntry
           :doc "|The next coalesced state and delay for one externally-owned timer."
-          :code $ quote $ defstruct CoalescedPlan
-            :state 'cumulo-util.realtime/Coalescer
-            :delay-ms 'Number
+          :code $ quote $ defstruct CoalescedPlan (:state 'cumulo-util.realtime/Coalescer) (:delay-ms 'Number)
           :examples $ []
           :schema $ :: 'StructDef
         'Coalescer $ %{} 'CodeEntry
           :doc "||Immutable coalescing configuration with explicit pending-window state."
           :code $ quote $ def Coalescer
             impl-traits
-              defstruct Coalescer (:delay-ms 'Number) (:max-wait-ms 'Number) (:pending? 'Bool)
-                :first-request-ms 'Number
+              defstruct Coalescer (:delay-ms 'Number) (:max-wait-ms 'Number) (:pending? 'Bool) (:first-request-ms 'Number)
               , CoalescerOpsImpl
           :examples $ []
           :schema $ :: 'StructDef
@@ -277,12 +267,8 @@
               :return 'cumulo-util.realtime/Coalescer
           :examples $ []
           :schema $ :: 'Trait
-        'CoalescerOpsImpl $ %{} 'CodeEntry
-          :doc "|Coalescer method implementation."
-          :code $ quote $ defimpl CoalescerOpsImpl CoalescerOps
-            .request coalescer:request
-            .flush coalescer:flush
-            .cancel coalescer:cancel
+        'CoalescerOpsImpl $ %{} 'CodeEntry (:doc "|Coalescer method implementation.")
+          :code $ quote $ defimpl CoalescerOpsImpl CoalescerOps (.request coalescer:request) (.flush coalescer:flush) (.cancel coalescer:cancel)
           :examples $ []
           :schema $ :: 'Impl
         'HeartbeatLease $ %{} 'CodeEntry
@@ -304,11 +290,8 @@
               :return 'Bool
           :examples $ []
           :schema $ :: 'Trait
-        'HeartbeatLeaseOpsImpl $ %{} 'CodeEntry
-          :doc "|HeartbeatLease method implementation."
-          :code $ quote $ defimpl HeartbeatLeaseOpsImpl HeartbeatLeaseOps
-            .renew heartbeat-lease:renew
-            .expired? heartbeat-lease:expired?
+        'HeartbeatLeaseOpsImpl $ %{} 'CodeEntry (:doc "|HeartbeatLease method implementation.")
+          :code $ quote $ defimpl HeartbeatLeaseOpsImpl HeartbeatLeaseOps (.renew heartbeat-lease:renew) (.expired? heartbeat-lease:expired?)
           :examples $ []
           :schema $ :: 'Impl
         'RetryBackoff $ %{} 'CodeEntry
@@ -330,17 +313,13 @@
               :return 'cumulo-util.realtime/RetryBackoff
           :examples $ []
           :schema $ :: 'Trait
-        'RetryBackoffOpsImpl $ %{} 'CodeEntry
-          :doc "|RetryBackoff method implementation."
-          :code $ quote $ defimpl RetryBackoffOpsImpl RetryBackoffOps
-            .next retry-backoff:next
-            .reset retry-backoff:reset
+        'RetryBackoffOpsImpl $ %{} 'CodeEntry (:doc "|RetryBackoff method implementation.")
+          :code $ quote $ defimpl RetryBackoffOpsImpl RetryBackoffOps (.next retry-backoff:next) (.reset retry-backoff:reset)
           :examples $ []
           :schema $ :: 'Impl
         'RetryStep $ %{} 'CodeEntry
           :doc "|One retry delay and the immutable state to use for the next retry."
-          :code $ quote $ defstruct RetryStep (:delay-ms 'Number)
-            :next 'cumulo-util.realtime/RetryBackoff
+          :code $ quote $ defstruct RetryStep (:delay-ms 'Number) (:next 'cumulo-util.realtime/RetryBackoff)
           :examples $ []
           :schema $ :: 'StructDef
         'coalescer $ %{} 'CodeEntry
@@ -349,19 +328,16 @@
             let
                 safe-delay $ if (> delay-ms 0) delay-ms 0
                 safe-max-wait $ if (> max-wait-ms safe-delay) max-wait-ms safe-delay
-              %{} Coalescer (:delay-ms safe-delay) (:max-wait-ms safe-max-wait) (:pending? false)
-                :first-request-ms 0
+              %{} Coalescer (:delay-ms safe-delay) (:max-wait-ms safe-max-wait) (:pending? false) (:first-request-ms 0)
           :examples $ []
-          :schema $ :: 'Fn $ {}
-            :return 'cumulo-util.realtime/Coalescer
+          :schema $ :: 'Fn $ {} (:return 'cumulo-util.realtime/Coalescer)
             :args $ [] 'Number 'Number
           :tags $ #{} :scaffold
         'coalescer:cancel $ %{} 'CodeEntry
           :doc "||Clear explicit pending state after cancelling the externally-owned timer."
           :code $ quote $ defn coalescer:cancel (self) (coalescer:flush self)
           :examples $ []
-          :schema $ :: 'Fn $ {}
-            :return 'cumulo-util.realtime/Coalescer
+          :schema $ :: 'Fn $ {} (:return 'cumulo-util.realtime/Coalescer)
             :args $ [] 'cumulo-util.realtime/Coalescer
           :tags $ #{} :scaffold
         'coalescer:flush $ %{} 'CodeEntry
@@ -371,8 +347,7 @@
                 cleared $ assoc self :pending? false
               assoc cleared :first-request-ms 0
           :examples $ []
-          :schema $ :: 'Fn $ {}
-            :return 'cumulo-util.realtime/Coalescer
+          :schema $ :: 'Fn $ {} (:return 'cumulo-util.realtime/Coalescer)
             :args $ [] 'cumulo-util.realtime/Coalescer
           :tags $ #{} :scaffold
         'coalescer:request $ %{} 'CodeEntry
@@ -400,8 +375,7 @@
                     :delay-ms self
                 %{} CoalescedPlan (:state next-state) (:delay-ms delay-ms)
           :examples $ []
-          :schema $ :: 'Fn $ {}
-            :return 'cumulo-util.realtime/CoalescedPlan
+          :schema $ :: 'Fn $ {} (:return 'cumulo-util.realtime/CoalescedPlan)
             :args $ [] 'cumulo-util.realtime/Coalescer 'Number
           :tags $ #{} :scaffold
         'heartbeat-lease $ %{} 'CodeEntry
@@ -412,8 +386,7 @@
               %{} HeartbeatLease (:last-seen-ms now-ms)
                 :deadline-ms $ + now-ms safe-timeout
           :examples $ []
-          :schema $ :: 'Fn $ {}
-            :return 'cumulo-util.realtime/HeartbeatLease
+          :schema $ :: 'Fn $ {} (:return 'cumulo-util.realtime/HeartbeatLease)
             :args $ [] 'Number 'Number
           :tags $ #{} :scaffold
         'heartbeat-lease:expired? $ %{} 'CodeEntry
@@ -432,8 +405,7 @@
                 touched $ assoc self :last-seen-ms now-ms
               assoc touched :deadline-ms $ + now-ms safe-timeout
           :examples $ []
-          :schema $ :: 'Fn $ {}
-            :return 'cumulo-util.realtime/HeartbeatLease
+          :schema $ :: 'Fn $ {} (:return 'cumulo-util.realtime/HeartbeatLease)
             :args $ [] 'cumulo-util.realtime/HeartbeatLease 'Number 'Number
           :tags $ #{} :scaffold
         'retry-backoff $ %{} 'CodeEntry
@@ -445,8 +417,7 @@
                 safe-jitter $ if (< jitter-ratio 0) 0 $ if (> jitter-ratio 1) 1 jitter-ratio
               %{} RetryBackoff (:base-delay-ms safe-base) (:max-delay-ms safe-maximum) (:jitter-ratio safe-jitter) (:attempt 0)
           :examples $ []
-          :schema $ :: 'Fn $ {}
-            :return 'cumulo-util.realtime/RetryBackoff
+          :schema $ :: 'Fn $ {} (:return 'cumulo-util.realtime/RetryBackoff)
             :args $ [] 'Number 'Number 'Number
           :tags $ #{} :scaffold
         'retry-backoff:next $ %{} 'CodeEntry
@@ -465,16 +436,14 @@
                 next-state $ assoc self :attempt $ + 1 (:attempt self)
               %{} RetryStep (:delay-ms delay-ms) (:next next-state)
           :examples $ []
-          :schema $ :: 'Fn $ {}
-            :return 'cumulo-util.realtime/RetryStep
+          :schema $ :: 'Fn $ {} (:return 'cumulo-util.realtime/RetryStep)
             :args $ [] 'cumulo-util.realtime/RetryBackoff 'Number
           :tags $ #{} :scaffold
         'retry-backoff:reset $ %{} 'CodeEntry
           :doc "|Return the same retry configuration at attempt zero."
           :code $ quote $ defn retry-backoff:reset (self) (assoc self :attempt 0)
           :examples $ []
-          :schema $ :: 'Fn $ {}
-            :return 'cumulo-util.realtime/RetryBackoff
+          :schema $ :: 'Fn $ {} (:return 'cumulo-util.realtime/RetryBackoff)
             :args $ [] 'cumulo-util.realtime/RetryBackoff
           :tags $ #{} :scaffold
       :ns $ %{} 'NsEntry (:doc |)
