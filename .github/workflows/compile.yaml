@@ -11,7 +11,7 @@ permissions:
 
 jobs:
   test:
-    name: Calcit 0.14.7 validation
+    name: Calcit 0.18.1 validation
     runs-on: ubuntu-24.04
     timeout-minutes: 20
     concurrency:
