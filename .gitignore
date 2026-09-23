@@ -9,6 +9,7 @@ out-page/
 
 .calcit
 
-.yarn/*.gz
+.yarn/
+.pnp.*
 
 .DS_Store

@@ -1,9 +1,9 @@
 {
-  "version": "0.0.22",
+  "version": "0.0.23",
   "dependencies": {
-    "@calcit/procs": "0.18.1"
+    "@calcit/procs": "0.19.1"
   },
-  "packageManager": "yarn@4.12.0",
+  "packageManager": "yarn@4.18.0",
   "scripts": {
     "build": "yarn compile-page && vite build",
     "compile-page": "calcit calcit.cirru js",

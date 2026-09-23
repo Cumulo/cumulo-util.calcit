@@ -58,19 +58,17 @@ cumulo-util.file/merge-local-edn! base filepath $ fn (found?)
 
 ## Development
 
-The maintained toolchain is exact Calcit 0.14.7 with
-`@calcit/procs` 0.14.7, Caps 0.1.0 (verify via `caps --version`), Node.js 24,
-and Yarn 4.12.0. Module release 0.0.19 is the current immutable baseline;
-the next release will contain this 0.14.7 strict-mode refresh.
+The maintained toolchain is exact Calcit 0.19.1 with
+`@calcit/procs` 0.19.1, Caps 0.1.1 (verify via `caps --version`), Node.js 24,
+and Yarn 4.18.0. Module release 0.0.23 includes this compatibility update.
 
-本仓库使用精确的 Calcit 0.14.7、`@calcit/procs` 0.14.7、Caps 0.1.0、
-Node.js 24 与 Yarn 4.12.0。模块 0.0.19 是当前不可变基线；下一次发布将包含
-本次 0.14.7 严格模式更新。
+本仓库使用精确的 Calcit 0.19.1、`@calcit/procs` 0.19.1、Caps 0.1.1、
+Node.js 24 与 Yarn 4.18.0。模块 0.0.23 包含本次兼容更新。
 
 ```bash
 corepack enable
-corepack prepare yarn@4.12.0 --activate
-caps --version # must report caps 0.1.0
+corepack prepare yarn@4.18.0 --activate
+caps --version # must report caps 0.1.1
 caps --strict --ci
 yarn install --immutable
 caps verify --toolchain
@@ -85,7 +83,7 @@ calcit calcit.cirru edit format
 git diff --exit-code -- calcit.cirru
 calcit calcit.cirru --check-only
 calcit calcit.cirru --entry server --check-only
-calcit calcit.cirru analyze dynamic-methods --max 0
+calcit calcit.cirru analyze dynamic-methods --format json | jq -e '.data.summary.findings == 0'
 calcit calcit.cirru analyze quality --baseline config/calcit-quality.cirru
 calcit calcit.cirru js
 calcit calcit.cirru --entry server js
