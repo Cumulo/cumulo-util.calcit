@@ -1,3 +1,6 @@
+import fs from "node:fs"
+import { syncBuiltinESMExports } from "node:module"
+
 const listeners = new Map()
 const intervals = new Map()
 const timeouts = new Map()
@@ -133,3 +136,36 @@ if (heartbeats !== 1 || heartbeatTimer.interval !== 4567) {
 }
 
 console.log(`browser lifecycle passed: ${activities.join(" -> ")}`)
+
+// Reuse this Node fixture for the migrated storage boundary; no real file I/O.
+const files = await import("../js-out/cumulo-util.file.mjs")
+const originalExists = fs.existsSync
+const originalRead = fs.readFileSync
+const base = calcitCore.parse_cirru_edn("{} (:a 1) (:keep 7)")
+let exists = false
+let content = "{} (:a 2) (:b 3)"
+let reads = 0
+const foundSignals = []
+fs.existsSync = () => exists
+fs.readFileSync = () => { reads += 1; return content }
+syncBuiltinESMExports()
+try {
+  const handler = calcitCore._PCT_some(found => foundSignals.push(found))
+  if (files.merge_local_edn_$x_(base, "fixture-only", handler) !== base || reads !== 0) {
+    throw new Error("Missing storage must preserve base without reading")
+  }
+  exists = true
+  const merged = calcitCore.to_js_data(files.merge_local_edn_$x_(base, "fixture-only", handler))
+  if (merged.a !== 2 || merged.keep !== 7 || merged.b !== 3 || reads !== 1 || foundSignals.join() !== "false,true") {
+    throw new Error("Storage merge or existence callback changed")
+  }
+  content = "[] 1 2"
+  let rejected = false
+  try { files.merge_local_edn_$x_(base, "fixture-only") } catch { rejected = true }
+  if (!rejected) throw new Error("Storage decoder must reject non-Map data")
+} finally {
+  fs.existsSync = originalExists
+  fs.readFileSync = originalRead
+  syncBuiltinESMExports()
+}
+console.log("storage Map/absence/callback boundary passed")

@@ -3,13 +3,13 @@
   :about "|Machine-generated snapshot. Do not edit directly — changes will be overwritten. Use `calcit query` to inspect and `calcit edit`/`calcit tree` to modify. Run `calcit docs agents --contract` before mutations; use `--full` for first orientation or changed contract digest. Manual edits must follow format and schema conventions, then run `calcit edit format`."
   :package |cumulo-util
   :entries $ {}
-    :default $ {} (:description |) (:init-fn 'cumulo-util.client/main!) (:mode :native) (:reload-fn 'cumulo-util.client/reload!)
+    :default $ {} (:description |) (:init-fn 'cumulo-util.client/main!) (:mode :js) (:reload-fn 'cumulo-util.client/reload!) (:target :browser)
       :feature-policy $ {}
       :modules $ [] |js-ffi/
       :type-slots $ {}
-    :server $ {} (:description |) (:init-fn 'cumulo-util.app/main!) (:mode :native) (:reload-fn 'cumulo-util.app/reload!)
+    :server $ {} (:description |) (:init-fn 'cumulo-util.app/main!) (:mode :js) (:reload-fn 'cumulo-util.app/reload!) (:target :node)
       :feature-policy $ {}
-      :modules $ []
+      :modules $ [] |js-ffi/
       :type-slots $ {}
   :files $ {}
     'cumulo-util.activity $ %{} 'FileEntry
@@ -123,13 +123,13 @@
           :code $ quote $ defn main! ()
             watch-browser-lifecycle!
               fn (activity) (println |activity activity)
-              %none
+              Option :none
           :examples $ []
           :schema $ :: 'Fn $ {} (:return 'Fn)
             :args $ []
             :features $ #{} :js-ffi
         'reload! $ %{} 'CodeEntry (:doc |)
-          :code $ quote $ defn reload! ()
+          :code $ quote $ defn reload! () &unit
           :examples $ []
           :schema $ :: 'Fn $ {} (:return 'Unit)
             :args $ []
@@ -145,7 +145,7 @@
               fn (signal)
                 when (= signal :touch) (listener)
                 , &unit
-              %none
+              Option :none
           :examples $ []
           :schema $ :: 'Fn $ {}
             :args $ [] $ :: 'Fn
@@ -179,14 +179,28 @@
             js-ffi.browser :as browser
     'cumulo-util.file $ %{} 'FileEntry
       :defs $ {}
+        'backup-date-suffix $ %{} 'CodeEntry (:doc |)
+          :code $ quote $ defn backup-date-suffix () (raise |JS-only)
+          :examples $ []
+          :ffi $ {} (:target :node)
+            :js $ {} (:file |js-ffi-assets/backup-date-suffix.js)
+              :modules $ {} $ :path |node:path
+          :schema $ :: 'Fn $ {} (:return 'String)
+            :args $ []
+            :features $ #{} :js-ffi
+        'command-output $ %{} 'CodeEntry (:doc |)
+          :code $ quote $ defn command-output (command) (raise |JS-only)
+          :examples $ []
+          :ffi $ {} (:target :node)
+            :js $ {} (:file |js-ffi-assets/command-output.js)
+              :modules $ {} $ :cp |node:child_process
+          :schema $ :: 'Fn $ {} (:return 'String)
+            :args $ [] 'String
+            :features $ #{} :js-ffi
         'get-backup-path! $ %{} 'CodeEntry
           :doc "|Builds the legacy month/day snapshot path under the module backups directory."
           :code $ quote $ defn get-backup-path! ()
-            let
-                now $ new js/Date
-              path/join js/__dirname |backups
-                str $ inc $ .!getMonth now
-                str (.!getDate now) |-snapshot.edn
+            path/join js/__dirname |backups $ backup-date-suffix
           :examples $ []
           :schema $ :: 'Fn $ {} (:return 'String)
             :args $ []
@@ -194,20 +208,27 @@
         'merge-local-edn! $ %{} 'CodeEntry
           :doc "|Merges a base map with Cirru EDN loaded from filepath when present; handler receives whether the file exists."
           :code $ quote $ defn merge-local-edn! (x0 filepath handler)
-            merge x0 $ let
-                found? $ fs/existsSync filepath
-              if (fn? handler) (handler found?)
+            let
+                found? $ node/file-exists? filepath
+              when (handler .some?)
+                (handler .unwrap) found?
               if found?
-                parse-cirru-edn $ fs/readFileSync filepath |utf8
-                , nil
+                merge-dynamic x0 $ decode-map-as
+                  parse-cirru-edn $ node/read-text! filepath
+                  :: 'Map 'Dynamic 'Dynamic
+                , x0
           :examples $ []
-          :schema $ :: 'Fn $ {} (:return 'Map)
-            :args $ [] 'Map 'String $ :: 'Optional 'Fn
+          :schema $ :: 'Fn $ {}
+            :args $ [] (:: 'Map 'Dynamic 'Dynamic) 'String $ :: 'Option
+              :: 'Fn $ {} (:return 'R)
+                :args $ [] 'Bool
             :features $ #{} :js-ffi
+            :generics $ [] 'R
+            :return $ :: 'Map 'Dynamic 'Dynamic
         'sh! $ %{} 'CodeEntry
           :doc "|Runs a shell command synchronously and prints the command and output."
           :code $ quote $ defn sh! (command) (println command)
-            println $ .toString $ cp/execSync command
+            println $ command-output command
           :examples $ []
           :schema $ :: 'Fn $ {} (:return 'Unit)
             :args $ [] 'String
@@ -237,7 +258,7 @@
       :ns $ %{} 'NsEntry
         :doc "|Small Node.js filesystem and process helpers. Browser lifecycle helpers belong in cumulo-util.activity."
         :code $ quote $ ns cumulo-util.file
-          :require (|path :as path) (|fs :as fs) (|child_process :as cp) (|net :as net)
+          :require (|path :as path) (|fs :as fs) (|child_process :as cp) (|net :as net) (js-ffi.node :as node)
     'cumulo-util.realtime $ %{} 'FileEntry
       :defs $ {}
         'CoalescedPlan $ %{} 'CodeEntry

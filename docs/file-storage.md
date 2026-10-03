@@ -36,6 +36,21 @@ Serialize only durable fields. In realtime applications, remove sessions, WebSoc
 
 `get-backup-path!` provides the legacy dated backup-path convention. `merge-local-edn!` is useful when a persisted Cirru EDN map should be merged with a current schema/default map.
 
+Calcit 0.28 migration: the optional existence callback is now a nominal Option,
+not a bare function or nil. Omit it or pass `Option :none`; with a callback use:
+
+```cirru.no-check
+cumulo-util.file/merge-local-edn! base filepath
+  Option :some $ fn (found?) $ println found?
+```
+
+The base retains its original identity when the file is missing. When present,
+the loaded value is decoded as a Map and overwrites matching keys in base.
+Keys and values remain explicitly open: this helper validates Map shape, not
+the application's business schema. Invalid Cirru EDN or non-Map data fails,
+without a fallback that silently discards persisted content. The callback runs
+once with the existence result before reading; its return value is ignored.
+
 Before a Calcit upgrade that changes nominal types or Option boundaries, validate data without writing it:
 
 ```cirru.no-check
