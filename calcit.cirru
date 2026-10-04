@@ -365,8 +365,8 @@
           :doc "||Clear explicit pending state after an immediate flush."
           :code $ quote $ defn coalescer:flush (self)
             let
-                cleared $ assoc self :pending? false
-              assoc cleared :first-request-ms 0
+                cleared $ struct-with self $ :pending? false
+              struct-with cleared $ :first-request-ms 0
           :examples $ []
           :schema $ :: 'Fn $ {} (:return 'cumulo-util.realtime/Coalescer)
             :args $ [] 'cumulo-util.realtime/Coalescer
@@ -388,8 +388,8 @@
                     , remaining-ms $ :delay-ms self
                 %{} CoalescedPlan (:state self) (:delay-ms delay-ms)
               let
-                  pending-state $ assoc self :pending? true
-                  next-state $ assoc pending-state :first-request-ms now-ms
+                  pending-state $ struct-with self $ :pending? true
+                  next-state $ struct-with pending-state $ :first-request-ms now-ms
                   delay-ms $ if
                     > (:delay-ms self) (:max-wait-ms self)
                     :max-wait-ms self
@@ -423,8 +423,8 @@
           :code $ quote $ defn heartbeat-lease:renew (self now-ms timeout-ms)
             let
                 safe-timeout $ if (> timeout-ms 0) timeout-ms 0
-                touched $ assoc self :last-seen-ms now-ms
-              assoc touched :deadline-ms $ + now-ms safe-timeout
+                touched $ struct-with self $ :last-seen-ms now-ms
+              struct-with touched $ :deadline-ms $ + now-ms safe-timeout
           :examples $ []
           :schema $ :: 'Fn $ {} (:return 'cumulo-util.realtime/HeartbeatLease)
             :args $ [] 'cumulo-util.realtime/HeartbeatLease 'Number 'Number
@@ -454,7 +454,8 @@
                   , exponential-delay
                 jitter $ * (- capped-random 0.5) (:jitter-ratio self)
                 delay-ms $ floor $ * capped-delay (+ 1 jitter)
-                next-state $ assoc self :attempt $ + 1 (:attempt self)
+                next-state $ struct-with self $ :attempt
+                  + 1 $ :attempt self
               %{} RetryStep (:delay-ms delay-ms) (:next next-state)
           :examples $ []
           :schema $ :: 'Fn $ {} (:return 'cumulo-util.realtime/RetryStep)
@@ -462,7 +463,8 @@
           :tags $ #{} :scaffold
         'retry-backoff:reset $ %{} 'CodeEntry
           :doc "|Return the same retry configuration at attempt zero."
-          :code $ quote $ defn retry-backoff:reset (self) (assoc self :attempt 0)
+          :code $ quote $ defn retry-backoff:reset (self)
+            struct-with self $ :attempt 0
           :examples $ []
           :schema $ :: 'Fn $ {} (:return 'cumulo-util.realtime/RetryBackoff)
             :args $ [] 'cumulo-util.realtime/RetryBackoff
