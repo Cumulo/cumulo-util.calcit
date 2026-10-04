@@ -61,10 +61,10 @@ cumulo-util.file/merge-local-edn! base filepath
 
 The migration toolchain is exact Calcit 0.28.0 with
 `@calcit/procs` 0.28.0, Caps 0.1.1 (verify via `caps --version`), Node.js 24,
-and Yarn 4.18.0. Module version 0.0.23 is unchanged; this migration is not released.
+and Yarn 4.18.0. Module version 0.0.24 is prepared for review and is not released.
 
 本轮迁移使用精确的 Calcit 0.28.0、`@calcit/procs` 0.28.0、Caps 0.1.1、
-Node.js 24 与 Yarn 4.18.0。模块版本 0.0.23 不变，本轮尚未发布。
+Node.js 24 与 Yarn 4.18.0。模块版本 0.0.24 为待审查的发布准备，本轮尚未发布。
 
 ```bash
 corepack enable
@@ -93,9 +93,14 @@ yarn build
 yarn test
 ```
 
-Browser lifecycle helpers use formal `calcit-lang/js-ffi` `0.2.0`
+Browser lifecycle helpers use published `calcit-lang/js-ffi` `0.2.1-alpha.11`
 numeric timer contract. Lilac is not required. The Node server entry does not
 execute browser lifecycle helpers. It loads the same module to use the typed Node file adapters.
+
+JS-FFI 固定为已发布的 `0.2.1-alpha.11`，与 ws-edn 的 Calcit 0.28 验证分支一致，
+避免同一依赖图同时请求旧 `0.1.36` 和不同的 JS-FFI 版本。
+alpha.11 的最低编译器要求为 `0.28.0-alpha.3`，正式 `0.28.0` 满足此要求。
+该调整不会自动发布 cumulo-util；下游仍须等待 `0.0.24` 正式发布后再更新依赖。
 
 ### 0.28 staging 验证
 
