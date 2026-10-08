@@ -38,8 +38,8 @@
           :code $ quote $ defn watch-browser-lifecycle! (callback heartbeat-ms)
             let
                 interval-ms $ option:unwrap-or heartbeat-ms 3000
-                *cooling $ atom false
-                *touch-timer $ atom 0
+                *cooling $ ref false
+                *touch-timer $ ref 0
                 emit-touch! $ fn () $ when (not @*cooling) (callback :touch) (reset! *cooling true)
                   reset! *touch-timer $ browser/set-timeout!
                     fn () (reset! *cooling false) &unit
