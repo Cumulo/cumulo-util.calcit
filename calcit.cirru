@@ -17,7 +17,8 @@
         'page-online? $ %{} 'CodeEntry
           :doc "|Returns the browser online hint. It does not prove WebSocket or server health."
           :code $ quote $ defn page-online? ()
-            not= false $ unsafe-coerce js/navigator.onLine 'Bool
+            &let (online js/navigator.onLine)
+              if (bool? online) online true
           :examples $ []
           :schema $ :: 'Fn $ {} (:return 'Bool)
             :args $ []
@@ -44,12 +45,27 @@
                     fn () (reset! *cooling false) &unit
                     , 800
                 on-visibility $ fn (event)
+                  hint-fn $ {} (:return 'Unit)
+                    :args $ [] 'js-ffi.browser/EventHost
                   if (page-visible?)
                     do (callback :visible) (emit-touch!)
                     callback :hidden
-                on-online $ fn (event) (callback :online)
-                on-offline $ fn (event) (callback :offline)
-                on-focus $ fn (event) (emit-touch!)
+                  , &unit
+                on-online $ fn (event)
+                  hint-fn $ {} (:return 'Unit)
+                    :args $ [] 'js-ffi.browser/EventHost
+                  callback :online
+                  , &unit
+                on-offline $ fn (event)
+                  hint-fn $ {} (:return 'Unit)
+                    :args $ [] 'js-ffi.browser/EventHost
+                  callback :offline
+                  , &unit
+                on-focus $ fn (event)
+                  hint-fn $ {} (:return 'Unit)
+                    :args $ [] 'js-ffi.browser/EventHost
+                  emit-touch!
+                  , &unit
                 timer $ browser/set-interval!
                   fn ()
                     when (page-visible?) (callback :heartbeat)
