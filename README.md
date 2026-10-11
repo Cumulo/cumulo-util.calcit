@@ -59,7 +59,7 @@ cumulo-util.file/merge-local-edn! base filepath
 
 ## 开发与验证
 
-工具链固定为已发布的 Calcit / `@calcit/procs` `0.29.0-alpha.6`、Caps `0.1.1`、Node.js 24 和 Yarn `4.18.0`。当前分支准备模块 `0.0.25`，依赖固定为已发布的 `calcit-lang/js-ffi` `0.2.1-alpha.13`；正式模块版本以发布标签为准。
+工具链固定为已发布的 Calcit / `@calcit/procs` `0.29.0`、Caps `0.1.1`、Node.js 24 和 Yarn `4.18.0`。当前分支准备模块 `0.0.27`，依赖固定为已发布的 `calcit-lang/js-ffi` `0.2.1`；正式模块版本以发布标签为准。
 
 ```bash
 corepack enable
@@ -79,9 +79,10 @@ calcit calcit.cirru edit format
 git diff --exit-code -- calcit.cirru
 calcit calcit.cirru --check-only
 calcit calcit.cirru --entry server --check-only
-calcit calcit.cirru analyze check-public --ns cumulo-util.activity --ns cumulo-util.core --ns cumulo-util.client --summary-only
-calcit calcit.cirru --entry server analyze check-public --ns cumulo-util.app --ns cumulo-util.file --ns cumulo-util.realtime --summary-only
-calcit calcit.cirru analyze quality --baseline config/calcit-quality.cirru
+calcit calcit.cirru --check-only --ns cumulo-util.activity --ns cumulo-util.core --ns cumulo-util.client --summary-only
+calcit calcit.cirru --entry server --check-only --ns cumulo-util.app --ns cumulo-util.file --ns cumulo-util.realtime --summary-only
+calcit calcit.cirru analyze weak-types --only coverage --summary-only
+calcit calcit.cirru analyze weak-types --only deprecated-call
 calcit calcit.cirru js
 calcit calcit.cirru --entry server js
 yarn build
@@ -90,13 +91,16 @@ yarn test
 
 浏览器生命周期 helper 使用 js-ffi 的数字 timer 合同，不依赖 Lilac。Node 入口通过同一模块加载 typed Node 文件适配器；它不会执行浏览器 lifecycle helper。两个入口分别验证和生成 JS。
 
-js-ffi alpha.13 的最低编译器版本为 `0.29.0-alpha.2`，当前 alpha.6 满足要求。依赖对齐可供使用 Respo alpha.7 的应用统一解析同一个 js-ffi 版本；下游应在 cumulo-util 新标签发布后再更新依赖。
+六个项目命名空间按实际 browser/node 目标完整检查；不要在 browser 入口使用
+`--all-defs`，它会错误地把 Node 专属文件适配器也交给 browser 目标。
+
+编译器、JS 运行时与 js-ffi 均使用正式版本，不再依赖 alpha 标签。下游应在 cumulo-util 新标签发布后再更新依赖。
 
 ### 已有接口与边界
 
 browser/node 入口已显式区分；空 `reload!` 返回 Unit，两处 `%none` 改为
 `Option :none`。原生命周期测试、实时调度断言、两入口预处理、代码生成、
-Vite 构建和原质量预算已通过，没有添加验证脚本、强转或编译器改写规则。
+Vite 构建均保留，没有添加验证脚本、强转或编译器改写规则。
 
 browser 公开定义 8/8、node 公开定义 30/30 均通过。
 `merge-local-edn!` 保留开放的 Map 键/值边界，不替应用定义数据模型；读取后必须
@@ -104,7 +108,10 @@ browser 公开定义 8/8、node 公开定义 30/30 均通过。
 第三参数现在是 `Option<Fn(Bool) -> R>`，回调返回值仍忽略；省略或传 `Option :none`
 表示无回调，旧裸函数/nil 调用必须迁移。此接口已包含在 `0.0.24` 发布版本中。
 原 Node 测试入口同时检查这些存储行为，使用内存 fs fixture，不实际读写文件。
-未执行 shell 命令助手或服务入口。质量门禁保留原类型与宿主转换预算，并把已清零的 codeNil、unresolved 预算降到零。
+未执行 shell 命令助手或服务入口。本次将退役的 `merge-dynamic` 改为 `merge`，
+迁移后原质量预算也通过；随后移除将被 Calcit 退役的 `analyze quality` 和预算文件。
+严格检查是正确性门禁，`weak-types` 是覆盖率与旧 API 的诊断视图，不冒充强制预算门禁。
+38 个本地定义中 36 个 full、2 个 partial；剩余 partial 是上述开放存储 Map 边界。
 
 Date 取值和命令输出通过正式 0.28 已支持的模块内 JS 适配器表达：
 保留本地月/日、单次 `execSync`、默认 Buffer UTF-8 解码及异常对象，不增加

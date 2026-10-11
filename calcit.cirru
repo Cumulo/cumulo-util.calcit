@@ -229,7 +229,7 @@
               when (handler .some?)
                 (handler .unwrap) found?
               if found?
-                merge-dynamic x0 $ decode-map-as
+                merge x0 $ decode-map-as
                   parse-cirru-edn $ node/read-text! filepath
                   :: 'Map 'Dynamic 'Dynamic
                 , x0
