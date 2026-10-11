@@ -11,7 +11,7 @@ permissions:
 
 jobs:
   test:
-    name: Calcit 0.29.0-alpha.18 validation
+    name: Calcit 0.29.0 validation
     runs-on: ubuntu-24.04
     timeout-minutes: 20
     concurrency:
@@ -50,9 +50,10 @@ jobs:
           git diff --exit-code -- calcit.cirru
           calcit calcit.cirru --check-only
           calcit calcit.cirru --entry server --check-only
-          calcit calcit.cirru analyze check-public --ns cumulo-util.activity --ns cumulo-util.core --ns cumulo-util.client --summary-only
-          calcit calcit.cirru --entry server analyze check-public --ns cumulo-util.app --ns cumulo-util.file --ns cumulo-util.realtime --summary-only
-          calcit calcit.cirru analyze quality --baseline config/calcit-quality.cirru
+          calcit calcit.cirru --check-only --ns cumulo-util.activity --ns cumulo-util.core --ns cumulo-util.client --summary-only
+          calcit calcit.cirru --entry server --check-only --ns cumulo-util.app --ns cumulo-util.file --ns cumulo-util.realtime --summary-only
+          calcit calcit.cirru analyze weak-types --only coverage --summary-only
+          calcit calcit.cirru analyze weak-types --only deprecated-call
           calcit calcit.cirru js
           calcit calcit.cirru --entry server js
           yarn test

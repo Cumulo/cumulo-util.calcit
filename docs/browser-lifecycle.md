@@ -22,7 +22,7 @@ cooldown. Call it during hot reload or component teardown when the watcher may b
 installed more than once.
 
 The touch cooldown uses `js-ffi.browser/set-timeout!` from the exact published
-`calcit-lang/js-ffi` 0.1.12 dependency. Its browser handle is numeric and its
+`calcit-lang/js-ffi` 0.2.1 dependency. Its browser handle is numeric and its
 callback explicitly returns Unit. The 800 ms throttle and cleanup behavior are
 unchanged; Node timer objects are not substituted for browser handles.
 
