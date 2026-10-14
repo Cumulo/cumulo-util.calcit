@@ -59,7 +59,9 @@ cumulo-util.file/merge-local-edn! base filepath
 
 ## 开发与验证
 
-工具链固定为已发布的 Calcit / `@calcit/procs` `0.29.0`、Caps `0.1.1`、Node.js 24 和 Yarn `4.18.0`。当前分支准备模块 `0.0.27`，依赖固定为已发布的 `calcit-lang/js-ffi` `0.2.1`；正式模块版本以发布标签为准。
+工具链固定为已发布的 Calcit / `@calcit/procs` `0.29.3`、Caps `0.1.1`、Node.js 24 和 Yarn `4.18.0`。当前分支准备模块 `0.0.28`，依赖固定为已发布的 `calcit-lang/js-ffi` `0.2.3`；正式模块版本以发布标签为准。
+本次对齐下游严格依赖图，保留现有生命周期、存储与调度 API 和原验证门槛；新版本不改变业务协议。
+Yarn 的新包安装隔离期统一为一小时，不再逐版本设置安装豁免；仅影响本仓库，不修改全局配置。
 
 ```bash
 corepack enable
