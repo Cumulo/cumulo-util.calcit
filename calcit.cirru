@@ -216,7 +216,9 @@
         'get-backup-path! $ %{} 'CodeEntry
           :doc "|Builds the legacy month/day snapshot path under the module backups directory."
           :code $ quote $ defn get-backup-path! ()
-            path/join js/__dirname |backups $ backup-date-suffix
+            decode-map-as
+              path/join js/__dirname |backups $ backup-date-suffix
+              , 'String
           :examples $ []
           :schema $ :: 'Fn $ {} (:return 'String)
             :args $ []
@@ -253,13 +255,13 @@
           :doc "|Atomically replaces a UTF-8 text file only when its content changed, creating parent directories as needed."
           :code $ quote $ defn write-mildly! (file-path content)
             let
-                dir $ assert-type (path/dirname file-path) 'String
-                filename $ assert-type (path/basename file-path) 'String
+                dir $ node/path-dirname file-path
+                filename $ node/path-basename file-path
                 temp-name $ str |/tmp/ (js/Date.now) |- (js/Math.random) |- filename
                 do-write! $ fn () (fs/writeFileSync temp-name content) (fs/renameSync temp-name file-path) (println "|Write to file:" file-path)
               if (fs/existsSync file-path)
                 let
-                    old-content $ assert-type (fs/readFileSync file-path |utf8) 'String
+                    old-content $ node/read-text! file-path
                   if (not= content old-content) (do-write!) (; println "|same file, skipping:" file-path)
                 do
                   when
@@ -402,7 +404,7 @@
                   delay-ms $ if
                     > (:delay-ms self) remaining-ms
                     , remaining-ms $ :delay-ms self
-                %{} CoalescedPlan (:state self) (:delay-ms delay-ms)
+                CoalescedPlan :state self :delay-ms delay-ms
               let
                   pending-state $ struct-with self $ :pending? true
                   next-state $ struct-with pending-state $ :first-request-ms now-ms
@@ -410,7 +412,7 @@
                     > (:delay-ms self) (:max-wait-ms self)
                     :max-wait-ms self
                     :delay-ms self
-                %{} CoalescedPlan (:state next-state) (:delay-ms delay-ms)
+                CoalescedPlan :state next-state :delay-ms delay-ms
           :examples $ []
           :schema $ :: 'Fn $ {} (:return 'cumulo-util.realtime/CoalescedPlan)
             :args $ [] 'cumulo-util.realtime/Coalescer 'Number
@@ -472,7 +474,7 @@
                 delay-ms $ floor $ * capped-delay (+ 1 jitter)
                 next-state $ struct-with self $ :attempt
                   + 1 $ :attempt self
-              %{} RetryStep (:delay-ms delay-ms) (:next next-state)
+              RetryStep :delay-ms delay-ms :next next-state
           :examples $ []
           :schema $ :: 'Fn $ {} (:return 'cumulo-util.realtime/RetryStep)
             :args $ [] 'cumulo-util.realtime/RetryBackoff 'Number
