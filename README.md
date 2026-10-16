@@ -5,20 +5,19 @@ Small, protocol-independent helpers shared by Cumulo applications.
 ## Browser lifecycle
 
 ```cirru
-ns app.client $ :require
-  cumulo-util.activity :refer $ watch-browser-lifecycle!
+ns app.client $ :require $ cumulo-util.activity :refer (watch-browser-lifecycle!)
 
-defn start-browser-sync! ()
-  watch-browser-lifecycle!
-    fn (signal)
-      case-default signal (println "|Unknown browser signal:" signal)
-        :visible $ println "|Send an active/snapshot request"
-        :hidden $ println "|Mark this client idle"
-        :online $ println "|Retry only if local retry state permits it"
-        :offline $ println "|Pause outbound attempts"
-        :touch $ println "|Refresh active client intent"
-        :heartbeat $ println "|Refresh the active lease"
-    , 3000
+defn start-browser-sync! () $ watch-browser-lifecycle!
+  fn (signal)
+    match signal
+      :visible $ println "|Send an active/snapshot request"
+      :hidden $ println "|Mark this client idle"
+      :online $ println "|Retry only if local retry state permits it"
+      :offline $ println "|Pause outbound attempts"
+      :touch $ println "|Refresh active client intent"
+      :heartbeat $ println "|Refresh the active lease"
+      _ $ println "|Unknown browser signal:" signal
+  , 3000
 ```
 
 `watch-browser-lifecycle!` immediately reports visibility and the browser online
@@ -32,10 +31,16 @@ Compatibility APIs remain available:
 
 ```cirru.no-check
 cumulo-util.activity/page-visible?
+
 cumulo-util.activity/page-online?
-cumulo-util.activity/watch-page-activity! $ fn (signal)
-cumulo-util.core/on-page-touch $ fn ()
-cumulo-util.core/visibility-heartbeat (fn () $ println |heartbeat) $ Option :some 3000
+
+cumulo-util.activity/watch-page-activity! $ fn $ signal
+
+cumulo-util.core/on-page-touch $ fn $
+
+cumulo-util.core/visibility-heartbeat
+  fn () $ println |heartbeat
+  Option :some 3000
 ```
 
 See [Browser lifecycle design](docs/browser-lifecycle.md) for integration and
@@ -51,16 +56,18 @@ Cirru EDN round-trip checks, and storage-boundary rules.
 
 ```cirru.no-check
 cumulo-util.file/sh! |pwd
+
 cumulo-util.file/write-mildly! path content
+
 cumulo-util.file/get-backup-path!
-cumulo-util.file/merge-local-edn! base filepath
-  Option :some $ fn (found?) $ println found?
+
+cumulo-util.file/merge-local-edn! base filepath $ Option :some $ fn (found?) (println found?)
 ```
 
 ## 开发与验证
 
-工具链固定为已发布的 Calcit / `@calcit/procs` `0.29.3`、Caps `0.1.1`、Node.js 24 和 Yarn `4.18.0`。当前分支准备模块 `0.0.28`，依赖固定为已发布的 `calcit-lang/js-ffi` `0.2.3`；正式模块版本以发布标签为准。
-本次对齐下游严格依赖图，保留现有生命周期、存储与调度 API 和原验证门槛；新版本不改变业务协议。
+使用者注意：候选模块 `0.0.29` 配对已发布的 Calcit / `@calcit/procs` `0.30.0`、Caps `0.1.1`、Node.js 24 和 Yarn `4.18.0`。依赖仍为正式 `calcit-lang/js-ffi` `0.2.3`，正式模块版本以发布标签为准。
+生命周期、存储与调度 API、回调顺序和业务协议不变；Node path/read 返回值复用带运行时检查的正式 JS-FFI 接口，去掉旧 String 类型断言。备份路径仍单次调用原 path.join，结果做实际 String 检查，不改变本地月/日或目录归属。
 Yarn 的新包安装隔离期统一为一小时，不再逐版本设置安装豁免；仅影响本仓库，不修改全局配置。
 
 ```bash
@@ -81,6 +88,7 @@ calcit calcit.cirru edit format
 git diff --exit-code -- calcit.cirru
 calcit calcit.cirru --check-only
 calcit calcit.cirru --entry server --check-only
+calcit fix --workflow strict --verify
 calcit calcit.cirru --check-only --ns cumulo-util.activity --ns cumulo-util.core --ns cumulo-util.client --summary-only
 calcit calcit.cirru --entry server --check-only --ns cumulo-util.app --ns cumulo-util.file --ns cumulo-util.realtime --summary-only
 calcit calcit.cirru analyze weak-types --only coverage --summary-only
@@ -121,6 +129,12 @@ unchecked 强转。适配器的 String schema 是宿主接口声明，不是编�
 生成代码的内存 fixture 检查了这些行为，没有执行 shell 或文件写入；
 `get-backup-path!` 仍保留原宿主 `__dirname` 约定，未声称独立 ESM 部署已验收。
 这些适配器沿用既有宿主合同，当前升级保持相同调用与求值行为。
+
+独立 ESM 调用 `get-backup-path!` 已实际复现 `__dirname is not defined`，
+目录合同另见[issue48](https://github.com/Cumulo/cumulo-util.calcit/issues/48)。这不是
+本轮新通过的能力，也不因 strict/codegen 通过就宣称可部署。未执行真实 shell、
+文件写入或服务入口。源码中原3处 Struct 构造迁移到直接构造器；原测试流程保留，
+没有新增永久验证脚本、类型预算、权限豁免或编译器规则。
 
 ## License
 
