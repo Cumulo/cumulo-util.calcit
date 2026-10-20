@@ -66,7 +66,7 @@ cumulo-util.file/merge-local-edn! base filepath $ Option :some $ fn (found?) (pr
 
 ## 开发与验证
 
-使用者注意：候选模块 `0.0.29` 配对已发布的 Calcit / `@calcit/procs` `0.30.0`、Caps `0.1.1`、Node.js 24 和 Yarn `4.18.0`。依赖仍为正式 `calcit-lang/js-ffi` `0.2.3`，正式模块版本以发布标签为准。
+使用者注意：候选模块 `0.0.30` 配对 Calcit / `@calcit/procs` `0.30.1-alpha.5`、Caps `0.1.1`、Node.js 24 和 Yarn `4.18.0`，依赖正式 `calcit-lang/js-ffi` `0.2.4`。正式 0.30.1 CLI/npm 配对尚未发布完成，因此暂用已完成配对的 alpha.5，不单独升级其中一端。正式模块版本以发布标签为准。
 生命周期、存储与调度 API、回调顺序和业务协议不变；Node path/read 返回值复用带运行时检查的正式 JS-FFI 接口，去掉旧 String 类型断言。备份路径仍单次调用原 path.join，结果做实际 String 检查，不改变本地月/日或目录归属。
 Yarn 的新包安装隔离期统一为一小时，不再逐版本设置安装豁免；仅影响本仓库，不修改全局配置。
 
@@ -104,7 +104,7 @@ yarn test
 六个项目命名空间按实际 browser/node 目标完整检查；不要在 browser 入口使用
 `--all-defs`，它会错误地把 Node 专属文件适配器也交给 browser 目标。
 
-编译器、JS 运行时与 js-ffi 均使用正式版本，不再依赖 alpha 标签。下游应在 cumulo-util 新标签发布后再更新依赖。
+模块和 js-ffi 使用精确正式 tag，不使用 main/hash；临时 CLI/runtime 配对版本的原因如上。下游应在 cumulo-util 新标签发布后，再一起同步请求同一 JS-FFI 版本的依赖图，不能只改根依赖或关闭 strict。
 
 ### 已有接口与边界
 
