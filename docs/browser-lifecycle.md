@@ -16,13 +16,15 @@ The callback receives one of six tags:
   800 ms.
 - `:heartbeat`: emitted at the configured interval only while the page is visible.
 
-The optional heartbeat interval defaults to 3000 ms. The returned zero-argument
+The second argument is required and has type `Option<Number>`: pass
+`Option :none` for the default 3000 ms interval, or `Option :some 3000` for an
+explicit interval. Do not pass a bare number. The returned zero-argument
 function removes every listener and clears both the interval and a pending touch
 cooldown. Call it during hot reload or component teardown when the watcher may be
 installed more than once.
 
 The touch cooldown uses `js-ffi.browser/set-timeout!` from the exact published
-`calcit-lang/js-ffi` 0.2.4 dependency. Its browser handle is numeric and its
+`calcit-lang/js-ffi` 0.2.5 dependency. Its browser handle is numeric and its
 callback explicitly returns Unit. The 800 ms throttle and cleanup behavior are
 unchanged; Node timer objects are not substituted for browser handles.
 
