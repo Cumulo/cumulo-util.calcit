@@ -4,7 +4,7 @@ Small, protocol-independent helpers shared by Cumulo applications.
 
 ## Browser lifecycle
 
-```cirru
+```cirru.no-run
 ns app.client $ :require $ cumulo-util.activity :refer (watch-browser-lifecycle!)
 
 defn start-browser-sync! () $ watch-browser-lifecycle!
@@ -17,7 +17,7 @@ defn start-browser-sync! () $ watch-browser-lifecycle!
       :touch $ println "|Refresh active client intent"
       :heartbeat $ println "|Refresh the active lease"
       _ $ println "|Unknown browser signal:" signal
-  , 3000
+  , (Option :some 3000)
 ```
 
 `watch-browser-lifecycle!` immediately reports visibility and the browser online
@@ -93,6 +93,7 @@ calcit calcit.cirru --check-only --ns cumulo-util.activity --ns cumulo-util.core
 calcit calcit.cirru --entry server --check-only --ns cumulo-util.app --ns cumulo-util.file --ns cumulo-util.realtime --summary-only
 calcit calcit.cirru analyze weak-types --only coverage --summary-only
 calcit calcit.cirru analyze weak-types --only deprecated-call
+calcit docs check-md README.md --dep ./ --failures-only
 calcit calcit.cirru js
 calcit calcit.cirru --entry server js
 yarn build

@@ -54,6 +54,7 @@ jobs:
           calcit calcit.cirru --entry server --check-only --ns cumulo-util.app --ns cumulo-util.file --ns cumulo-util.realtime --summary-only
           calcit calcit.cirru analyze weak-types --only coverage --summary-only
           calcit calcit.cirru analyze weak-types --only deprecated-call
+          calcit docs check-md README.md --dep ./ --failures-only
           calcit calcit.cirru --entry server js
           yarn test
           yarn build
