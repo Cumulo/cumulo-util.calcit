@@ -17,7 +17,7 @@ defn start-browser-sync! () $ watch-browser-lifecycle!
       :touch $ println "|Refresh active client intent"
       :heartbeat $ println "|Refresh the active lease"
       _ $ println "|Unknown browser signal:" signal
-  , Option :some 3000
+  , (Option :some 3000)
 ```
 
 `watch-browser-lifecycle!` immediately reports visibility and the browser online
