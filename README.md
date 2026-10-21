@@ -66,7 +66,7 @@ cumulo-util.file/merge-local-edn! base filepath $ Option :some $ fn (found?) (pr
 
 ## 开发与验证
 
-使用者注意：候选模块 `0.0.31` 配对正式 Calcit / `@calcit/procs` `0.30.1`、Caps `0.1.1`、Node.js 24 和 Yarn `4.18.0`，依赖正式 `calcit-lang/js-ffi` `0.2.5`。下游需要同步完整正式依赖图，不混用旧 alpha 或单独升级其中一端，不关闭 Caps strict；正式模块版本以发布标签为准。本次不改 Calcit Snapshot 或既有 API。
+使用者注意：模块 `0.0.31` 配对正式 Calcit / `@calcit/procs` `0.30.1`、Caps `0.1.1`、Node.js 24 和 Yarn `4.18.0`，依赖正式 `calcit-lang/js-ffi` `0.2.5`。下游需要同步完整正式依赖图，不混用旧 alpha 或单独升级其中一端，不关闭 Caps strict；正式模块版本以发布标签为准。本次不改 Calcit Snapshot 或既有 API。
 生命周期、存储与调度 API、回调顺序和业务协议不变；Node path/read 返回值复用带运行时检查的正式 JS-FFI 接口，去掉旧 String 类型断言。备份路径仍单次调用原 path.join，结果做实际 String 检查，不改变本地月/日或目录归属。
 Yarn 的新包安装隔离期统一为一小时，不再逐版本设置安装豁免；仅影响本仓库，不修改全局配置。
 
@@ -112,6 +112,11 @@ yarn test
 这是源码兼容性 fixture，不等于 WS-EDN 自身 npm 发布图、JS 宿主/网络测试或真实
 浏览器已验收；更新的 WS-EDN `0.0.46` 属于 0.31 alpha 线，本轮不回退或覆盖它。
 候选覆盖的审计支持另见 [Caps #15](https://github.com/calcit-lang/caps/issues/15)。
+
+正式配对已在 [CI](https://github.com/Cumulo/cumulo-util.calcit/actions/runs/39582155836)
+完成自身正常 Caps strict 图、不可变 Yarn、完整 strict、原两入口公开检查和原测试/构建。
+WS-EDN 源码兼容性回归的 browser 44/44、node 28/28、完整 strict、原 unit 23/23
+及两入口 codegen 通过；不将这些结果扩大为其 JS 宿主、网络或应用部署验收。
 
 ### 已有接口与边界
 
