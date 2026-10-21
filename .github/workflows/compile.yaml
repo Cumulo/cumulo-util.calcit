@@ -49,7 +49,7 @@ jobs:
           set -euo pipefail
           calcit calcit.cirru edit format
           git diff --exit-code -- calcit.cirru
-          calcit fix --workflow strict --verify
+          calcit fix --workflow strict --verify --format json | jq -e 'if .data.workflow.status == "passed" and .diagnostics == [] then true else ., false end'
           calcit calcit.cirru --check-only --ns cumulo-util.activity --ns cumulo-util.core --ns cumulo-util.client --summary-only
           calcit calcit.cirru --entry server --check-only --ns cumulo-util.app --ns cumulo-util.file --ns cumulo-util.realtime --summary-only
           calcit calcit.cirru analyze weak-types --only coverage --summary-only
@@ -57,3 +57,31 @@ jobs:
           calcit calcit.cirru --entry server js
           yarn test
           yarn build
+
+      - name: Check out the 0.30-line WS-EDN consumer
+        uses: actions/checkout@v7.0.1
+        with:
+          repository: mvc-works/ws-edn.calcit
+          ref: 0.0.45
+          path: .calcit/ws-edn-consumer
+          persist-credentials: false
+
+      - name: Check original WS-EDN source against this Util
+        working-directory: .calcit/ws-edn-consumer
+        run: |
+          set -euo pipefail
+          # Source compatibility fixture, not the consumer's original npm graph.
+          # Reuse the producer's verified host pair; keep both entry targets.
+          git rev-parse HEAD
+          cp "$GITHUB_WORKSPACE/deps.cirru" "$GITHUB_WORKSPACE/package.json" "$GITHUB_WORKSPACE/yarn.lock" .
+          ln -s "$GITHUB_WORKSPACE/node_modules" node_modules
+          mkdir -p .calcit/modules
+          ln -s "$GITHUB_WORKSPACE/.calcit/modules/js-ffi" .calcit/modules/js-ffi
+          ln -s "$GITHUB_WORKSPACE" .calcit/modules/cumulo-util.calcit
+          calcit --check-only --ns ws-edn.client --ns ws-edn.schema --ns ws-edn.util --ns ws-edn.app.page --summary-only --format json
+          calcit --entry server --check-only --ns ws-edn.server --ns ws-edn.schema --ns ws-edn.util --ns ws-edn.app.server --summary-only --format json
+          calcit fix --workflow strict --verify --format json | jq -e 'if .data.workflow.status == "passed" and .diagnostics == [] then true else ., false end'
+          calcit test --tag unit --require-match --summary-only --format json
+          calcit --emit-path out-page/ js
+          calcit --entry server js
+          git diff --quiet -- . ':!deps.cirru' ':!package.json' ':!yarn.lock'

@@ -66,7 +66,7 @@ cumulo-util.file/merge-local-edn! base filepath $ Option :some $ fn (found?) (pr
 
 ## 开发与验证
 
-使用者注意：候选模块 `0.0.30` 配对 Calcit / `@calcit/procs` `0.30.1-alpha.5`、Caps `0.1.1`、Node.js 24 和 Yarn `4.18.0`，依赖正式 `calcit-lang/js-ffi` `0.2.4`。正式 0.30.1 CLI/npm 配对尚未发布完成，因此暂用已完成配对的 alpha.5，不单独升级其中一端。正式模块版本以发布标签为准。
+使用者注意：候选模块 `0.0.31` 配对正式 Calcit / `@calcit/procs` `0.30.1`、Caps `0.1.1`、Node.js 24 和 Yarn `4.18.0`，依赖正式 `calcit-lang/js-ffi` `0.2.5`。下游需要同步完整正式依赖图，不混用旧 alpha 或单独升级其中一端，不关闭 Caps strict；正式模块版本以发布标签为准。本次不改 Calcit Snapshot 或既有 API。
 生命周期、存储与调度 API、回调顺序和业务协议不变；Node path/read 返回值复用带运行时检查的正式 JS-FFI 接口，去掉旧 String 类型断言。备份路径仍单次调用原 path.join，结果做实际 String 检查，不改变本地月/日或目录归属。
 Yarn 的新包安装隔离期统一为一小时，不再逐版本设置安装豁免；仅影响本仓库，不修改全局配置。
 
@@ -104,7 +104,14 @@ yarn test
 六个项目命名空间按实际 browser/node 目标完整检查；不要在 browser 入口使用
 `--all-defs`，它会错误地把 Node 专属文件适配器也交给 browser 目标。
 
-模块和 js-ffi 使用精确正式 tag，不使用 main/hash；临时 CLI/runtime 配对版本的原因如上。下游应在 cumulo-util 新标签发布后，再一起同步请求同一 JS-FFI 版本的依赖图，不能只改根依赖或关闭 strict。
+模块和 js-ffi 使用精确正式 tag，不使用 main/hash。下游应在 cumulo-util 新标签发布后，再一起同步请求同一 JS-FFI 版本的依赖图，不能只改根依赖或关闭 strict。
+
+原 CI 复用已发布 WS-EDN `0.0.45` 的真实源码作独立消费者回归：使用本模块已验证的
+宿主 manifest、lock、runtime 和隔离模块视图，保留 browser/node 目标、完整 strict、
+原 unit 测试及两入口 JS codegen，确认消费者 Snapshot 未改。
+这是源码兼容性 fixture，不等于 WS-EDN 自身 npm 发布图、JS 宿主/网络测试或真实
+浏览器已验收；更新的 WS-EDN `0.0.46` 属于 0.31 alpha 线，本轮不回退或覆盖它。
+候选覆盖的审计支持另见 [Caps #15](https://github.com/calcit-lang/caps/issues/15)。
 
 ### 已有接口与边界
 
@@ -126,7 +133,8 @@ browser 公开定义 8/8、node 公开定义 30/30 均通过。
 Date 取值和命令输出通过正式 0.28 已支持的模块内 JS 适配器表达：
 保留本地月/日、单次 `execSync`、默认 Buffer UTF-8 解码及异常对象，不增加
 unchecked 强转。适配器的 String schema 是宿主接口声明，不是编译器对 JS 的证明。
-生成代码的内存 fixture 检查了这些行为，没有执行 shell 或文件写入；
+历史上曾通过生成代码内存探针检查这些行为；当前原 CI 的持久 fixture 覆盖生命周期、
+存储 Map/缺失值/回调及调度原语，不能冒充真实 shell、路径或文件写入的验收。
 `get-backup-path!` 仍保留原宿主 `__dirname` 约定，未声称独立 ESM 部署已验收。
 这些适配器沿用既有宿主合同，当前升级保持相同调用与求值行为。
 
