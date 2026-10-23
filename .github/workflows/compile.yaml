@@ -63,7 +63,7 @@ jobs:
         uses: actions/checkout@v7.0.1
         with:
           repository: mvc-works/ws-edn.calcit
-          ref: 0.0.45
+          ref: 0.0.47
           path: .calcit/ws-edn-consumer
           persist-credentials: false
 
