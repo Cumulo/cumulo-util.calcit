@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - prepare/util0032-formal031
   pull_request: {}
 
 permissions:
@@ -47,8 +48,16 @@ jobs:
       - name: Check native and JavaScript builds
         run: |
           set -euo pipefail
+          calcit fix --workflow strict --verify --format json | jq -e '.data.workflow.status == "passed" and .diagnostics == []'
+          calcit --entry server js
+          yarn test
+          node acceptance/prepare-util.mjs
+
+      - name: Check prepared native and JavaScript builds
+        run: |
+          set -euo pipefail
           calcit calcit.cirru edit format
-          git diff --exit-code -- calcit.cirru
+          test "$(git hash-object calcit.cirru)" = "$(cat acceptance/snapshot-blob.txt)"
           calcit fix --workflow strict --verify --format json | jq -e 'if .data.workflow.status == "passed" and .diagnostics == [] then true else ., false end'
           calcit calcit.cirru --check-only --ns cumulo-util.activity --ns cumulo-util.core --ns cumulo-util.client --summary-only
           calcit calcit.cirru --entry server --check-only --ns cumulo-util.app --ns cumulo-util.file --ns cumulo-util.realtime --summary-only
@@ -86,3 +95,13 @@ jobs:
           calcit --emit-path out-page/ js
           calcit --entry server js
           git diff --quiet -- . ':!deps.cirru' ':!package.json' ':!yarn.lock'
+
+      - name: Preserve prepared source and evidence
+        uses: actions/upload-artifact@v7.0.2
+        with:
+          name: util-prepared
+          path: |
+            calcit.cirru
+            acceptance/
+          if-no-files-found: error
+          retention-days: 7
