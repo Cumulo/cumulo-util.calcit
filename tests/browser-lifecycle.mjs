@@ -50,7 +50,7 @@ const calcitCore = await import("../js-out/calcit.core.mjs")
 const browserEvents = []
 const stopBrowser = activity.watch_browser_lifecycle_$x_(
   (signal) => browserEvents.push(String(signal)),
-  calcitCore._PCT_some(2345),
+  calcitCore.nil__GT_option(2345),
 )
 const browserTimer = [...intervals.values()][0]
 
@@ -150,7 +150,7 @@ fs.existsSync = () => exists
 fs.readFileSync = () => { reads += 1; return content }
 syncBuiltinESMExports()
 try {
-  const handler = calcitCore._PCT_some(found => foundSignals.push(found))
+  const handler = calcitCore.nil__GT_option(found => foundSignals.push(found))
   if (files.merge_local_edn_$x_(base, "fixture-only", handler) !== base || reads !== 0) {
     throw new Error("Missing storage must preserve base without reading")
   }
