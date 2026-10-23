@@ -63,7 +63,7 @@ jobs:
         uses: actions/checkout@v7.0.1
         with:
           repository: mvc-works/ws-edn.calcit
-          ref: 0.0.45
+          ref: 0.0.47
           path: .calcit/ws-edn-consumer
           persist-credentials: false
 
@@ -86,3 +86,13 @@ jobs:
           calcit --emit-path out-page/ js
           calcit --entry server js
           git diff --quiet -- . ':!deps.cirru' ':!package.json' ':!yarn.lock'
+
+      - name: 保存已验证的构建
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: util-builds
+          path: |
+            dist/
+            js-out/
+          if-no-files-found: error
+          retention-days: 7

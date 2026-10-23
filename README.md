@@ -66,7 +66,9 @@ cumulo-util.file/merge-local-edn! base filepath $ Option :some $ fn (found?) (pr
 
 ## 开发与验证
 
-使用者注意：模块 `0.0.31` 配对正式 Calcit / `@calcit/procs` `0.30.1`、Caps `0.1.1`、Node.js 24 和 Yarn `4.18.0`，依赖正式 `calcit-lang/js-ffi` `0.2.5`。下游需要同步完整正式依赖图，不混用旧 alpha 或单独升级其中一端，不关闭 Caps strict；正式模块版本以发布标签为准。本次不改 Calcit Snapshot 或既有 API。
+使用者注意：模块 `0.0.32` 候选配对正式 Calcit / `@calcit/procs` `0.30.1`、Caps `0.1.1`、Node.js 24 和 Yarn `4.18.0`，依赖正式 `calcit-lang/js-ffi` `0.2.6`。下游需要同步完整正式依赖图，不混用旧 alpha 或只更新根 pin，不关闭 Caps strict；正式模块状态以发布标签为准。
+本轮迁移2处旧Option调用和3处旧Struct构造，将浏览器入口的裸Fn返回收紧为真实零参数Unit清理函数；不改变API参数、信号顺序、定时器或清理行为。没有新增强转、断言、预算、测试框架或编译器规则。工作流仅检查/构建，无COS/rsync/部署；不发布npm、不执行业务Node服务入口。
+原Node夹具的2处旧`%some`生成导出调用改用已发布的`nil->option`转换；两个输入分别是固定数字和函数，均非nil，原信号、timer、存储及回调断言不变。core内部实现仍单独审计，不因测试改名删除兼容导出。
 生命周期、存储与调度 API、回调顺序和业务协议不变；Node path/read 返回值复用带运行时检查的正式 JS-FFI 接口，去掉旧 String 类型断言。备份路径仍单次调用原 path.join，结果做实际 String 检查，不改变本地月/日或目录归属。
 Yarn 的新包安装隔离期统一为一小时，不再逐版本设置安装豁免；仅影响本仓库，不修改全局配置。
 
@@ -107,16 +109,16 @@ yarn test
 
 模块和 js-ffi 使用精确正式 tag，不使用 main/hash。下游应在 cumulo-util 新标签发布后，再一起同步请求同一 JS-FFI 版本的依赖图，不能只改根依赖或关闭 strict。
 
-原 CI 复用已发布 WS-EDN `0.0.45` 的真实源码作独立消费者回归：使用本模块已验证的
+CI 复用已发布正式 WS-EDN `0.0.47` 的真实源码作独立消费者回归：使用本模块已验证的
 宿主 manifest、lock、runtime 和隔离模块视图，保留 browser/node 目标、完整 strict、
 原 unit 测试及两入口 JS codegen，确认消费者 Snapshot 未改。
 这是源码兼容性 fixture，不等于 WS-EDN 自身 npm 发布图、JS 宿主/网络测试或真实
-浏览器已验收；更新的 WS-EDN `0.0.46` 属于 0.31 alpha 线，本轮不回退或覆盖它。
+浏览器已验收。这里检查真实源码与本模块的兼容性，不修改其发布标签、源码或独立npm图。
 候选覆盖的审计支持另见 [Caps #15](https://github.com/calcit-lang/caps/issues/15)。
 
-正式配对已在 [CI](https://github.com/Cumulo/cumulo-util.calcit/actions/runs/39582155836)
+此前0.0.31正式配对已在 [CI](https://github.com/Cumulo/cumulo-util.calcit/actions/runs/39582155836)
 完成自身正常 Caps strict 图、不可变 Yarn、完整 strict、原两入口公开检查和原测试/构建。
-WS-EDN 源码兼容性回归的 browser 44/44、node 28/28、完整 strict、原 unit 23/23
+当时WS-EDN源码兼容性回归的browser44/44、node28/28、完整strict、原unit23/23
 及两入口 codegen 通过；不将这些结果扩大为其 JS 宿主、网络或应用部署验收。
 
 ### 已有接口与边界
@@ -142,7 +144,7 @@ unchecked 强转。适配器的 String schema 是宿主接口声明，不是编�
 历史上曾通过生成代码内存探针检查这些行为；当前原 CI 的持久 fixture 覆盖生命周期、
 存储 Map/缺失值/回调及调度原语，不能冒充真实 shell、路径或文件写入的验收。
 `get-backup-path!` 仍保留原宿主 `__dirname` 约定，未声称独立 ESM 部署已验收。
-这些适配器沿用既有宿主合同，当前升级保持相同调用与求值行为。
+这些适配器沿用既有宿主合同，当前升级保持相同调用与求值行为。`write-mildly!` 的兼容返回和开放存储Map边界不伪造为已完全闭合类型；本轮精确结果以PR为准，不将历史计数当作本轮验收。
 
 独立 ESM 调用 `get-backup-path!` 已实际复现 `__dirname is not defined`，
 目录合同另见[issue48](https://github.com/Cumulo/cumulo-util.calcit/issues/48)。这不是

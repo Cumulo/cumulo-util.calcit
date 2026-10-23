@@ -37,7 +37,7 @@
           :doc "|Reports visibility, online/offline, throttled page touch, and visible-page heartbeat signals. Returns cleanup for every listener and timer."
           :code $ quote $ defn watch-browser-lifecycle! (callback heartbeat-ms)
             let
-                interval-ms $ option:unwrap-or heartbeat-ms 3000
+                interval-ms $ .unwrap-or heartbeat-ms 3000
                 *cooling $ ref false
                 *touch-timer $ ref 0
                 emit-touch! $ fn () $ when (not @*cooling) (callback :touch) (reset! *cooling true)
@@ -141,9 +141,11 @@
               fn (activity) (println |activity activity)
               Option :none
           :examples $ []
-          :schema $ :: 'Fn $ {} (:return 'Fn)
+          :schema $ :: 'Fn $ {}
             :args $ []
             :features $ #{} :js-ffi
+            :return $ :: 'Fn $ {} (:return 'Unit)
+              :args $ []
         'reload! $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defn reload! () &unit
           :examples $ []
@@ -174,7 +176,7 @@
           :doc "|Calls cb at the requested interval while the document is visible. Defaults to 3000 ms and returns the JavaScript interval handle."
           :code $ quote $ defn visibility-heartbeat (cb duration)
             let
-                interval-ms $ option:unwrap-or (js-nullish->option duration) 3000
+                interval-ms $ .unwrap-or (js-nullish->option duration) 3000
               browser/set-interval!
                 fn ()
                   when (page-visible?) (cb)
@@ -367,7 +369,7 @@
             let
                 safe-delay $ if (> delay-ms 0) delay-ms 0
                 safe-max-wait $ if (> max-wait-ms safe-delay) max-wait-ms safe-delay
-              %{} Coalescer (:delay-ms safe-delay) (:max-wait-ms safe-max-wait) (:pending? false) (:first-request-ms 0)
+              Coalescer :delay-ms safe-delay :max-wait-ms safe-max-wait :pending? false :first-request-ms 0
           :examples $ []
           :schema $ :: 'Fn $ {} (:return 'cumulo-util.realtime/Coalescer)
             :args $ [] 'Number 'Number
@@ -422,8 +424,7 @@
           :code $ quote $ defn heartbeat-lease (now-ms timeout-ms)
             let
                 safe-timeout $ if (> timeout-ms 0) timeout-ms 0
-              %{} HeartbeatLease (:last-seen-ms now-ms)
-                :deadline-ms $ + now-ms safe-timeout
+              HeartbeatLease :last-seen-ms now-ms :deadline-ms $ + now-ms safe-timeout
           :examples $ []
           :schema $ :: 'Fn $ {} (:return 'cumulo-util.realtime/HeartbeatLease)
             :args $ [] 'Number 'Number
@@ -454,7 +455,7 @@
                 safe-base $ if (> base-delay-ms 0) base-delay-ms 0
                 safe-maximum $ if (> max-delay-ms safe-base) max-delay-ms safe-base
                 safe-jitter $ if (< jitter-ratio 0) 0 $ if (> jitter-ratio 1) 1 jitter-ratio
-              %{} RetryBackoff (:base-delay-ms safe-base) (:max-delay-ms safe-maximum) (:jitter-ratio safe-jitter) (:attempt 0)
+              RetryBackoff :base-delay-ms safe-base :max-delay-ms safe-maximum :jitter-ratio safe-jitter :attempt 0
           :examples $ []
           :schema $ :: 'Fn $ {} (:return 'cumulo-util.realtime/RetryBackoff)
             :args $ [] 'Number 'Number 'Number
