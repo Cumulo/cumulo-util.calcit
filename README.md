@@ -73,8 +73,8 @@ cumulo-util.file/merge-local-edn! base filepath $ Option :some $ fn (found?) (pr
 
 ## 开发与验证
 
-使用者注意：模块 `0.0.32` 候选配对正式 Calcit / `@calcit/procs` `0.30.1`、Caps `0.1.1`、Node.js 24 和 Yarn `4.18.0`，依赖正式 `calcit-lang/js-ffi` `0.2.6`。下游需要同步完整正式依赖图，不混用旧 alpha 或只更新根 pin，不关闭 Caps strict；正式模块状态以发布标签为准。
-本轮迁移2处旧Option调用和3处旧Struct构造，将浏览器入口的裸Fn返回收紧为真实零参数Unit清理函数；不改变API参数、信号顺序、定时器或清理行为。没有新增强转、断言、预算、测试框架或编译器规则。工作流仅检查/构建，无COS/rsync/部署；不发布npm、不执行业务Node服务入口。
+使用者注意：当前维护线的 Calcit CLI / `@calcit/procs` 配对为预发布 `0.31.0-alpha.7`，使用 Caps `0.1.1`、Node.js 24 和 Yarn `4.18.0`，依赖正式 `calcit-lang/js-ffi` `0.2.6`。下游需要协调完整精确依赖图，不只更新根 pin，也不关闭 Caps strict；模块是否发版以发布标签为准，0.30 稳定消费者继续使用原维护线。
+此前迁移2处旧Option调用和3处旧Struct构造，将浏览器入口的裸Fn返回收紧为真实零参数Unit清理函数；不改变API参数、信号顺序、定时器或清理行为。没有新增强转、断言、预算、测试框架或编译器规则。工作流仅检查/构建，无COS/rsync/部署；不发布npm、不执行业务Node服务入口。
 原Node夹具的2处旧`%some`生成导出调用改用已发布的`nil->option`转换；两个输入分别是固定数字和函数，均非nil，原信号、timer、存储及回调断言不变。core内部实现仍单独审计，不因测试改名删除兼容导出。
 生命周期、存储与调度 API、回调顺序和业务协议不变；Node path/read 返回值复用带运行时检查的正式 JS-FFI 接口，去掉旧 String 类型断言。备份路径仍单次调用原 path.join，结果做实际 String 检查，不改变本地月/日或目录归属。
 Yarn 的新包安装隔离期统一为一小时，不再逐版本设置安装豁免；仅影响本仓库，不修改全局配置。
