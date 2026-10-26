@@ -2,6 +2,13 @@
 
 Small, protocol-independent helpers shared by Cumulo applications.
 
+## 当前工具链：Calcit 0.31.0-alpha.7
+
+CLI 与 `@calcit/procs` 从 alpha.6 成对升级为已发布 `0.31.0-alpha.7`，
+保留现有 JS FFI `0.2.6`、Snapshot 和公开协议。新版默认预检查会拒绝未证明的
+Dynamic 流向；原 browser/node 分入口门禁、生命周期与实时原语回归继续执行，
+不关闭 proof audit 或放宽类型。此次不部署服务或修改调用方运行环境。
+
 ## Browser lifecycle
 
 ```cirru.no-run
