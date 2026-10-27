@@ -2,12 +2,21 @@
 
 Small, protocol-independent helpers shared by Cumulo applications.
 
-## 当前工具链：正式 Calcit 0.31.0
+## 使用者需要注意
 
-CLI 与 `@calcit/procs` 从 alpha.7 成对升级为已发布的正式 `0.31.0`，
-保留现有 JS FFI `0.2.6`、Snapshot 和公开协议。新版默认预检查会拒绝未证明的
-Dynamic 流向；原 browser/node 分入口门禁、生命周期与实时原语回归继续执行，
-不关闭 proof audit 或放宽类型。此次不部署服务或修改调用方运行环境。
+候选 `0.0.33` 将已发布 `0.0.32` 的 CLI / `@calcit/procs` `0.30.1` 配对同步为
+正式 `0.31.0`，JS FFI 使用已发布 `0.2.7`。消费者需协调精确版本图并重新生成 JS；
+仍使用 0.30.1 的应用继续用 `0.0.32`。发布状态以实际 Git tag 为准，不以 main/commit
+替代经过验收的发布依赖，不关闭 Caps strict。
+
+与 main 和已发布 `0.0.32` 相比，本模块 Snapshot 完全相同：生命周期、重试/心跳/合并
+调度、存储 Map 及清理函数合同不变。已检查的迁移旧名和 unsafe 无命中，不制造源码改写。
+原 browser/node 分入口检查、完整 strict、宿主夹具和构建保留，不放宽类型门禁。
+此仓库原工作流仅测试/构建，不部署服务；本次不修改业务调用方运行环境。
+
+`get-backup-path!` 在独立 ESM 下仍依赖未定义的 `__dirname`，其目录归属合同见
+[issue48](https://github.com/Cumulo/cumulo-util.calcit/issues/48)。该已知限制尚未修复；
+不能把 strict/codegen 通过作为该路径可部署的证据，也不能在迁移中默默改成 cwd。
 
 ## Browser lifecycle
 
@@ -73,11 +82,10 @@ cumulo-util.file/merge-local-edn! base filepath $ Option :some $ fn (found?) (pr
 
 ## 开发与验证
 
-使用者注意：当前维护线的 Calcit CLI / `@calcit/procs` 配对为正式 `0.31.0`，使用 Caps `0.1.1`、Node.js 24 和 Yarn `4.18.0`，依赖正式 `calcit-lang/js-ffi` `0.2.6`。下游需要协调完整精确依赖图，不只更新根 pin，也不关闭 Caps strict；模块是否发版以发布标签为准，0.30 消费者继续使用原维护线。
-此前迁移2处旧Option调用和3处旧Struct构造，将浏览器入口的裸Fn返回收紧为真实零参数Unit清理函数；不改变API参数、信号顺序、定时器或清理行为。没有新增强转、断言、预算、测试框架或编译器规则。工作流仅检查/构建，无COS/rsync/部署；不发布npm、不执行业务Node服务入口。
-原Node夹具的2处旧`%some`生成导出调用改用已发布的`nil->option`转换；两个输入分别是固定数字和函数，均非nil，原信号、timer、存储及回调断言不变。core内部实现仍单独审计，不因测试改名删除兼容导出。
-生命周期、存储与调度 API、回调顺序和业务协议不变；Node path/read 返回值复用带运行时检查的正式 JS-FFI 接口，去掉旧 String 类型断言。备份路径仍单次调用原 path.join，结果做实际 String 检查，不改变本地月/日或目录归属。
-Yarn 的新包安装隔离期统一为一小时，不再逐版本设置安装豁免；仅影响本仓库，不修改全局配置。
+使用 Caps `0.1.1`、Node.js 24、Yarn `4.18.0`，CLI/runtime 与依赖图见开头和
+`deps.cirru`。Yarn 的新包安装隔离期保持一小时，不新增逐包豁免。
+浏览器生命周期使用 JS FFI 的数字 timer 合同；Node 文件适配器仅在 node 入口检查。
+无新增强转、断言、预算、测试框架、编译器规则或验证脚本。
 
 ```bash
 corepack enable
@@ -123,27 +131,18 @@ CI 复用已发布正式 WS-EDN `0.0.47` 的真实源码作独立消费者回归
 浏览器已验收。这里检查真实源码与本模块的兼容性，不修改其发布标签、源码或独立npm图。
 候选覆盖的审计支持另见 [Caps #15](https://github.com/calcit-lang/caps/issues/15)。
 
-此前0.0.31正式配对已在 [CI](https://github.com/Cumulo/cumulo-util.calcit/actions/runs/39582155836)
-完成自身正常 Caps strict 图、不可变 Yarn、完整 strict、原两入口公开检查和原测试/构建。
-当时WS-EDN源码兼容性回归的browser44/44、node28/28、完整strict、原unit23/23
-及两入口 codegen 通过；不将这些结果扩大为其 JS 宿主、网络或应用部署验收。
-
 ### 已有接口与边界
 
-browser/node 入口已显式区分；空 `reload!` 返回 Unit，两处 `%none` 改为
-`Option :none`。原生命周期测试、实时调度断言、两入口预处理、代码生成、
-Vite 构建均保留，没有添加验证脚本、强转或编译器改写规则。
-
-browser 公开定义 8/8、node 公开定义 30/30 均通过。
+browser/node 入口显式区分，原两入口预处理、代码生成、Vite 构建、生命周期清理、
+存储 Map/缺失值/回调和调度原语回归保留。当前提交的精确验证范围以 PR 为准，
+不把旧版本检查数字当作本次验收。
 `merge-local-edn!` 保留开放的 Map 键/值边界，不替应用定义数据模型；读取后必须
 解码为 Map。缺失文件原样返回 base，存在时后读数据覆盖同键值；非 Map 数据报错。
 第三参数现在是 `Option<Fn(Bool) -> R>`，回调返回值仍忽略；省略或传 `Option :none`
 表示无回调，旧裸函数/nil 调用必须迁移。此接口已包含在 `0.0.24` 发布版本中。
 原 Node 测试入口同时检查这些存储行为，使用内存 fs fixture，不实际读写文件。
-未执行 shell 命令助手或服务入口。本次将退役的 `merge-dynamic` 改为 `merge`，
-迁移后原质量预算也通过；随后移除将被 Calcit 退役的 `analyze quality` 和预算文件。
-严格检查是正确性门禁，`weak-types` 是覆盖率与旧 API 的诊断视图，不冒充强制预算门禁。
-38 个本地定义中 36 个 full、2 个 partial；剩余 partial 是上述开放存储 Map 边界。
+未执行 shell 命令助手或业务服务入口。严格检查是正确性门禁，`weak-types` 提供
+覆盖率和旧 API 诊断；不通过预算例外掩盖开放存储 Map 的真实边界。
 
 Date 取值和命令输出通过正式 0.28 已支持的模块内 JS 适配器表达：
 保留本地月/日、单次 `execSync`、默认 Buffer UTF-8 解码及异常对象，不增加
@@ -153,11 +152,8 @@ unchecked 强转。适配器的 String schema 是宿主接口声明，不是编�
 `get-backup-path!` 仍保留原宿主 `__dirname` 约定，未声称独立 ESM 部署已验收。
 这些适配器沿用既有宿主合同，当前升级保持相同调用与求值行为。`write-mildly!` 的兼容返回和开放存储Map边界不伪造为已完全闭合类型；本轮精确结果以PR为准，不将历史计数当作本轮验收。
 
-独立 ESM 调用 `get-backup-path!` 已实际复现 `__dirname is not defined`，
-目录合同另见[issue48](https://github.com/Cumulo/cumulo-util.calcit/issues/48)。这不是
-本轮新通过的能力，也不因 strict/codegen 通过就宣称可部署。未执行真实 shell、
-文件写入或服务入口。源码中原3处 Struct 构造迁移到直接构造器；原测试流程保留，
-没有新增永久验证脚本、类型预算、权限豁免或编译器规则。
+备份路径的独立 ESM 限制见开头 issue48。此迁移不执行真实 shell 或文件写入，
+不新增永久脚本、权限豁免或编译器规则；宿主夹具的通过不替代业务部署验收。
 
 ## License
 
