@@ -4,15 +4,13 @@ Small, protocol-independent helpers shared by Cumulo applications.
 
 ## 使用者需要注意
 
-候选 `0.0.33` 将已发布 `0.0.32` 的 CLI / `@calcit/procs` `0.30.1` 配对同步为
-正式 `0.31.0`，JS FFI 使用已发布 `0.2.7`。消费者需协调精确版本图并重新生成 JS；
-仍使用 0.30.1 的应用继续用 `0.0.32`。发布状态以实际 Git tag 为准，不以 main/commit
-替代经过验收的发布依赖，不关闭 Caps strict。
+候选 `0.0.34` 配对正式 Calcit CLI / `@calcit/procs` `0.32.0` 与已发布 JS-FFI
+`0.2.8`。消费者需同步精确版本图并重新生成 JS；新类型标注要求匹配 CLI。
+发布状态以实际 Git tag 为准，不以 main/commit 代替正式依赖，不关闭 Caps strict。
 
-与 main 和已发布 `0.0.32` 相比，本模块 Snapshot 完全相同：生命周期、重试/心跳/合并
-调度、存储 Map 及清理函数合同不变。已检查的迁移旧名和 unsafe 无命中，不制造源码改写。
-原 browser/node 分入口检查、完整 strict、宿主夹具和构建保留，不放宽类型门禁。
-此仓库原工作流仅测试/构建，不部署服务；本次不修改业务调用方运行环境。
+官方 format 迁移类型表示，38 个定义的语义 schema 保持。生命周期、重试/心跳/合并
+调度、存储 Map 及清理函数合同不变。原 browser/node 分入口检查、完整 strict、
+宿主夹具和构建保留，不放宽类型门禁。原工作流仅测试/构建，不部署服务。
 
 `get-backup-path!` 在独立 ESM 下仍依赖未定义的 `__dirname`，其目录归属合同见
 [issue48](https://github.com/Cumulo/cumulo-util.calcit/issues/48)。该已知限制尚未修复；
@@ -126,9 +124,11 @@ yarn test
 
 CI 复用已发布正式 WS-EDN `0.0.47` 的真实源码作独立消费者回归：使用本模块已验证的
 宿主 manifest、lock、runtime 和隔离模块视图，保留 browser/node 目标、完整 strict、
-原 unit 测试及两入口 JS codegen，确认消费者 Snapshot 未改。
+原 unit 测试及两入口 JS codegen。旧消费者先通过官方 format 规范化类型表示，
+以规范化后的 Snapshot 为检查基准，后续检查/codegen 不得改动它；67 个定义的
+迁移前后语义 schema 已逐项对照保持。仅隔离夹具变换，不修改已发布 tag。
 这是源码兼容性 fixture，不等于 WS-EDN 自身 npm 发布图、JS 宿主/网络测试或真实
-浏览器已验收。这里检查真实源码与本模块的兼容性，不修改其发布标签、源码或独立npm图。
+浏览器已验收。这里检查真实源码与本模块的兼容性，不修改其发布标签、上游仓库源码或独立 npm 图。
 候选覆盖的审计支持另见 [Caps #15](https://github.com/calcit-lang/caps/issues/15)。
 
 ### 已有接口与边界
