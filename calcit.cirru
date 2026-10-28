@@ -20,9 +20,7 @@
             &let (online js/navigator.onLine)
               if (bool? online) online true
           :examples $ []
-          :schema $ :: 'Fn $ {} (:return 'Bool)
-            :args $ []
-            :features $ #{} :js-ffi
+          :schema $ quote $ Fn (-> Bool) (:features :js-ffi)
         'page-visible? $ %{} 'CodeEntry
           :doc "|Returns whether the browser document is currently visible."
           :code $ quote $ defn page-visible? ()
@@ -30,9 +28,7 @@
               (:visible) true
               _ false
           :examples $ []
-          :schema $ :: 'Fn $ {} (:return 'Bool)
-            :args $ []
-            :features $ #{} :js-ffi
+          :schema $ quote $ Fn (-> Bool) (:features :js-ffi)
         'watch-browser-lifecycle! $ %{} 'CodeEntry
           :doc "|Reports visibility, online/offline, throttled page touch, and visible-page heartbeat signals. Returns cleanup for every listener and timer."
           :code $ quote $ defn watch-browser-lifecycle! (callback heartbeat-ms)
@@ -45,25 +41,21 @@
                     fn () (reset! *cooling false) &unit
                     , 800
                 on-visibility $ fn (event)
-                  hint-fn $ {} (:return 'Unit)
-                    :args $ [] 'js-ffi.browser/EventHost
+                  hint-fn $ Fn js-ffi.browser/EventHost $ -> Unit
                   if (page-visible?)
                     do (callback :visible) (emit-touch!)
                     callback :hidden
                   , &unit
                 on-online $ fn (event)
-                  hint-fn $ {} (:return 'Unit)
-                    :args $ [] 'js-ffi.browser/EventHost
+                  hint-fn $ Fn js-ffi.browser/EventHost $ -> Unit
                   callback :online
                   , &unit
                 on-offline $ fn (event)
-                  hint-fn $ {} (:return 'Unit)
-                    :args $ [] 'js-ffi.browser/EventHost
+                  hint-fn $ Fn js-ffi.browser/EventHost $ -> Unit
                   callback :offline
                   , &unit
                 on-focus $ fn (event)
-                  hint-fn $ {} (:return 'Unit)
-                    :args $ [] 'js-ffi.browser/EventHost
+                  hint-fn $ Fn js-ffi.browser/EventHost $ -> Unit
                   emit-touch!
                   , &unit
                 timer $ browser/set-interval!
@@ -79,14 +71,11 @@
               callback $ if (page-online?) :online :offline
               fn () (browser/remove-event-listener! |visibilitychange on-visibility) (browser/remove-event-listener! |online on-online) (browser/remove-event-listener! |offline on-offline) (browser/remove-event-listener! |focus on-focus) (browser/clear-interval! timer) (browser/clear-timeout! @*touch-timer) &unit
           :examples $ []
-          :schema $ :: 'Fn $ {}
-            :args $ []
-              :: 'Fn $ {} (:return 'Unit)
-                :args $ [] 'Tag
-              :: 'Option 'Number
-            :features $ #{} :js-ffi
-            :return $ :: 'Fn $ {} (:return 'Unit)
-              :args $ []
+          :schema $ quote $ Fn
+            Fn Tag $ -> Unit
+            Option Number
+            -> $ Fn $ -> Unit
+            :features :js-ffi
         'watch-page-activity! $ %{} 'CodeEntry
           :doc "|Reports :visible and :hidden transitions plus :heartbeat while visible. Emits the current visibility immediately and returns a cleanup function."
           :code $ quote $ defn watch-page-activity! (cb duration)
@@ -98,14 +87,11 @@
                 , &unit
               js-nullish->option duration
           :examples $ []
-          :schema $ :: 'Fn $ {}
-            :args $ []
-              :: 'Fn $ {} (:return 'Unit)
-                :args $ [] 'Tag
-              :: 'JsNullish 'Number
-            :features $ #{} :js-ffi
-            :return $ :: 'Fn $ {} (:return 'Unit)
-              :args $ []
+          :schema $ quote $ Fn
+            Fn Tag $ -> Unit
+            JsNullish Number
+            -> $ Fn $ -> Unit
+            :features :js-ffi
       :ns $ %{} 'NsEntry
         :doc "|Typed browser visibility and activity lifecycle signals. Transport protocols and reconnect policy belong to applications."
         :code $ quote $ ns cumulo-util.activity
@@ -115,21 +101,15 @@
         'main! $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defn main! () (println |Started) (task!) (write-mildly! |a/a/a |a) &unit
           :examples $ []
-          :schema $ :: 'Fn $ {} (:return 'Unit)
-            :args $ []
-            :features $ #{} :js-ffi
+          :schema $ quote $ Fn (-> Unit) (:features :js-ffi)
         'reload! $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defn reload! () (println |Reload) (task!)
           :examples $ []
-          :schema $ :: 'Fn $ {} (:return 'Unit)
-            :args $ []
-            :features $ #{} :js-ffi
+          :schema $ quote $ Fn (-> Unit) (:features :js-ffi)
         'task! $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defn task! () (echo |Task...)
           :examples $ []
-          :schema $ :: 'Fn $ {} (:return 'Unit)
-            :args $ []
-            :features $ #{} :js-ffi
+          :schema $ quote $ Fn (-> Unit) (:features :js-ffi)
       :ns $ %{} 'NsEntry (:doc |)
         :code $ quote $ ns cumulo-util.app
           :require $ cumulo-util.file :refer $ write-mildly!
@@ -141,16 +121,13 @@
               fn (activity) (println |activity activity)
               Option :none
           :examples $ []
-          :schema $ :: 'Fn $ {}
-            :args $ []
-            :features $ #{} :js-ffi
-            :return $ :: 'Fn $ {} (:return 'Unit)
-              :args $ []
+          :schema $ quote $ Fn
+            -> $ Fn $ -> Unit
+            :features :js-ffi
         'reload! $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defn reload! () &unit
           :examples $ []
-          :schema $ :: 'Fn $ {} (:return 'Unit)
-            :args $ []
+          :schema $ quote $ Fn (-> Unit)
       :ns $ %{} 'NsEntry (:doc |)
         :code $ quote $ ns cumulo-util.client
           :require $ cumulo-util.activity :refer $ watch-page-activity! watch-browser-lifecycle!
@@ -165,13 +142,10 @@
                 , &unit
               Option :none
           :examples $ []
-          :schema $ :: 'Fn $ {}
-            :args $ [] $ :: 'Fn
-              {} (:return 'Unit)
-                :args $ []
-            :features $ #{} :js-ffi
-            :return $ :: 'Fn $ {} (:return 'Unit)
-              :args $ []
+          :schema $ quote $ Fn
+            Fn $ -> Unit
+            -> $ Fn $ -> Unit
+            :features :js-ffi
         'visibility-heartbeat $ %{} 'CodeEntry
           :doc "|Calls cb at the requested interval while the document is visible. Defaults to 3000 ms and returns the JavaScript interval handle."
           :code $ quote $ defn visibility-heartbeat (cb duration)
@@ -183,12 +157,11 @@
                   , &unit
                 , interval-ms
           :examples $ []
-          :schema $ :: 'Fn $ {} (:return 'Number)
-            :args $ []
-              :: 'Fn $ {} (:return 'Unit)
-                :args $ []
-              :: 'JsNullish 'Number
-            :features $ #{} :js-ffi
+          :schema $ quote $ Fn
+            Fn $ -> Unit
+            JsNullish Number
+            -> Number
+            :features :js-ffi
       :ns $ %{} 'NsEntry
         :doc "|Legacy zero-argument browser callbacks kept isolated for compatibility. New applications should use cumulo-util.activity."
         :code $ quote $ ns cumulo-util.core
@@ -203,18 +176,14 @@
           :ffi $ {} (:target :node)
             :js $ {} (:file |js-ffi-assets/backup-date-suffix.js)
               :modules $ {} $ :path |node:path
-          :schema $ :: 'Fn $ {} (:return 'String)
-            :args $ []
-            :features $ #{} :js-ffi
+          :schema $ quote $ Fn (-> String) (:features :js-ffi)
         'command-output $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defn command-output (command) (raise |JS-only)
           :examples $ []
           :ffi $ {} (:target :node)
             :js $ {} (:file |js-ffi-assets/command-output.js)
               :modules $ {} $ :cp |node:child_process
-          :schema $ :: 'Fn $ {} (:return 'String)
-            :args $ [] 'String
-            :features $ #{} :js-ffi
+          :schema $ quote $ Fn String (-> String) (:features :js-ffi)
         'get-backup-path! $ %{} 'CodeEntry
           :doc "|Builds the legacy month/day snapshot path under the module backups directory."
           :code $ quote $ defn get-backup-path! ()
@@ -222,9 +191,7 @@
               path/join js/__dirname |backups $ backup-date-suffix
               , 'String
           :examples $ []
-          :schema $ :: 'Fn $ {} (:return 'String)
-            :args $ []
-            :features $ #{} :js-ffi
+          :schema $ quote $ Fn (-> String) (:features :js-ffi)
         'merge-local-edn! $ %{} 'CodeEntry
           :doc "|Merges a base map with Cirru EDN loaded from filepath when present; handler receives whether the file exists."
           :code $ quote $ defn merge-local-edn! (x0 filepath handler)
@@ -238,21 +205,17 @@
                   :: 'Map 'Dynamic 'Dynamic
                 , x0
           :examples $ []
-          :schema $ :: 'Fn $ {}
-            :args $ [] (:: 'Map 'Dynamic 'Dynamic) 'String $ :: 'Option
-              :: 'Fn $ {} (:return 'R)
-                :args $ [] 'Bool
-            :features $ #{} :js-ffi
-            :generics $ [] 'R
-            :return $ :: 'Map 'Dynamic 'Dynamic
+          :schema $ quote $ Fn (Map Dynamic Dynamic) String
+            Option $ Fn Bool $ -> R
+            -> $ Map Dynamic Dynamic
+            :generics R
+            :features :js-ffi
         'sh! $ %{} 'CodeEntry
           :doc "|Runs a shell command synchronously and prints the command and output."
           :code $ quote $ defn sh! (command) (println command)
             println $ command-output command
           :examples $ []
-          :schema $ :: 'Fn $ {} (:return 'Unit)
-            :args $ [] 'String
-            :features $ #{} :js-ffi
+          :schema $ quote $ Fn String (-> Unit) (:features :js-ffi)
         'write-mildly! $ %{} 'CodeEntry
           :doc "|Atomically replaces a UTF-8 text file only when its content changed, creating parent directories as needed."
           :code $ quote $ defn write-mildly! (file-path content)
@@ -272,9 +235,7 @@
                     fs/mkdirSync dir $ to-js-data $ {} (:recursive true)
                   do-write!
           :examples $ []
-          :schema $ :: 'Fn $ {} (:return 'Dynamic)
-            :args $ [] 'String 'String
-            :features $ #{} :js-ffi
+          :schema $ quote $ Fn String String (-> Dynamic) (:features :js-ffi)
       :ns $ %{} 'NsEntry
         :doc "|Small Node.js filesystem and process helpers. Browser lifecycle helpers belong in cumulo-util.activity."
         :code $ quote $ ns cumulo-util.file
@@ -285,7 +246,7 @@
           :doc "|The next coalesced state and delay for one externally-owned timer."
           :code $ quote $ defstruct CoalescedPlan (:state 'cumulo-util.realtime/Coalescer) (:delay-ms 'Number)
           :examples $ []
-          :schema $ :: 'StructDef
+          :schema $ quote StructDef
         'Coalescer $ %{} 'CodeEntry
           :doc "||Immutable coalescing configuration with explicit pending-window state."
           :code $ quote $ def Coalescer
@@ -293,25 +254,19 @@
               defstruct Coalescer (:delay-ms 'Number) (:max-wait-ms 'Number) (:pending? 'Bool) (:first-request-ms 'Number)
               , CoalescerOpsImpl
           :examples $ []
-          :schema $ :: 'StructDef
+          :schema $ quote StructDef
         'CoalescerOps $ %{} 'CodeEntry
           :doc "|Method contract for deterministic single-flight dispatch coalescing state."
           :code $ quote $ deftrait CoalescerOps
-            .request $ :: 'Fn $ {}
-              :args $ [] 'cumulo-util.realtime/Coalescer 'Number
-              :return 'cumulo-util.realtime/CoalescedPlan
-            .flush $ :: 'Fn $ {}
-              :args $ [] 'cumulo-util.realtime/Coalescer
-              :return 'cumulo-util.realtime/Coalescer
-            .cancel $ :: 'Fn $ {}
-              :args $ [] 'cumulo-util.realtime/Coalescer
-              :return 'cumulo-util.realtime/Coalescer
+            .request $ quote $ Fn cumulo-util.realtime/Coalescer Number (-> cumulo-util.realtime/CoalescedPlan)
+            .flush $ quote $ Fn cumulo-util.realtime/Coalescer (-> cumulo-util.realtime/Coalescer)
+            .cancel $ quote $ Fn cumulo-util.realtime/Coalescer (-> cumulo-util.realtime/Coalescer)
           :examples $ []
-          :schema $ :: 'Trait
+          :schema $ quote Trait
         'CoalescerOpsImpl $ %{} 'CodeEntry (:doc "|Coalescer method implementation.")
           :code $ quote $ defimpl CoalescerOpsImpl CoalescerOps (.request coalescer:request) (.flush coalescer:flush) (.cancel coalescer:cancel)
           :examples $ []
-          :schema $ :: 'Impl
+          :schema $ quote Impl
         'HeartbeatLease $ %{} 'CodeEntry
           :doc "|Last-seen timestamp and absolute expiry deadline for a heartbeat lease."
           :code $ quote $ def HeartbeatLease
@@ -319,22 +274,18 @@
               defstruct HeartbeatLease (:last-seen-ms 'Number) (:deadline-ms 'Number)
               , HeartbeatLeaseOpsImpl
           :examples $ []
-          :schema $ :: 'StructDef
+          :schema $ quote StructDef
         'HeartbeatLeaseOps $ %{} 'CodeEntry
           :doc "|Method contract for renewing and inspecting a transport-independent heartbeat lease."
           :code $ quote $ deftrait HeartbeatLeaseOps
-            .renew $ :: 'Fn $ {}
-              :args $ [] 'cumulo-util.realtime/HeartbeatLease 'Number 'Number
-              :return 'cumulo-util.realtime/HeartbeatLease
-            .expired? $ :: 'Fn $ {}
-              :args $ [] 'cumulo-util.realtime/HeartbeatLease 'Number
-              :return 'Bool
+            .renew $ quote $ Fn cumulo-util.realtime/HeartbeatLease Number Number (-> cumulo-util.realtime/HeartbeatLease)
+            .expired? $ quote $ Fn cumulo-util.realtime/HeartbeatLease Number (-> Bool)
           :examples $ []
-          :schema $ :: 'Trait
+          :schema $ quote Trait
         'HeartbeatLeaseOpsImpl $ %{} 'CodeEntry (:doc "|HeartbeatLease method implementation.")
           :code $ quote $ defimpl HeartbeatLeaseOpsImpl HeartbeatLeaseOps (.renew heartbeat-lease:renew) (.expired? heartbeat-lease:expired?)
           :examples $ []
-          :schema $ :: 'Impl
+          :schema $ quote Impl
         'RetryBackoff $ %{} 'CodeEntry
           :doc "|Immutable exponential-backoff configuration and current attempt count."
           :code $ quote $ def RetryBackoff
@@ -342,27 +293,23 @@
               defstruct RetryBackoff (:base-delay-ms 'Number) (:max-delay-ms 'Number) (:jitter-ratio 'Number) (:attempt 'Number)
               , RetryBackoffOpsImpl
           :examples $ []
-          :schema $ :: 'StructDef
+          :schema $ quote StructDef
         'RetryBackoffOps $ %{} 'CodeEntry
           :doc "|Method contract for advancing or resetting immutable retry backoff state."
           :code $ quote $ deftrait RetryBackoffOps
-            .next $ :: 'Fn $ {}
-              :args $ [] 'cumulo-util.realtime/RetryBackoff 'Number
-              :return 'cumulo-util.realtime/RetryStep
-            .reset $ :: 'Fn $ {}
-              :args $ [] 'cumulo-util.realtime/RetryBackoff
-              :return 'cumulo-util.realtime/RetryBackoff
+            .next $ quote $ Fn cumulo-util.realtime/RetryBackoff Number (-> cumulo-util.realtime/RetryStep)
+            .reset $ quote $ Fn cumulo-util.realtime/RetryBackoff (-> cumulo-util.realtime/RetryBackoff)
           :examples $ []
-          :schema $ :: 'Trait
+          :schema $ quote Trait
         'RetryBackoffOpsImpl $ %{} 'CodeEntry (:doc "|RetryBackoff method implementation.")
           :code $ quote $ defimpl RetryBackoffOpsImpl RetryBackoffOps (.next retry-backoff:next) (.reset retry-backoff:reset)
           :examples $ []
-          :schema $ :: 'Impl
+          :schema $ quote Impl
         'RetryStep $ %{} 'CodeEntry
           :doc "|One retry delay and the immutable state to use for the next retry."
           :code $ quote $ defstruct RetryStep (:delay-ms 'Number) (:next 'cumulo-util.realtime/RetryBackoff)
           :examples $ []
-          :schema $ :: 'StructDef
+          :schema $ quote StructDef
         'coalescer $ %{} 'CodeEntry
           :doc "|Create an idle coalescer. The caller owns actual timers and invokes request with its clock."
           :code $ quote $ defn coalescer (delay-ms max-wait-ms)
@@ -371,15 +318,13 @@
                 safe-max-wait $ if (> max-wait-ms safe-delay) max-wait-ms safe-delay
               Coalescer :delay-ms safe-delay :max-wait-ms safe-max-wait :pending? false :first-request-ms 0
           :examples $ []
-          :schema $ :: 'Fn $ {} (:return 'cumulo-util.realtime/Coalescer)
-            :args $ [] 'Number 'Number
+          :schema $ quote $ Fn Number Number (-> cumulo-util.realtime/Coalescer)
           :tags $ #{} :scaffold
         'coalescer:cancel $ %{} 'CodeEntry
           :doc "||Clear explicit pending state after cancelling the externally-owned timer."
           :code $ quote $ defn coalescer:cancel (self) (coalescer:flush self)
           :examples $ []
-          :schema $ :: 'Fn $ {} (:return 'cumulo-util.realtime/Coalescer)
-            :args $ [] 'cumulo-util.realtime/Coalescer
+          :schema $ quote $ Fn cumulo-util.realtime/Coalescer (-> cumulo-util.realtime/Coalescer)
           :tags $ #{} :scaffold
         'coalescer:flush $ %{} 'CodeEntry
           :doc "||Clear explicit pending state after an immediate flush."
@@ -388,8 +333,7 @@
                 cleared $ struct-with self $ :pending? false
               struct-with cleared $ :first-request-ms 0
           :examples $ []
-          :schema $ :: 'Fn $ {} (:return 'cumulo-util.realtime/Coalescer)
-            :args $ [] 'cumulo-util.realtime/Coalescer
+          :schema $ quote $ Fn cumulo-util.realtime/Coalescer (-> cumulo-util.realtime/Coalescer)
           :tags $ #{} :scaffold
         'coalescer:request $ %{} 'CodeEntry
           :doc "||Merge a dispatch request and return the bounded delay for the caller-owned one timer."
@@ -416,8 +360,7 @@
                     :delay-ms self
                 CoalescedPlan :state next-state :delay-ms delay-ms
           :examples $ []
-          :schema $ :: 'Fn $ {} (:return 'cumulo-util.realtime/CoalescedPlan)
-            :args $ [] 'cumulo-util.realtime/Coalescer 'Number
+          :schema $ quote $ Fn cumulo-util.realtime/Coalescer Number (-> cumulo-util.realtime/CoalescedPlan)
           :tags $ #{} :scaffold
         'heartbeat-lease $ %{} 'CodeEntry
           :doc "|Create or renew a heartbeat lease at now-ms for timeout-ms."
@@ -426,16 +369,14 @@
                 safe-timeout $ if (> timeout-ms 0) timeout-ms 0
               HeartbeatLease :last-seen-ms now-ms :deadline-ms $ + now-ms safe-timeout
           :examples $ []
-          :schema $ :: 'Fn $ {} (:return 'cumulo-util.realtime/HeartbeatLease)
-            :args $ [] 'Number 'Number
+          :schema $ quote $ Fn Number Number (-> cumulo-util.realtime/HeartbeatLease)
           :tags $ #{} :scaffold
         'heartbeat-lease:expired? $ %{} 'CodeEntry
           :doc "|Whether now-ms is at or beyond the heartbeat deadline."
           :code $ quote $ defn heartbeat-lease:expired? (self now-ms)
             >= now-ms $ :deadline-ms self
           :examples $ []
-          :schema $ :: 'Fn $ {} (:return 'Bool)
-            :args $ [] 'cumulo-util.realtime/HeartbeatLease 'Number
+          :schema $ quote $ Fn cumulo-util.realtime/HeartbeatLease Number (-> Bool)
           :tags $ #{} :scaffold
         'heartbeat-lease:renew $ %{} 'CodeEntry
           :doc "|Renew a heartbeat lease at now-ms for timeout-ms."
@@ -445,8 +386,7 @@
                 touched $ struct-with self $ :last-seen-ms now-ms
               struct-with touched $ :deadline-ms $ + now-ms safe-timeout
           :examples $ []
-          :schema $ :: 'Fn $ {} (:return 'cumulo-util.realtime/HeartbeatLease)
-            :args $ [] 'cumulo-util.realtime/HeartbeatLease 'Number 'Number
+          :schema $ quote $ Fn cumulo-util.realtime/HeartbeatLease Number Number (-> cumulo-util.realtime/HeartbeatLease)
           :tags $ #{} :scaffold
         'retry-backoff $ %{} 'CodeEntry
           :doc "|Create retry state with attempt zero. random-unit is supplied later to next, keeping tests deterministic."
@@ -457,8 +397,7 @@
                 safe-jitter $ if (< jitter-ratio 0) 0 $ if (> jitter-ratio 1) 1 jitter-ratio
               RetryBackoff :base-delay-ms safe-base :max-delay-ms safe-maximum :jitter-ratio safe-jitter :attempt 0
           :examples $ []
-          :schema $ :: 'Fn $ {} (:return 'cumulo-util.realtime/RetryBackoff)
-            :args $ [] 'Number 'Number 'Number
+          :schema $ quote $ Fn Number Number Number (-> cumulo-util.realtime/RetryBackoff)
           :tags $ #{} :scaffold
         'retry-backoff:next $ %{} 'CodeEntry
           :doc "|Calculate one clamped exponential retry delay from a caller-supplied random unit and advance state."
@@ -477,16 +416,14 @@
                   + 1 $ :attempt self
               RetryStep :delay-ms delay-ms :next next-state
           :examples $ []
-          :schema $ :: 'Fn $ {} (:return 'cumulo-util.realtime/RetryStep)
-            :args $ [] 'cumulo-util.realtime/RetryBackoff 'Number
+          :schema $ quote $ Fn cumulo-util.realtime/RetryBackoff Number (-> cumulo-util.realtime/RetryStep)
           :tags $ #{} :scaffold
         'retry-backoff:reset $ %{} 'CodeEntry
           :doc "|Return the same retry configuration at attempt zero."
           :code $ quote $ defn retry-backoff:reset (self)
             struct-with self $ :attempt 0
           :examples $ []
-          :schema $ :: 'Fn $ {} (:return 'cumulo-util.realtime/RetryBackoff)
-            :args $ [] 'cumulo-util.realtime/RetryBackoff
+          :schema $ quote $ Fn cumulo-util.realtime/RetryBackoff (-> cumulo-util.realtime/RetryBackoff)
           :tags $ #{} :scaffold
       :ns $ %{} 'NsEntry (:doc |)
         :code $ quote $ ns cumulo-util.realtime

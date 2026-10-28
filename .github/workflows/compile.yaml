@@ -79,6 +79,9 @@ jobs:
           mkdir -p .calcit/modules
           ln -s "$GITHUB_WORKSPACE/.calcit/modules/js-ffi" .calcit/modules/js-ffi
           ln -s "$GITHUB_WORKSPACE" .calcit/modules/cumulo-util.calcit
+          # Normalize only type notation in this isolated legacy source fixture.
+          calcit edit format
+          git add -- calcit.cirru
           calcit --check-only --ns ws-edn.client --ns ws-edn.schema --ns ws-edn.util --ns ws-edn.app.page --summary-only --format json
           calcit --entry server --check-only --ns ws-edn.server --ns ws-edn.schema --ns ws-edn.util --ns ws-edn.app.server --summary-only --format json
           calcit fix --workflow strict --verify --format json | jq -e 'if .data.workflow.status == "passed" and .diagnostics == [] then true else ., false end'
