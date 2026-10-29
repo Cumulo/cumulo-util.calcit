@@ -4,8 +4,8 @@ Small, protocol-independent helpers shared by Cumulo applications.
 
 ## 使用者需要注意
 
-候选 `0.0.34` 配对正式 Calcit CLI / `@calcit/procs` `0.32.0` 与已发布 JS-FFI
-`0.2.8`。消费者需同步精确版本图并重新生成 JS；新类型标注要求匹配 CLI。
+候选 `0.0.35` 配对正式 Calcit CLI / `@calcit/procs` `0.32.1` 与已发布 JS-FFI
+`0.2.9`。消费者需同步精确版本图并重新生成 JS；新类型标注要求匹配 CLI。
 发布状态以实际 Git tag 为准，不以 main/commit 代替正式依赖，不关闭 Caps strict。
 
 官方 format 迁移类型表示，38 个定义的语义 schema 保持。生命周期、重试/心跳/合并
