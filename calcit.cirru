@@ -202,7 +202,7 @@
               if found?
                 merge x0 $ decode-map-as
                   parse-cirru-edn $ node/read-text! filepath
-                  :: 'Map 'Dynamic 'Dynamic
+                  quote $ Map Dynamic Dynamic
                 , x0
           :examples $ []
           :schema $ quote $ Fn (Map Dynamic Dynamic) String
@@ -234,8 +234,9 @@
                       not $ fs/existsSync dir
                     fs/mkdirSync dir $ to-js-data $ {} (:recursive true)
                   do-write!
+            , &unit
           :examples $ []
-          :schema $ quote $ Fn String String (-> Dynamic) (:features :js-ffi)
+          :schema $ quote $ Fn String String (-> Unit) (:features :js-ffi)
       :ns $ %{} 'NsEntry
         :doc "|Small Node.js filesystem and process helpers. Browser lifecycle helpers belong in cumulo-util.activity."
         :code $ quote $ ns cumulo-util.file
@@ -244,14 +245,14 @@
       :defs $ {}
         'CoalescedPlan $ %{} 'CodeEntry
           :doc "|The next coalesced state and delay for one externally-owned timer."
-          :code $ quote $ defstruct CoalescedPlan (:state 'cumulo-util.realtime/Coalescer) (:delay-ms 'Number)
+          :code $ quote $ defstruct CoalescedPlan (:state cumulo-util.realtime/Coalescer) (:delay-ms Number)
           :examples $ []
           :schema $ quote StructDef
         'Coalescer $ %{} 'CodeEntry
           :doc "||Immutable coalescing configuration with explicit pending-window state."
           :code $ quote $ def Coalescer
             impl-traits
-              defstruct Coalescer (:delay-ms 'Number) (:max-wait-ms 'Number) (:pending? 'Bool) (:first-request-ms 'Number)
+              defstruct Coalescer (:delay-ms Number) (:max-wait-ms Number) (:pending? Bool) (:first-request-ms Number)
               , CoalescerOpsImpl
           :examples $ []
           :schema $ quote StructDef
@@ -271,7 +272,7 @@
           :doc "|Last-seen timestamp and absolute expiry deadline for a heartbeat lease."
           :code $ quote $ def HeartbeatLease
             impl-traits
-              defstruct HeartbeatLease (:last-seen-ms 'Number) (:deadline-ms 'Number)
+              defstruct HeartbeatLease (:last-seen-ms Number) (:deadline-ms Number)
               , HeartbeatLeaseOpsImpl
           :examples $ []
           :schema $ quote StructDef
@@ -290,7 +291,7 @@
           :doc "|Immutable exponential-backoff configuration and current attempt count."
           :code $ quote $ def RetryBackoff
             impl-traits
-              defstruct RetryBackoff (:base-delay-ms 'Number) (:max-delay-ms 'Number) (:jitter-ratio 'Number) (:attempt 'Number)
+              defstruct RetryBackoff (:base-delay-ms Number) (:max-delay-ms Number) (:jitter-ratio Number) (:attempt Number)
               , RetryBackoffOpsImpl
           :examples $ []
           :schema $ quote StructDef
@@ -307,7 +308,7 @@
           :schema $ quote Impl
         'RetryStep $ %{} 'CodeEntry
           :doc "|One retry delay and the immutable state to use for the next retry."
-          :code $ quote $ defstruct RetryStep (:delay-ms 'Number) (:next 'cumulo-util.realtime/RetryBackoff)
+          :code $ quote $ defstruct RetryStep (:delay-ms Number) (:next cumulo-util.realtime/RetryBackoff)
           :examples $ []
           :schema $ quote StructDef
         'coalescer $ %{} 'CodeEntry

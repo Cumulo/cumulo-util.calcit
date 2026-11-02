@@ -4,11 +4,13 @@ Small, protocol-independent helpers shared by Cumulo applications.
 
 ## 使用者需要注意
 
-候选 `0.0.35` 配对正式 Calcit CLI / `@calcit/procs` `0.32.1` 与已发布 JS-FFI
+候选 `0.0.36` 配对正式 Calcit CLI / `@calcit/procs` `0.34.1` 与已发布 JS-FFI
 `0.2.9`。消费者需同步精确版本图并重新生成 JS；新类型标注要求匹配 CLI。
 发布状态以实际 Git tag 为准，不以 main/commit 代替正式依赖，不关闭 Caps strict。
 
-官方 format 迁移类型表示，38 个定义的语义 schema 保持。生命周期、重试/心跳/合并
+官方 format 迁移类型声明。`write-mildly!` 明确返回 `Unit`，写入与跳过分支统一结束为 Unit；
+调用方不要把这个副作用函数的结果当业务数据，也不要依赖跳过写入时的旧 nil 返回。
+开放存档 Map 的键/值仍是实际异构边界，不用虚假的有限 union 擦除。生命周期、重试/心跳/合并
 调度、存储 Map 及清理函数合同不变。原 browser/node 分入口检查、完整 strict、
 宿主夹具和构建保留，不放宽类型门禁。原工作流仅测试/构建，不部署服务。
 
