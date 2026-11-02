@@ -30,6 +30,8 @@ cumulo-util.file/write-mildly! storage-path
   format-cirru-edn durable-db
 ```
 
+`write-mildly!` returns Unit on both write and unchanged-content paths. Its result is not storage data; filesystem errors still propagate.
+
 Serialize only durable fields. In realtime applications, remove sessions, WebSocket handles, pending effects, timers, and in-memory diff caches before formatting.
 
 ## Backup and loading policy
