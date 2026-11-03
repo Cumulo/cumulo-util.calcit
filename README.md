@@ -4,23 +4,18 @@ Small, protocol-independent helpers shared by Cumulo applications.
 
 ## 使用者需要注意
 
-候选 `0.0.37` 配对正式 Calcit CLI / `@calcit/procs` `0.34.2` 与已发布 JS-FFI
-`0.2.9`。消费者需同步精确版本图并重新生成 JS；新类型标注要求匹配 CLI。
-发布状态以实际 Git tag 为准，不以 main/commit 代替正式依赖，不关闭 Caps strict。
+候选 `0.0.38` 将 JS-FFI 精确依赖更新为正式 `0.2.10`，解除与现代 Respo/UI
+消费者依赖图的冲突。CLI / `@calcit/procs` 继续配对正式 `0.34.2`。
+使用者需等正式 Git tag 发布后同步完整版本图，不以 main/hash 或关闭 Caps strict 代替。
 
-本次只更新配对工具链和模块版本，Snapshot 与精确原提交 b8e5bbb 逐字节相同。
-公开 schema、函数体、原附带测试和 npm 依赖策略保持；不重复加入 union 或泛型。
-`merge-local-edn!` 的键/值来自任意外部存档，继续保留真实异构 Map 合同。
-前一版 `write-mildly!` 已明确返回 Unit；调用方继续将它作为副作用函数使用。
-生命周期、重试/心跳/合并调度及清理保持，已知的备份目录限制见下方 issue48。
-
-本地正式 Caps strict/toolchain、immutable、完整 strict（diagnostics=[]）、browser 8 / node 30
-个自有公开定义、原生命周期和内存存储 fixture、原实时调度断言、文档及构建通过。
-原 WS-EDN 0.0.47 消费者源码兼容 fixture 已通过 browser 44 / node 28 个公开定义、
-完整 strict、所选 unit 与双入口代码生成；规范化后的夹具源码在检查期间字节不变。
-这使用 producer 的宿主图和本地候选链接，仍非消费者原 npm/发布图或真实网络验收；
-最新精确 CI 和评审仍需跟进。
-原工作流只测试/构建，不部署服务；本 PR 不合并、不发 tag/npm，不运行真实 shell 或文件写入。
+本轮不改 Snapshot、公开 schema、函数体、生命周期或存储协议；
+`merge-local-edn!` 继续接受真实异构 Map，`write-mildly!` 继续返回 Unit。
+原完整 strict、分入口公开检查、生命周期/内存存储/调度测试、WS-EDN 消费者 fixture、
+文档和构建全部保留。精确验证结果以本 PR 和 CI 为准，不沿用旧版本通过数字。
+本地 Caps strict/toolchain、immutable、完整 strict（diagnostics=[]）、browser 8 / node 30
+个公开定义检查、原生命周期/内存存储/实时调度断言、文档和构建已通过。
+Snapshot 与本次 base 逐字节相同；原 WS-EDN 消费者 fixture 等待精确提交 CI 复核。
+原工作流只执行测试与构建，不部署服务或发布 npm。
 
 `get-backup-path!` 在独立 ESM 下仍依赖未定义的 `__dirname`，其目录归属合同见
 [issue48](https://github.com/Cumulo/cumulo-util.calcit/issues/48)。该已知限制尚未修复；
