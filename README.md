@@ -4,15 +4,23 @@ Small, protocol-independent helpers shared by Cumulo applications.
 
 ## 使用者需要注意
 
-候选 `0.0.36` 配对正式 Calcit CLI / `@calcit/procs` `0.34.1` 与已发布 JS-FFI
+候选 `0.0.37` 配对正式 Calcit CLI / `@calcit/procs` `0.34.2` 与已发布 JS-FFI
 `0.2.9`。消费者需同步精确版本图并重新生成 JS；新类型标注要求匹配 CLI。
 发布状态以实际 Git tag 为准，不以 main/commit 代替正式依赖，不关闭 Caps strict。
 
-官方 format 迁移类型声明。`write-mildly!` 明确返回 `Unit`，写入与跳过分支统一结束为 Unit；
-调用方不要把这个副作用函数的结果当业务数据，也不要依赖跳过写入时的旧 nil 返回。
-开放存档 Map 的键/值仍是实际异构边界，不用虚假的有限 union 擦除。生命周期、重试/心跳/合并
-调度、存储 Map 及清理函数合同不变。原 browser/node 分入口检查、完整 strict、
-宿主夹具和构建保留，不放宽类型门禁。原工作流仅测试/构建，不部署服务。
+本次只更新配对工具链和模块版本，Snapshot 与精确原提交 b8e5bbb 逐字节相同。
+公开 schema、函数体、原附带测试和 npm 依赖策略保持；不重复加入 union 或泛型。
+`merge-local-edn!` 的键/值来自任意外部存档，继续保留真实异构 Map 合同。
+前一版 `write-mildly!` 已明确返回 Unit；调用方继续将它作为副作用函数使用。
+生命周期、重试/心跳/合并调度及清理保持，已知的备份目录限制见下方 issue48。
+
+本地正式 Caps strict/toolchain、immutable、完整 strict（diagnostics=[]）、browser 8 / node 30
+个自有公开定义、原生命周期和内存存储 fixture、原实时调度断言、文档及构建通过。
+原 WS-EDN 0.0.47 消费者源码兼容 fixture 已通过 browser 44 / node 28 个公开定义、
+完整 strict、所选 unit 与双入口代码生成；规范化后的夹具源码在检查期间字节不变。
+这使用 producer 的宿主图和本地候选链接，仍非消费者原 npm/发布图或真实网络验收；
+最新精确 CI 和评审仍需跟进。
+原工作流只测试/构建，不部署服务；本 PR 不合并、不发 tag/npm，不运行真实 shell 或文件写入。
 
 `get-backup-path!` 在独立 ESM 下仍依赖未定义的 `__dirname`，其目录归属合同见
 [issue48](https://github.com/Cumulo/cumulo-util.calcit/issues/48)。该已知限制尚未修复；
@@ -152,7 +160,7 @@ unchecked 强转。适配器的 String schema 是宿主接口声明，不是编�
 历史上曾通过生成代码内存探针检查这些行为；当前原 CI 的持久 fixture 覆盖生命周期、
 存储 Map/缺失值/回调及调度原语，不能冒充真实 shell、路径或文件写入的验收。
 `get-backup-path!` 仍保留原宿主 `__dirname` 约定，未声称独立 ESM 部署已验收。
-这些适配器沿用既有宿主合同，当前升级保持相同调用与求值行为。`write-mildly!` 的兼容返回和开放存储Map边界不伪造为已完全闭合类型；本轮精确结果以PR为准，不将历史计数当作本轮验收。
+这些适配器沿用既有宿主合同，当前升级保持相同调用与求值行为。`write-mildly!` 的 Unit 返回与开放存储 Map 边界按现有真实合同保留；本轮精确结果以PR为准，不将历史计数当作本轮验收。
 
 备份路径的独立 ESM 限制见开头 issue48。此迁移不执行真实 shell 或文件写入，
 不新增永久脚本、权限豁免或编译器规则；宿主夹具的通过不替代业务部署验收。
