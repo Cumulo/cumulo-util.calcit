@@ -2,7 +2,16 @@
 
 Small, protocol-independent helpers shared by Cumulo applications.
 
-## 使用者需要注意
+## 0.0.39 候选：使用者需要注意
+
+CLI 与 `@calcit/procs` 同步正式 **0.35.0**，JS-FFI 对齐正式 **0.2.12**。
+下游需统一精确依赖图并重新生成 JS；公共 schema、调度状态、生命周期与存储协议不变。
+本库只有 `merge-local-edn!` 的真实异构 Map 存储边界仍含 Dynamic，不能以有限 union
+冒充任意应用存档；其他泛型与名义类型保留。不增加强转或放宽原门禁。
+备份路径的独立 ESM 限制仍按 issue48 保留，不在工具链迁移中改变目录合同。
+本轮精确验证结果见 PR；原工作流只测试和构建，不部署或发布 npm。
+
+## 0.0.38 历史配对
 
 候选 `0.0.38` 将 JS-FFI 精确依赖更新为正式 `0.2.10`，解除与现代 Respo/UI
 消费者依赖图的冲突。CLI / `@calcit/procs` 继续配对正式 `0.34.2`。
