@@ -202,7 +202,7 @@
               if found?
                 merge x0 $ decode-map-as
                   parse-cirru-edn $ node/read-text! filepath
-                  quote $ Map Dynamic Dynamic
+                  Map Dynamic Dynamic
                 , x0
           :examples $ []
           :schema $ quote $ Fn (Map Dynamic Dynamic) String
@@ -259,9 +259,9 @@
         'CoalescerOps $ %{} 'CodeEntry
           :doc "|Method contract for deterministic single-flight dispatch coalescing state."
           :code $ quote $ deftrait CoalescerOps
-            .request $ quote $ Fn cumulo-util.realtime/Coalescer Number (-> cumulo-util.realtime/CoalescedPlan)
-            .flush $ quote $ Fn cumulo-util.realtime/Coalescer (-> cumulo-util.realtime/Coalescer)
-            .cancel $ quote $ Fn cumulo-util.realtime/Coalescer (-> cumulo-util.realtime/Coalescer)
+            .request $ Fn cumulo-util.realtime/Coalescer Number $ -> cumulo-util.realtime/CoalescedPlan
+            .flush $ Fn cumulo-util.realtime/Coalescer $ -> cumulo-util.realtime/Coalescer
+            .cancel $ Fn cumulo-util.realtime/Coalescer $ -> cumulo-util.realtime/Coalescer
           :examples $ []
           :schema $ quote Trait
         'CoalescerOpsImpl $ %{} 'CodeEntry (:doc "|Coalescer method implementation.")
@@ -279,8 +279,8 @@
         'HeartbeatLeaseOps $ %{} 'CodeEntry
           :doc "|Method contract for renewing and inspecting a transport-independent heartbeat lease."
           :code $ quote $ deftrait HeartbeatLeaseOps
-            .renew $ quote $ Fn cumulo-util.realtime/HeartbeatLease Number Number (-> cumulo-util.realtime/HeartbeatLease)
-            .expired? $ quote $ Fn cumulo-util.realtime/HeartbeatLease Number (-> Bool)
+            .renew $ Fn cumulo-util.realtime/HeartbeatLease Number Number $ -> cumulo-util.realtime/HeartbeatLease
+            .expired? $ Fn cumulo-util.realtime/HeartbeatLease Number $ -> Bool
           :examples $ []
           :schema $ quote Trait
         'HeartbeatLeaseOpsImpl $ %{} 'CodeEntry (:doc "|HeartbeatLease method implementation.")
@@ -298,8 +298,8 @@
         'RetryBackoffOps $ %{} 'CodeEntry
           :doc "|Method contract for advancing or resetting immutable retry backoff state."
           :code $ quote $ deftrait RetryBackoffOps
-            .next $ quote $ Fn cumulo-util.realtime/RetryBackoff Number (-> cumulo-util.realtime/RetryStep)
-            .reset $ quote $ Fn cumulo-util.realtime/RetryBackoff (-> cumulo-util.realtime/RetryBackoff)
+            .next $ Fn cumulo-util.realtime/RetryBackoff Number $ -> cumulo-util.realtime/RetryStep
+            .reset $ Fn cumulo-util.realtime/RetryBackoff $ -> cumulo-util.realtime/RetryBackoff
           :examples $ []
           :schema $ quote Trait
         'RetryBackoffOpsImpl $ %{} 'CodeEntry (:doc "|RetryBackoff method implementation.")
