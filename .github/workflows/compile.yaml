@@ -59,15 +59,15 @@ jobs:
           yarn test
           yarn build
 
-      - name: Check out the 0.30-line WS-EDN consumer
+      - name: Check out the Calcit 0.37 WS-EDN consumer
         uses: actions/checkout@v7.0.1
         with:
           repository: mvc-works/ws-edn.calcit
-          ref: 0.0.47
+          ref: 0.1.1
           path: .calcit/ws-edn-consumer
           persist-credentials: false
 
-      - name: Check original WS-EDN source against this Util
+      - name: Check released WS-EDN source against this Util
         working-directory: .calcit/ws-edn-consumer
         run: |
           set -euo pipefail
@@ -79,7 +79,7 @@ jobs:
           mkdir -p .calcit/modules
           ln -s "$GITHUB_WORKSPACE/.calcit/modules/js-ffi" .calcit/modules/js-ffi
           ln -s "$GITHUB_WORKSPACE" .calcit/modules/cumulo-util.calcit
-          # Normalize only type notation in this isolated legacy source fixture.
+          # Check canonical type notation in the isolated consumer fixture.
           calcit edit format
           git add -- calcit.cirru
           calcit --check-only --ns ws-edn.client --ns ws-edn.schema --ns ws-edn.util --ns ws-edn.app.page --summary-only --format json
