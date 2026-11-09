@@ -59,7 +59,7 @@ jobs:
           yarn test
           yarn build
 
-      - name: Check out the Calcit 0.37 WS-EDN consumer
+      - name: Check out the released WS-EDN consumer
         uses: actions/checkout@v7.0.1
         with:
           repository: mvc-works/ws-edn.calcit
