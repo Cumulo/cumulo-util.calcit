@@ -73,7 +73,11 @@ jobs:
           set -euo pipefail
           # Source compatibility fixture, not the consumer's original npm graph.
           # Reuse the producer's verified host pair; keep both entry targets.
-          git rev-parse HEAD
+          consumer_commit="$(git rev-parse HEAD)"
+          if [[ "$consumer_commit" != "82a4d19cd32c756dfba00fd22c447bcffcae9202" ]]; then
+            echo "::error::WS-EDN 0.2.0 resolved to an unexpected commit: $consumer_commit"
+            exit 1
+          fi
           cp "$GITHUB_WORKSPACE/deps.cirru" "$GITHUB_WORKSPACE/package.json" "$GITHUB_WORKSPACE/yarn.lock" .
           ln -s "$GITHUB_WORKSPACE/node_modules" node_modules
           mkdir -p .calcit/modules
