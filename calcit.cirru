@@ -41,21 +41,21 @@
                     fn () (reset! *cooling false) &unit
                     , 800
                 on-visibility $ fn (event)
-                  hint-fn $ Fn js-ffi.browser/EventHost $ -> Unit
+                  hint-fn $ Fn browser/EventHost $ -> Unit
                   if (page-visible?)
                     do (callback :visible) (emit-touch!)
                     callback :hidden
                   , &unit
                 on-online $ fn (event)
-                  hint-fn $ Fn js-ffi.browser/EventHost $ -> Unit
+                  hint-fn $ Fn browser/EventHost $ -> Unit
                   callback :online
                   , &unit
                 on-offline $ fn (event)
-                  hint-fn $ Fn js-ffi.browser/EventHost $ -> Unit
+                  hint-fn $ Fn browser/EventHost $ -> Unit
                   callback :offline
                   , &unit
                 on-focus $ fn (event)
-                  hint-fn $ Fn js-ffi.browser/EventHost $ -> Unit
+                  hint-fn $ Fn browser/EventHost $ -> Unit
                   emit-touch!
                   , &unit
                 timer $ browser/set-interval!

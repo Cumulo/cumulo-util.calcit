@@ -4,7 +4,7 @@ Small, protocol-independent helpers shared by Cumulo applications.
 
 ## 0.0.41 候选：使用者需要注意
 
-CLI 与 `@calcit/procs` 同步正式 **0.41.0**，JS-FFI 对齐正式 **0.2.13**。
+CLI 与 `@calcit/procs` 同步正式 **0.41.1**，JS-FFI 对齐正式 **0.2.13**。
 下游需统一精确依赖图并重新生成 JS；调度状态、生命周期与存储协议保持原样。
 `merge-local-edn!` 接收调用方的 `Map K V`，合并任意应用存档后仍返回异构 Map。
 备份路径的独立 ESM 限制仍按 issue48 保留，不在工具链迁移中改变目录合同。
