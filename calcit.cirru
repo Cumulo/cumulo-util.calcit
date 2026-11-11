@@ -119,7 +119,7 @@
           :code $ quote $ defn main! ()
             watch-browser-lifecycle!
               fn (activity) (println |activity activity)
-              Option :none
+              , None
           :examples $ []
           :schema $ quote $ Fn
             -> $ Fn $ -> Unit
@@ -140,7 +140,7 @@
               fn (signal)
                 when (= signal :touch) (listener)
                 , &unit
-              Option :none
+              , None
           :examples $ []
           :schema $ quote $ Fn
             Fn $ -> Unit
@@ -205,10 +205,10 @@
                   Map Dynamic Dynamic
                 , x0
           :examples $ []
-          :schema $ quote $ Fn (Map Dynamic Dynamic) String
+          :schema $ quote $ Fn (Map K V) String
             Option $ Fn Bool $ -> R
             -> $ Map Dynamic Dynamic
-            :generics R
+            :generics K V R
             :features :js-ffi
         'sh! $ %{} 'CodeEntry
           :doc "|Runs a shell command synchronously and prints the command and output."
@@ -319,13 +319,13 @@
                 safe-max-wait $ if (> max-wait-ms safe-delay) max-wait-ms safe-delay
               Coalescer :delay-ms safe-delay :max-wait-ms safe-max-wait :pending? false :first-request-ms 0
           :examples $ []
-          :schema $ quote $ Fn Number Number (-> cumulo-util.realtime/Coalescer)
+          :schema $ quote $ Fn Number Number (-> Coalescer)
           :tags $ #{} :scaffold
         'coalescer:cancel $ %{} 'CodeEntry
           :doc "||Clear explicit pending state after cancelling the externally-owned timer."
           :code $ quote $ defn coalescer:cancel (self) (coalescer:flush self)
           :examples $ []
-          :schema $ quote $ Fn cumulo-util.realtime/Coalescer (-> cumulo-util.realtime/Coalescer)
+          :schema $ quote $ Fn Coalescer (-> Coalescer)
           :tags $ #{} :scaffold
         'coalescer:flush $ %{} 'CodeEntry
           :doc "||Clear explicit pending state after an immediate flush."
@@ -334,7 +334,7 @@
                 cleared $ struct-with self $ :pending? false
               struct-with cleared $ :first-request-ms 0
           :examples $ []
-          :schema $ quote $ Fn cumulo-util.realtime/Coalescer (-> cumulo-util.realtime/Coalescer)
+          :schema $ quote $ Fn Coalescer (-> Coalescer)
           :tags $ #{} :scaffold
         'coalescer:request $ %{} 'CodeEntry
           :doc "||Merge a dispatch request and return the bounded delay for the caller-owned one timer."
@@ -361,7 +361,7 @@
                     :delay-ms self
                 CoalescedPlan :state next-state :delay-ms delay-ms
           :examples $ []
-          :schema $ quote $ Fn cumulo-util.realtime/Coalescer Number (-> cumulo-util.realtime/CoalescedPlan)
+          :schema $ quote $ Fn Coalescer Number (-> CoalescedPlan)
           :tags $ #{} :scaffold
         'heartbeat-lease $ %{} 'CodeEntry
           :doc "|Create or renew a heartbeat lease at now-ms for timeout-ms."
@@ -370,14 +370,14 @@
                 safe-timeout $ if (> timeout-ms 0) timeout-ms 0
               HeartbeatLease :last-seen-ms now-ms :deadline-ms $ + now-ms safe-timeout
           :examples $ []
-          :schema $ quote $ Fn Number Number (-> cumulo-util.realtime/HeartbeatLease)
+          :schema $ quote $ Fn Number Number (-> HeartbeatLease)
           :tags $ #{} :scaffold
         'heartbeat-lease:expired? $ %{} 'CodeEntry
           :doc "|Whether now-ms is at or beyond the heartbeat deadline."
           :code $ quote $ defn heartbeat-lease:expired? (self now-ms)
             >= now-ms $ :deadline-ms self
           :examples $ []
-          :schema $ quote $ Fn cumulo-util.realtime/HeartbeatLease Number (-> Bool)
+          :schema $ quote $ Fn HeartbeatLease Number (-> Bool)
           :tags $ #{} :scaffold
         'heartbeat-lease:renew $ %{} 'CodeEntry
           :doc "|Renew a heartbeat lease at now-ms for timeout-ms."
@@ -387,7 +387,7 @@
                 touched $ struct-with self $ :last-seen-ms now-ms
               struct-with touched $ :deadline-ms $ + now-ms safe-timeout
           :examples $ []
-          :schema $ quote $ Fn cumulo-util.realtime/HeartbeatLease Number Number (-> cumulo-util.realtime/HeartbeatLease)
+          :schema $ quote $ Fn HeartbeatLease Number Number (-> HeartbeatLease)
           :tags $ #{} :scaffold
         'retry-backoff $ %{} 'CodeEntry
           :doc "|Create retry state with attempt zero. random-unit is supplied later to next, keeping tests deterministic."
@@ -398,7 +398,7 @@
                 safe-jitter $ if (< jitter-ratio 0) 0 $ if (> jitter-ratio 1) 1 jitter-ratio
               RetryBackoff :base-delay-ms safe-base :max-delay-ms safe-maximum :jitter-ratio safe-jitter :attempt 0
           :examples $ []
-          :schema $ quote $ Fn Number Number Number (-> cumulo-util.realtime/RetryBackoff)
+          :schema $ quote $ Fn Number Number Number (-> RetryBackoff)
           :tags $ #{} :scaffold
         'retry-backoff:next $ %{} 'CodeEntry
           :doc "|Calculate one clamped exponential retry delay from a caller-supplied random unit and advance state."
@@ -417,14 +417,14 @@
                   + 1 $ :attempt self
               RetryStep :delay-ms delay-ms :next next-state
           :examples $ []
-          :schema $ quote $ Fn cumulo-util.realtime/RetryBackoff Number (-> cumulo-util.realtime/RetryStep)
+          :schema $ quote $ Fn RetryBackoff Number (-> RetryStep)
           :tags $ #{} :scaffold
         'retry-backoff:reset $ %{} 'CodeEntry
           :doc "|Return the same retry configuration at attempt zero."
           :code $ quote $ defn retry-backoff:reset (self)
             struct-with self $ :attempt 0
           :examples $ []
-          :schema $ quote $ Fn cumulo-util.realtime/RetryBackoff (-> cumulo-util.realtime/RetryBackoff)
+          :schema $ quote $ Fn RetryBackoff (-> RetryBackoff)
           :tags $ #{} :scaffold
       :ns $ %{} 'NsEntry (:doc |)
         :code $ quote $ ns cumulo-util.realtime
