@@ -101,15 +101,15 @@
         'main! $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defn main! () (println |Started) (task!) (write-mildly! |a/a/a |a) &unit
           :examples $ []
-          :schema $ quote $ Fn (-> Unit) (:features :js-ffi)
+          :schema $ quote $ Fn (-> Unit) (:features :io :js-ffi)
         'reload! $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defn reload! () (println |Reload) (task!)
           :examples $ []
-          :schema $ quote $ Fn (-> Unit) (:features :js-ffi)
+          :schema $ quote $ Fn (-> Unit) (:features :io :js-ffi)
         'task! $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defn task! () (echo |Task...)
           :examples $ []
-          :schema $ quote $ Fn (-> Unit) (:features :js-ffi)
+          :schema $ quote $ Fn (-> Unit) (:features :io :js-ffi)
       :ns $ %{} 'NsEntry (:doc |)
         :code $ quote $ ns cumulo-util.app
           :require $ cumulo-util.file :refer $ write-mildly!
@@ -123,7 +123,7 @@
           :examples $ []
           :schema $ quote $ Fn
             -> $ Fn $ -> Unit
-            :features :js-ffi
+            :features :io :js-ffi
         'reload! $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defn reload! () &unit
           :examples $ []
@@ -225,7 +225,7 @@
           :code $ quote $ defn sh! (command) (println command)
             println $ command-output command
           :examples $ []
-          :schema $ quote $ Fn String (-> Unit) (:features :js-ffi)
+          :schema $ quote $ Fn String (-> Unit) (:features :io :js-ffi)
         'write-mildly! $ %{} 'CodeEntry
           :doc "|Atomically replaces a UTF-8 text file only when its content changed, creating parent directories as needed."
           :code $ quote $ defn write-mildly! (file-path content)
@@ -246,7 +246,7 @@
                   do-write!
             , &unit
           :examples $ []
-          :schema $ quote $ Fn String String (-> Unit) (:features :js-ffi)
+          :schema $ quote $ Fn String String (-> Unit) (:features :io :js-ffi)
       :ns $ %{} 'NsEntry
         :doc "|Small Node.js filesystem and process helpers. Browser lifecycle helpers belong in cumulo-util.activity."
         :code $ quote $ ns cumulo-util.file
