@@ -4,7 +4,7 @@ Small, protocol-independent helpers shared by Cumulo applications.
 
 ## 0.0.41 候选：使用者需要注意
 
-CLI 与 `@calcit/procs` 同步正式 **0.41.0**，JS-FFI 对齐正式 **0.2.13**。
+CLI 与 `@calcit/procs` 同步正式 **0.41.1**，JS-FFI 对齐正式 **0.2.13**。
 下游需统一精确依赖图并重新生成 JS；调度状态、生命周期与存储协议保持原样。
 `merge-local-edn!` 接收调用方的 `Map K V`，合并任意应用存档后仍返回异构 Map。
 备份路径的独立 ESM 限制仍按 issue48 保留，不在工具链迁移中改变目录合同。
@@ -90,6 +90,14 @@ cumulo-util.file/write-mildly! path content
 cumulo-util.file/get-backup-path!
 
 cumulo-util.file/merge-local-edn! base filepath $ Option :some $ fn (found?) (println found?)
+```
+
+有明确键值类型的存档可使用 `merge-local-edn-with!`。文件存在时，解码器接收原始文本，返回与基础 Map 同类型的值。文件缺失时直接返回基础 Map。
+
+```cirru.no-check
+cumulo-util.file/merge-local-edn-with! defaults filepath None $ fn (text)
+  hint-fn $ Fn String (-> (Map Tag Number))
+  decode-map-as (parse-cirru-edn text) (Map Tag Number)
 ```
 
 ## 开发与验证
