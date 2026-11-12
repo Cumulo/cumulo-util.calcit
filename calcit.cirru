@@ -195,19 +195,29 @@
         'merge-local-edn! $ %{} 'CodeEntry
           :doc "|Merges a base map with Cirru EDN loaded from filepath when present; handler receives whether the file exists."
           :code $ quote $ defn merge-local-edn! (x0 filepath handler)
+            merge-local-edn-with! x0 filepath handler $ fn (text)
+              decode-map-as (parse-cirru-edn text) (Map Dynamic Dynamic)
+          :examples $ []
+          :schema $ quote $ Fn (Map K V) String
+            Option $ Fn Bool $ -> R
+            -> $ Map Dynamic Dynamic
+            :generics K V R
+            :features :js-ffi
+        'merge-local-edn-with! $ %{} 'CodeEntry
+          :doc "|Merges a base Map with a local EDN file decoded by the caller. The decoder receives the file text only when it exists."
+          :code $ quote $ defn merge-local-edn-with! (x0 filepath handler decode-text)
             let
                 found? $ node/file-exists? filepath
               when (handler .some?)
                 (handler .unwrap) found?
               if found?
-                merge x0 $ decode-map-as
-                  parse-cirru-edn $ node/read-text! filepath
-                  Map Dynamic Dynamic
+                merge x0 $ decode-text $ node/read-text! filepath
                 , x0
           :examples $ []
           :schema $ quote $ Fn (Map K V) String
             Option $ Fn Bool $ -> R
-            -> $ Map Dynamic Dynamic
+            Fn String $ -> $ Map K V
+            -> $ Map K V
             :generics K V R
             :features :js-ffi
         'sh! $ %{} 'CodeEntry

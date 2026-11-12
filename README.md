@@ -92,6 +92,14 @@ cumulo-util.file/get-backup-path!
 cumulo-util.file/merge-local-edn! base filepath $ Option :some $ fn (found?) (println found?)
 ```
 
+有明确键值类型的存档可使用 `merge-local-edn-with!`。文件存在时，解码器接收原始文本，返回与基础 Map 同类型的值。文件缺失时直接返回基础 Map。
+
+```cirru.no-check
+cumulo-util.file/merge-local-edn-with! defaults filepath None $ fn (text)
+  hint-fn $ Fn String (-> (Map Tag Number))
+  decode-map-as (parse-cirru-edn text) (Map Tag Number)
+```
+
 ## 开发与验证
 
 使用 Caps `0.1.1`、Node.js 24、Yarn `4.18.0`，CLI/runtime 与依赖图见开头和
