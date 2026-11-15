@@ -43,9 +43,9 @@ const flushTimeouts = (delay) => {
   }
 }
 
-const activity = await import("../js-out/cumulo-util.activity.mjs")
-const legacy = await import("../js-out/cumulo-util.core.mjs")
-const calcitCore = await import("../js-out/calcit.core.mjs")
+const activity = await import("../.calcit/test-js/browser/cumulo-util.activity.mjs")
+const legacy = await import("../.calcit/test-js/browser/cumulo-util.core.mjs")
+const calcitCore = await import("../.calcit/test-js/browser/calcit.core.mjs")
 
 const browserEvents = []
 const stopBrowser = activity.watch_browser_lifecycle_$x_(
@@ -138,10 +138,11 @@ if (heartbeats !== 1 || heartbeatTimer.interval !== 4567) {
 console.log(`browser lifecycle passed: ${activities.join(" -> ")}`)
 
 // Reuse this Node fixture for the migrated storage boundary; no real file I/O.
-const files = await import("../js-out/cumulo-util.file.mjs")
+const files = await import("../.calcit/test-js/server/cumulo-util.file.mjs")
+const serverCore = await import("../.calcit/test-js/server/calcit.core.mjs")
 const originalExists = fs.existsSync
 const originalRead = fs.readFileSync
-const base = calcitCore.parse_cirru_edn("{} (:a 1) (:keep 7)")
+const base = serverCore.parse_cirru_edn("{} (:a 1) (:keep 7)")
 let exists = false
 let content = "{} (:a 2) (:b 3)"
 let reads = 0
@@ -150,12 +151,12 @@ fs.existsSync = () => exists
 fs.readFileSync = () => { reads += 1; return content }
 syncBuiltinESMExports()
 try {
-  const handler = calcitCore.nil__GT_option(found => foundSignals.push(found))
+  const handler = serverCore.nil__GT_option(found => foundSignals.push(found))
   if (files.merge_local_edn_$x_(base, "fixture-only", handler) !== base || reads !== 0) {
     throw new Error("Missing storage must preserve base without reading")
   }
   exists = true
-  const merged = calcitCore.to_js_data(files.merge_local_edn_$x_(base, "fixture-only", handler))
+  const merged = serverCore.to_js_data(files.merge_local_edn_$x_(base, "fixture-only", handler))
   if (merged.a !== 2 || merged.keep !== 7 || merged.b !== 3 || reads !== 1 || foundSignals.join() !== "false,true") {
     throw new Error("Storage merge or existence callback changed")
   }

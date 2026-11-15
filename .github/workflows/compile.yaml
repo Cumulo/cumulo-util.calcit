@@ -55,8 +55,6 @@ jobs:
           calcit calcit.cirru analyze weak-types --only coverage --summary-only
           calcit calcit.cirru analyze weak-types --only deprecated-call
           calcit docs check-md README.md --dep ./ --failures-only
-          calcit calcit.cirru --entry server js
-          node tests/local-edn.mjs
           yarn test
           yarn build
 

@@ -2,8 +2,8 @@ import assert from 'node:assert/strict';
 import { mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import * as c from '../js-out/calcit.core.mjs';
-import { merge_local_edn_$x_, merge_local_edn_with_$x_ } from '../js-out/cumulo-util.file.mjs';
+import * as c from '../.calcit/test-js/server/calcit.core.mjs';
+import { merge_local_edn_$x_, merge_local_edn_with_$x_ } from '../.calcit/test-js/server/cumulo-util.file.mjs';
 
 const directory = mkdtempSync(join(tmpdir(), 'cumulo-local-edn-'));
 try {
