@@ -260,60 +260,51 @@
           :schema $ quote StructDef
         'Coalescer $ %{} 'CodeEntry
           :doc "||Immutable coalescing configuration with explicit pending-window state."
-          :code $ quote $ def Coalescer
-            impl-traits
-              defstruct Coalescer (:delay-ms Number) (:max-wait-ms Number) (:pending? Bool) (:first-request-ms Number)
-              , CoalescerOpsImpl
+          :code $ quote $ defstruct Coalescer (:delay-ms Number) (:max-wait-ms Number) (:pending? Bool) (:first-request-ms Number) (:impls CoalescerOps)
           :examples $ []
           :schema $ quote StructDef
         'CoalescerOps $ %{} 'CodeEntry
           :doc "|Method contract for deterministic single-flight dispatch coalescing state."
           :code $ quote $ deftrait CoalescerOps
-            .request $ Fn cumulo-util.realtime/Coalescer Number $ -> cumulo-util.realtime/CoalescedPlan
-            .flush $ Fn cumulo-util.realtime/Coalescer $ -> cumulo-util.realtime/Coalescer
-            .cancel $ Fn cumulo-util.realtime/Coalescer $ -> cumulo-util.realtime/Coalescer
+            .request $ Fn Self Number $ -> cumulo-util.realtime/CoalescedPlan
+            .flush $ Fn Self $ -> cumulo-util.realtime/Coalescer
+            .cancel $ Fn Self $ -> cumulo-util.realtime/Coalescer
           :examples $ []
           :schema $ quote Trait
         'CoalescerOpsImpl $ %{} 'CodeEntry (:doc "|Coalescer method implementation.")
-          :code $ quote $ defimpl CoalescerOpsImpl CoalescerOps (.request coalescer:request) (.flush coalescer:flush) (.cancel coalescer:cancel)
+          :code $ quote $ defimpl Coalescer CoalescerOps (.request coalescer:request) (.flush coalescer:flush) (.cancel coalescer:cancel)
           :examples $ []
           :schema $ quote Impl
         'HeartbeatLease $ %{} 'CodeEntry
           :doc "|Last-seen timestamp and absolute expiry deadline for a heartbeat lease."
-          :code $ quote $ def HeartbeatLease
-            impl-traits
-              defstruct HeartbeatLease (:last-seen-ms Number) (:deadline-ms Number)
-              , HeartbeatLeaseOpsImpl
+          :code $ quote $ defstruct HeartbeatLease (:last-seen-ms Number) (:deadline-ms Number) (:impls HeartbeatLeaseOps)
           :examples $ []
           :schema $ quote StructDef
         'HeartbeatLeaseOps $ %{} 'CodeEntry
           :doc "|Method contract for renewing and inspecting a transport-independent heartbeat lease."
           :code $ quote $ deftrait HeartbeatLeaseOps
-            .renew $ Fn cumulo-util.realtime/HeartbeatLease Number Number $ -> cumulo-util.realtime/HeartbeatLease
-            .expired? $ Fn cumulo-util.realtime/HeartbeatLease Number $ -> Bool
+            .renew $ Fn Self Number Number $ -> cumulo-util.realtime/HeartbeatLease
+            .expired? $ Fn Self Number $ -> Bool
           :examples $ []
           :schema $ quote Trait
         'HeartbeatLeaseOpsImpl $ %{} 'CodeEntry (:doc "|HeartbeatLease method implementation.")
-          :code $ quote $ defimpl HeartbeatLeaseOpsImpl HeartbeatLeaseOps (.renew heartbeat-lease:renew) (.expired? heartbeat-lease:expired?)
+          :code $ quote $ defimpl HeartbeatLease HeartbeatLeaseOps (.renew heartbeat-lease:renew) (.expired? heartbeat-lease:expired?)
           :examples $ []
           :schema $ quote Impl
         'RetryBackoff $ %{} 'CodeEntry
           :doc "|Immutable exponential-backoff configuration and current attempt count."
-          :code $ quote $ def RetryBackoff
-            impl-traits
-              defstruct RetryBackoff (:base-delay-ms Number) (:max-delay-ms Number) (:jitter-ratio Number) (:attempt Number)
-              , RetryBackoffOpsImpl
+          :code $ quote $ defstruct RetryBackoff (:base-delay-ms Number) (:max-delay-ms Number) (:jitter-ratio Number) (:attempt Number) (:impls RetryBackoffOps)
           :examples $ []
           :schema $ quote StructDef
         'RetryBackoffOps $ %{} 'CodeEntry
           :doc "|Method contract for advancing or resetting immutable retry backoff state."
           :code $ quote $ deftrait RetryBackoffOps
-            .next $ Fn cumulo-util.realtime/RetryBackoff Number $ -> cumulo-util.realtime/RetryStep
-            .reset $ Fn cumulo-util.realtime/RetryBackoff $ -> cumulo-util.realtime/RetryBackoff
+            .next $ Fn Self Number $ -> cumulo-util.realtime/RetryStep
+            .reset $ Fn Self $ -> cumulo-util.realtime/RetryBackoff
           :examples $ []
           :schema $ quote Trait
         'RetryBackoffOpsImpl $ %{} 'CodeEntry (:doc "|RetryBackoff method implementation.")
-          :code $ quote $ defimpl RetryBackoffOpsImpl RetryBackoffOps (.next retry-backoff:next) (.reset retry-backoff:reset)
+          :code $ quote $ defimpl RetryBackoff RetryBackoffOps (.next retry-backoff:next) (.reset retry-backoff:reset)
           :examples $ []
           :schema $ quote Impl
         'RetryStep $ %{} 'CodeEntry

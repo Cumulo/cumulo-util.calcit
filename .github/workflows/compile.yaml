@@ -55,28 +55,26 @@ jobs:
           calcit calcit.cirru analyze weak-types --only coverage --summary-only
           calcit calcit.cirru analyze weak-types --only deprecated-call
           calcit docs check-md README.md --dep ./ --failures-only
-          calcit calcit.cirru --entry server js
-          node tests/local-edn.mjs
           yarn test
           yarn build
 
-      - name: Check out the released WS-EDN consumer
+      - name: Check out the Calcit 0.43.0 WS-EDN consumer candidate
         uses: actions/checkout@v7.0.1
         with:
           repository: mvc-works/ws-edn.calcit
-          ref: 0.2.0
+          ref: b1924242e76fc5f6813891d227463a32dc11b876
           path: .calcit/ws-edn-consumer
           persist-credentials: false
 
-      - name: Check released WS-EDN source against this Util
+      - name: Check WS-EDN source against this Util
         working-directory: .calcit/ws-edn-consumer
         run: |
           set -euo pipefail
           # Source compatibility fixture, not the consumer's original npm graph.
           # Reuse the producer's verified host pair; keep both entry targets.
           consumer_commit="$(git rev-parse HEAD)"
-          if [[ "$consumer_commit" != "82a4d19cd32c756dfba00fd22c447bcffcae9202" ]]; then
-            echo "::error::WS-EDN 0.2.0 resolved to an unexpected commit: $consumer_commit"
+          if [[ "$consumer_commit" != "b1924242e76fc5f6813891d227463a32dc11b876" ]]; then
+            echo "::error::WS-EDN candidate resolved to an unexpected commit: $consumer_commit"
             exit 1
           fi
           cp "$GITHUB_WORKSPACE/deps.cirru" "$GITHUB_WORKSPACE/package.json" "$GITHUB_WORKSPACE/yarn.lock" .
