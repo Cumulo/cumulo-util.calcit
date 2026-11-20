@@ -154,11 +154,11 @@ yarn test
 
 模块和 js-ffi 使用精确正式 tag，不使用 main/hash。下游应在 cumulo-util 新标签发布后，再一起同步请求同一 JS-FFI 版本的依赖图，不能只改根依赖或关闭 strict。
 
-CI 复用已发布正式 WS-EDN `0.0.47` 的真实源码作独立消费者回归：使用本模块已验证的
+CI 复用已发布正式 WS-EDN `0.2.4` 的源码作独立消费者回归：使用本模块已验证的
 宿主 manifest、lock、runtime 和隔离模块视图，保留 browser/node 目标、完整 strict、
-原 unit 测试及两入口 JS codegen。旧消费者先通过官方 format 规范化类型表示，
-以规范化后的 Snapshot 为检查基准，后续检查/codegen 不得改动它；67 个定义的
-迁移前后语义 schema 已逐项对照保持。仅隔离夹具变换，不修改已发布 tag。
+原 unit 测试及两入口 JS codegen。消费者先通过官方 format 规范化类型表示，
+以规范化后的 Snapshot 为检查基准，后续检查/codegen 不得改动它；仅隔离夹具变换，
+不修改已发布 tag。
 这是源码兼容性 fixture，不等于 WS-EDN 自身 npm 发布图、JS 宿主/网络测试或真实
 浏览器已验收。这里检查真实源码与本模块的兼容性，不修改其发布标签、上游仓库源码或独立 npm 图。
 候选覆盖的审计支持另见 [Caps #15](https://github.com/calcit-lang/caps/issues/15)。
