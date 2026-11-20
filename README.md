@@ -5,7 +5,7 @@ Small, protocol-independent helpers shared by Cumulo applications.
 ## 0.0.45：使用者需要注意
 
 候选版本将 Calcit 与 `@calcit/procs` 配对升级为正式 0.44.0，下游需重新安装依赖并生成 JS。
-现有公开 API、生命周期与存储协议保持不变；正式标签尚未发布。
+现有公开 API、生命周期与存储协议保持不变；请在正式标签发布后升级。
 
 ## 0.0.44：使用者需要注意
 
