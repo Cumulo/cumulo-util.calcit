@@ -58,11 +58,11 @@ jobs:
           yarn test
           yarn build
 
-      - name: Check out the Calcit 0.43.0 WS-EDN consumer candidate
+      - name: Check out released WS-EDN 0.2.4
         uses: actions/checkout@v7.0.1
         with:
           repository: mvc-works/ws-edn.calcit
-          ref: b1924242e76fc5f6813891d227463a32dc11b876
+          ref: 0.2.4
           path: .calcit/ws-edn-consumer
           persist-credentials: false
 
@@ -72,11 +72,6 @@ jobs:
           set -euo pipefail
           # Source compatibility fixture, not the consumer's original npm graph.
           # Reuse the producer's verified host pair; keep both entry targets.
-          consumer_commit="$(git rev-parse HEAD)"
-          if [[ "$consumer_commit" != "b1924242e76fc5f6813891d227463a32dc11b876" ]]; then
-            echo "::error::WS-EDN candidate resolved to an unexpected commit: $consumer_commit"
-            exit 1
-          fi
           cp "$GITHUB_WORKSPACE/deps.cirru" "$GITHUB_WORKSPACE/package.json" "$GITHUB_WORKSPACE/yarn.lock" .
           ln -s "$GITHUB_WORKSPACE/node_modules" node_modules
           mkdir -p .calcit/modules
