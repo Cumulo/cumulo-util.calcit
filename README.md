@@ -2,6 +2,10 @@
 
 Small, protocol-independent helpers shared by Cumulo applications.
 
+## 0.0.49：使用者需要注意
+
+JS-FFI 对齐正式 0.2.22，Calcit 保持 0.44.0；下游需统一依赖并重新生成 JS。公开 API、生命周期和存储协议不变，正式标签发布前为候选。
+
 ## 0.0.48：使用者需要注意
 
 JS-FFI 对齐正式 0.2.21，Calcit 继续使用 0.44.0；下游需统一依赖并重新生成 JS。公开 API、生命周期和存储协议不变。
