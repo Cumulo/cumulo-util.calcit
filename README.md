@@ -2,9 +2,9 @@
 
 Small, protocol-independent helpers shared by Cumulo applications.
 
-## 0.0.51 候选：使用者需要注意
+## 0.0.52 候选：使用者需要注意
 
-配套 Calcit / `@calcit/procs` 0.45.0 与正式 JS-FFI 0.2.23；下游需统一依赖并重新生成 JS。公开 API、生命周期和存储协议沿用已合并的 0.45 迁移，正式标签发布后再升级。
+配套 Calcit / `@calcit/procs` 0.45.1 与正式 JS-FFI 0.2.24；下游需统一依赖并重新生成 JS。公开 API、生命周期和存储协议沿用已合并的 0.45 迁移，正式标签发布后再升级。
 
 ## 0.0.50：使用者需要注意
 
