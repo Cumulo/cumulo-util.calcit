@@ -2,9 +2,9 @@
 
 Small, protocol-independent helpers shared by Cumulo applications.
 
-## 0.0.52 候选：使用者需要注意
+## 0.0.53 候选：使用者需要注意
 
-配套 Calcit / `@calcit/procs` 0.45.1 与正式 JS-FFI 0.2.24；下游需统一依赖并重新生成 JS。公开 API、生命周期和存储协议沿用已合并的 0.45 迁移，正式标签发布后再升级。
+配套 Calcit / `@calcit/procs` 0.46.0 与正式 JS-FFI 0.2.26；已发布 0.0.52 仍配对 0.45.1 / JS-FFI 0.2.24。下游需统一依赖并重新生成 JS。公开 API、生命周期和存储协议沿用已合并的 0.45 迁移，正式标签发布后再升级。
 
 ## 0.0.50：使用者需要注意
 
@@ -178,7 +178,7 @@ yarn test
 
 模块和 js-ffi 使用精确正式 tag，不使用 main/hash。下游应在 cumulo-util 新标签发布后，再一起同步请求同一 JS-FFI 版本的依赖图，不能只改根依赖或关闭 strict。
 
-CI 复用已发布正式 WS-EDN `0.2.4` 的源码作独立消费者回归：使用本模块已验证的
+CI 复用已发布正式 WS-EDN `0.3.3` 的源码作独立消费者回归：使用本模块已验证的
 宿主 manifest、lock、runtime 和隔离模块视图，保留 browser/node 目标、完整 strict、
 原 unit 测试及两入口 JS codegen。消费者先通过官方 format 规范化类型表示，
 以规范化后的 Snapshot 为检查基准，后续检查/codegen 不得改动它；仅隔离夹具变换，
