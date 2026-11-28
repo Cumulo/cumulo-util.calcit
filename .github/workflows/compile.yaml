@@ -50,8 +50,8 @@ jobs:
           calcit calcit.cirru edit format
           git diff --exit-code -- calcit.cirru
           calcit fix --workflow strict --verify --format json | jq -e 'if .data.workflow.status == "passed" and .diagnostics == [] then true else ., false end'
-          calcit calcit.cirru --check-only --ns cumulo-util.activity --ns cumulo-util.core --ns cumulo-util.client --summary-only
-          calcit calcit.cirru --entry server --check-only --ns cumulo-util.app --ns cumulo-util.file --ns cumulo-util.realtime --summary-only
+          calcit calcit.cirru --deny-migration-warnings --check-only --ns cumulo-util.activity --ns cumulo-util.core --ns cumulo-util.client --summary-only
+          calcit calcit.cirru --entry server --deny-migration-warnings --check-only --ns cumulo-util.app --ns cumulo-util.file --ns cumulo-util.realtime --summary-only
           calcit calcit.cirru analyze weak-types --only coverage --summary-only
           calcit calcit.cirru analyze weak-types --only deprecated-call
           calcit docs check-md README.md --dep ./ --failures-only

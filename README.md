@@ -2,9 +2,9 @@
 
 Small, protocol-independent helpers shared by Cumulo applications.
 
-## 0.0.53 候选：使用者需要注意
+## 0.0.54 候选：使用者需要注意
 
-配套 Calcit / `@calcit/procs` 0.46.0 与正式 JS-FFI 0.2.26；已发布 0.0.52 仍配对 0.45.1 / JS-FFI 0.2.24。下游需统一依赖并重新生成 JS。公开 API、生命周期和存储协议沿用已合并的 0.45 迁移，正式标签发布后再升级。
+配套 Calcit / `@calcit/procs` 0.47.1 与正式 JS-FFI 0.2.26；已发布 0.0.53 仍配对 0.46.0 / JS-FFI 0.2.26。`page-online?` 已迁移为通过 `try-decode-map-as` 校验 `navigator.onLine` 布尔值，消除运行时 `bool?` 类型谓词；公开 API、生命周期和存储协议保持不变。下游需统一依赖并重新生成 JS，正式标签发布后再升级。
 
 ## 0.0.50：使用者需要注意
 
@@ -160,8 +160,8 @@ git diff --exit-code -- calcit.cirru
 calcit calcit.cirru --check-only
 calcit calcit.cirru --entry server --check-only
 calcit fix --workflow strict --verify
-calcit calcit.cirru --check-only --ns cumulo-util.activity --ns cumulo-util.core --ns cumulo-util.client --summary-only
-calcit calcit.cirru --entry server --check-only --ns cumulo-util.app --ns cumulo-util.file --ns cumulo-util.realtime --summary-only
+calcit calcit.cirru --deny-migration-warnings --check-only --ns cumulo-util.activity --ns cumulo-util.core --ns cumulo-util.client --summary-only
+calcit calcit.cirru --entry server --deny-migration-warnings --check-only --ns cumulo-util.app --ns cumulo-util.file --ns cumulo-util.realtime --summary-only
 calcit calcit.cirru analyze weak-types --only coverage --summary-only
 calcit calcit.cirru analyze weak-types --only deprecated-call
 calcit docs check-md README.md --dep ./ --failures-only
