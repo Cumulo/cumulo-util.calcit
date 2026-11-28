@@ -17,8 +17,12 @@
         'page-online? $ %{} 'CodeEntry
           :doc "|Returns the browser online hint. It does not prove WebSocket or server health."
           :code $ quote $ defn page-online? ()
-            &let (online js/navigator.onLine)
-              if (bool? online) online true
+            match
+              try-decode-map-as
+                if (exists? js/navigator) js/navigator.onLine &unit
+                , 'Bool
+              (:ok online) online
+              (:err _) true
           :examples $ []
           :schema $ quote $ Fn (-> Bool) (:features :js-ffi)
         'page-visible? $ %{} 'CodeEntry
